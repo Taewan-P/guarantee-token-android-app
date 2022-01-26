@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Guarantee Wallet</string>
+    <string name="sign_in">Sign In</string>
+    <string name="user_id_textview">User ID</string>
+    <string name="user_id_hint">ID should be 6~12 character</string>
+    <string name="password_textview">Password</string>
+    <string name="password_hint">Should be longer than 6 characters</string>
+    <string name="forgot_password_textview">Forgot Password?</string>
+    <string name="login_btn_desc">Login</string>
 </resources>

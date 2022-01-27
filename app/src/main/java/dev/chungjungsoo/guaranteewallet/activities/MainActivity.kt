@@ -48,11 +48,13 @@ class MainActivity : AppCompatActivity() {
                     }
                     else {
                         Log.e("PING", "Ping Client Error")
+                        Toast.makeText(applicationContext, "Server connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<PingResult>, t: Throwable) {
                     Log.e("PING", "Ping Server Error")
+                    Toast.makeText(applicationContext, "Network Error. Please check your network status.", Toast.LENGTH_SHORT).show()
                 }
 
             })

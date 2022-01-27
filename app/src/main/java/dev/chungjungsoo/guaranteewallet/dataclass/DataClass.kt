@@ -9,7 +9,8 @@ data class LoginBody (
 )
 
 data class LoginResult (
-    @SerializedName("jwt") val jwt: String
+    @SerializedName("jwt") val jwt: String,
+    @SerializedName("error") val err: String
 )
 
 data class PingResult (

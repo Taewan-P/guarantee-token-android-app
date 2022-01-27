@@ -89,6 +89,7 @@
         android:layout_height="wrap_content" >
 
         <ImageButton
+            android:id="@+id/login_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"

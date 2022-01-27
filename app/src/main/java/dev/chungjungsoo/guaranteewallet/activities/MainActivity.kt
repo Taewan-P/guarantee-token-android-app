@@ -6,16 +6,18 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import dev.chungjungsoo.guaranteewallet.R
-import dev.chungjungsoo.guaranteewallet.database.LoginDatabaseHelper
+import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
 
 
 class MainActivity : AppCompatActivity() {
-    var dbHandler : LoginDatabaseHelper? = LoginDatabaseHelper(this)
+    companion object { lateinit var prefs: PreferenceUtil }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        prefs = PreferenceUtil(applicationContext)
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
-        val token :String = dbHandler!!.getToken()
+        val token :String = prefs.getString("jwt", "")
 
         if (token != "") {
             // Move to main screen

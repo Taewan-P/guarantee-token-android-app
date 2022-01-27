@@ -43,23 +43,6 @@ class LoginActivity : AppCompatActivity() {
 
         val server = RetrofitClass.getInstance()
 
-        server.ping(null).enqueue(object : Callback<PingResult> {
-            override fun onResponse(call: Call<PingResult>, response: Response<PingResult>) {
-                if (response.isSuccessful) {
-                    Log.d("PING", "Ping successful")
-                    Toast.makeText(applicationContext, "status: ${response.body()?.status}, token: ${response.body()?.token_status}", Toast.LENGTH_LONG).show()
-                }
-                else {
-                    Log.e("PING", "Ping Client Error")
-                }
-            }
-
-            override fun onFailure(call: Call<PingResult>, t: Throwable) {
-                Log.e("PING", "Ping Server Error")
-            }
-
-        })
-
         val inputUserID : EditText = findViewById(R.id.user_id)
         val inputUserPW : EditText = findViewById(R.id.user_pw)
         val loginBtn : ImageButton = findViewById(R.id.login_btn)

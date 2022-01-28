@@ -1,7 +1,10 @@
 package dev.chungjungsoo.guaranteewallet.activities
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Message
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -10,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,6 +39,7 @@ object RetrofitClass {
 }
 
 class LoginActivity : AppCompatActivity() {
+    lateinit var progressDialog : AppCompatDialog
     companion object { lateinit var prefs: PreferenceUtil }
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = PreferenceUtil(applicationContext)
@@ -91,12 +96,15 @@ class LoginActivity : AppCompatActivity() {
 
         loginBtn.setOnClickListener {
             val reqBody = LoginBody(userID, userPW)
+            progressDialog = AppCompatDialog(this)
+            showProgress(this)
 
             server.login(reqBody).enqueue(object : Callback<LoginResult> {
                 override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
                     if (response.isSuccessful) {
                         Log.d("LOGIN", "Login Successful")
                         prefs.setString("jwt", response.body()!!.jwt)
+                        hideProgress()
                         val mainIntent = Intent(applicationContext, MainActivity::class.java)
                         startActivity(mainIntent)
                         this@LoginActivity.finish()
@@ -104,12 +112,14 @@ class LoginActivity : AppCompatActivity() {
                     else {
                         Log.d("LOGIN", "Login Failed")
                         Log.d("LOGIN", response.body().toString())
+                        hideProgress()
                         Toast.makeText(applicationContext, response.body()!!.err, Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResult>, t: Throwable) {
                     Log.d("LOGIN", "Login Error")
+                    hideProgress()
                     Toast.makeText(applicationContext, "Login Failed. Check your network condition.", Toast.LENGTH_SHORT).show()
                 }
 
@@ -122,5 +132,23 @@ class LoginActivity : AppCompatActivity() {
         if (TextUtils.isEmpty(trimmed)) { return false }
 
         return trimmed.length >= 6
+    }
+
+    fun showProgress(activity: Activity) {
+        if (activity.isFinishing) { return }
+
+        if (!progressDialog.isShowing) {
+            progressDialog.setCancelable(false)
+            progressDialog.window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+            progressDialog.setContentView(R.layout.loading_layout)
+            progressDialog.show()
+        }
+
+    }
+
+    fun hideProgress() {
+        if (progressDialog.isShowing) {
+            progressDialog.dismiss()
+        }
     }
 }

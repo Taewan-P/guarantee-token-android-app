@@ -17,3 +17,10 @@ data class PingResult (
     @SerializedName("status") val status : String,
     @SerializedName("token_status") val token_status: String
 )
+
+data class GetInfoResult (
+    @SerializedName("uid") val user_id: String,
+    @SerializedName("account") val account: String,
+    @SerializedName("user_type") val user_type: String,
+    @SerializedName("error") val err: String
+)

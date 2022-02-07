@@ -111,9 +111,8 @@ class LoginActivity : AppCompatActivity() {
                     }
                     else {
                         Log.d("LOGIN", "Login Failed")
-                        Log.d("LOGIN", response.body().toString())
                         hideProgress()
-                        Toast.makeText(applicationContext, response.body()!!.err, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "ID/PW mismatch", Toast.LENGTH_SHORT).show()
                     }
                 }
 

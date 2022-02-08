@@ -79,7 +79,6 @@ class MainActivity : AppCompatActivity() {
 
                 if (pingStatus) {
                     val infoRes = getInfo(prefs.getString("jwt", null))
-                    Log.d("INFORES", "$infoRes")
 
                     if (infoRes == null) {
                         Log.d("GETINFO", "User information fetch failed")

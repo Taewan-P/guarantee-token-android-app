@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import dev.chungjungsoo.guaranteewallet.R
 
 class ManufacturerFragment : Fragment() {
     override fun onCreateView(
@@ -12,6 +13,6 @@ class ManufacturerFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.manu_fragment, container, false)
     }
 }

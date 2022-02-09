@@ -13,6 +13,6 @@ class SendTokenFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.send_token_fragment, container, false)
+        return inflater.inflate(R.layout.tab_send_token_fragment, container, false)
     }
 }

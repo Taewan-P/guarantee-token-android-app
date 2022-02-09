@@ -13,6 +13,6 @@ class MorePageFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.more_fragment, container, false)
+        return inflater.inflate(R.layout.tab_more_fragment, container, false)
     }
 }

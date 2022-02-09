@@ -25,7 +25,7 @@ class ManufacturerFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.manu_fragment, container, false)
+        return inflater.inflate(R.layout.type_manu_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,7 +49,7 @@ class ManufacturerFragment : Fragment() {
         val bottomNav : TabLayout = requireView().findViewById(R.id.manu_bottom_nav)
         TabLayoutMediator(bottomNav, pageAdapter) { _, _ -> }.attach()
 
-        val customTab  = LayoutInflater.from(context).inflate(R.layout.manu_tab_layout, null, false)
+        val customTab  = LayoutInflater.from(context).inflate(R.layout.layout_manu_tab, null, false)
         bottomNav.getTabAt(0)?.customView = customTab.findViewById(R.id.list_token_tab) as LinearLayout
         bottomNav.getTabAt(1)?.customView = customTab.findViewById(R.id.send_token_tab) as LinearLayout
         bottomNav.getTabAt(2)?.customView = customTab.findViewById(R.id.verify_token_tab) as LinearLayout

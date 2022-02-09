@@ -13,6 +13,6 @@ class UserFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.user_fragment, container, false)
+        return inflater.inflate(R.layout.type_user_fragment, container, false)
     }
 }

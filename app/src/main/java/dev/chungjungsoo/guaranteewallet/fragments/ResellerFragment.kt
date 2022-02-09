@@ -13,6 +13,6 @@ class ResellerFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.reseller_fragment, container, false)
+        return inflater.inflate(R.layout.type_reseller_fragment, container, false)
     }
 }

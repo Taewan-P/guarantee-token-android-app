@@ -13,6 +13,6 @@ class InvalidFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.invalid_fragment, container, false)
+        return inflater.inflate(R.layout.type_invalid_fragment, container, false)
     }
 }

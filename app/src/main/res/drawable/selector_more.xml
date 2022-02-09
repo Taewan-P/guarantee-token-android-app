@@ -6,7 +6,7 @@
         android:state_selected="false" />
 
     <item
-        android:drawable="@drawable/ic_ellipsis_presssed"
+        android:drawable="@drawable/ic_ellipsis"
         android:state_selected="true" />
 
 </selector>

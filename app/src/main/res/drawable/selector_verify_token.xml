@@ -6,7 +6,7 @@
         android:state_selected="false" />
 
     <item
-        android:drawable="@drawable/ic_doc_text_magnifyingglass_pressed"
+        android:drawable="@drawable/ic_doc_text_magnifyingglass"
         android:state_selected="true" />
 
 </selector>

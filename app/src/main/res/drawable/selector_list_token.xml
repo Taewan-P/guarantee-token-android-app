@@ -6,7 +6,7 @@
         android:state_selected="false" />
 
     <item
-        android:drawable="@drawable/ic_list_token_pressed"
+        android:drawable="@drawable/ic_list_token"
         android:state_selected="true" />
 
 </selector>

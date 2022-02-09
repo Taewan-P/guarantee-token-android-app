@@ -6,6 +6,6 @@
         android:state_selected="false" />
 
     <item
-        android:drawable="@drawable/ic_paperplane_pressed"
+        android:drawable="@drawable/ic_paperplane"
         android:state_selected="true" />
 </selector>

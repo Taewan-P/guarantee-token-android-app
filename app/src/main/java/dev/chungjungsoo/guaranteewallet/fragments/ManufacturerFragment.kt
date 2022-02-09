@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -28,6 +30,8 @@ class ManufacturerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().window.statusBarColor = ContextCompat.getColor(requireActivity(), R.color.mainColor)
+        WindowInsetsControllerCompat(requireActivity().window, view).isAppearanceLightStatusBars = false
 
         val fragmentAdapter = ManuFragmentAdapter(requireActivity())
 

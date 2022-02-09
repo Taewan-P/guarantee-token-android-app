@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@drawable/ic_doc_text_magnifyingglass"
+        android:state_selected="false" />
+
+    <item
+        android:drawable="@drawable/ic_doc_text_magnifyingglass_pressed"
+        android:state_selected="true" />
+
+</selector>

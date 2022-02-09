@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity() {
         if (!progressDialog.isShowing) {
             progressDialog.setCancelable(false)
             progressDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            progressDialog.setContentView(R.layout.loading_layout)
+            progressDialog.setContentView(R.layout.etc_loading_layout)
             progressDialog.show()
         }
 

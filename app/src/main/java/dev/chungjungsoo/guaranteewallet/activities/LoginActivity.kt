@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Message
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -139,7 +138,7 @@ class LoginActivity : AppCompatActivity() {
         if (!progressDialog.isShowing) {
             progressDialog.setCancelable(false)
             progressDialog.window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
-            progressDialog.setContentView(R.layout.loading_layout)
+            progressDialog.setContentView(R.layout.etc_loading_layout)
             progressDialog.show()
         }
 

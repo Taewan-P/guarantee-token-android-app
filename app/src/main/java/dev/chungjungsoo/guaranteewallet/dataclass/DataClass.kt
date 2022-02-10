@@ -24,3 +24,14 @@ data class GetInfoResult (
     @SerializedName("user_type") val user_type: String,
     @SerializedName("error") val err: String
 )
+
+data class GetTokenListBody(
+    @SerializedName("address") val address : String
+)
+
+data class GetTokenListResult (
+    @SerializedName("account") val account : String,
+    @SerializedName("tokens") val tokens : List<Int>,
+    @SerializedName("error") val err : String
+)
+

@@ -19,4 +19,7 @@ interface RetrofitService {
 
     @POST("/node/tokens")
     fun getTokenList(@Header("x-access-token") token: String?, @Body body : GetTokenListBody) : Call<GetTokenListResult>
+
+    @POST("/tokens/tokenInfo")
+    fun getTokenInfo(@Body body : TokenInfoBody) : Call<TokenInfoResult>
 }

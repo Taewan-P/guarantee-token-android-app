@@ -35,3 +35,22 @@ data class GetTokenListResult (
     @SerializedName("error") val err : String
 )
 
+data class TokenInfoBody(
+    @SerializedName("token_list") val tokens: List<Int>
+)
+
+data class TokenInfo(
+    @SerializedName("TokenID") val tid : Int,
+    @SerializedName("Logo") val logo : String,
+    @SerializedName("Brand") val brand : String,
+    @SerializedName("ProductName") val name : String,
+    @SerializedName("ProductionDate") val prodDate : String,
+    @SerializedName("ExpirationDate") val expDate : String,
+    @SerializedName("Details") val details : String
+)
+
+data class TokenInfoResult(
+    @SerializedName("tokenInfo") val tokens : List<TokenInfo>,
+    @SerializedName("NotFounded") val missing : List<Int>
+)
+

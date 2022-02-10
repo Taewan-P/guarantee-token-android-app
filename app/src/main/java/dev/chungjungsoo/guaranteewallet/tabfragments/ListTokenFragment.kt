@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialog
 import androidx.fragment.app.Fragment
@@ -44,6 +45,7 @@ class ListTokenFragment : Fragment() {
         val items = mutableListOf<ListViewItem>()
         val adapter = TokenListViewAdapter(items)
         val tokenListView = requireView().findViewById<ListView>(R.id.token_listview)
+        val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
 
         tokenListView.adapter = adapter
 
@@ -58,6 +60,7 @@ class ListTokenFragment : Fragment() {
                 Log.d("TOKENLIST", "Token List fetch failed")
                 requireActivity().runOnUiThread {
                     Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
+                    tokenListView.emptyView = emptyListTextView
                     hideProgress()
                 }
             }
@@ -67,13 +70,14 @@ class ListTokenFragment : Fragment() {
                     // Owns token
                     tokenStatus = true
                     tokenList = tokenCall.tokens
-                    Log.d("TOKENLIST", "$tokenList")
+                    Log.d("TOKENLIST", "Token list fetch successful")
                 }
             }
             else {
                 // Invalid. Error exists
                 requireActivity().runOnUiThread {
                     Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
+                    tokenListView.emptyView = emptyListTextView
                     hideProgress()
                 }
             }
@@ -85,31 +89,31 @@ class ListTokenFragment : Fragment() {
                     Log.d("TOKENINFO", "Token information fetch failed")
                     requireActivity().runOnUiThread {
                         Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT).show()
+                        tokenListView.emptyView = emptyListTextView
                         hideProgress()
                     }
                 }
                 val tokenInfo = tokenInfoCall?.tokens ?: listOf()
-                Log.d("TOKENINFO", "$tokenInfoCall")
                 if (tokenInfo.isNotEmpty()) {
                     tokenInfo.forEach {
                         items.add(ListViewItem(it.name, it.details, it.expDate))
                     }
-                    Log.d("ITEMS", "$items")
                     requireActivity().runOnUiThread {
                         adapter.notifyDataSetChanged()
+                        tokenListView.emptyView = emptyListTextView
                         hideProgress()
                     }
+                    Log.d("TOKENINFO", "Token information fetch successful")
                 }
                 else {
                     // Empty list.
                     requireActivity().runOnUiThread {
+                        tokenListView.emptyView = emptyListTextView
                         hideProgress()
                     }
                 }
             }
         }
-
-
     }
 
     private fun getTokenList(token : String, address : String) : GetTokenListResult? {
@@ -131,13 +135,10 @@ class ListTokenFragment : Fragment() {
 
         return try {
             val response = server.getTokenInfo(TokenInfoBody(tokens = tokens)).execute()
-            Log.d("getTokenInfo", "$response")
             response.body()
         } catch (e: IOException) {
-            Log.d("getTokenInfo", "IOEXCEPTION")
             TokenInfoResult(tokens = listOf(), missing = listOf())
         } catch (e : NullPointerException) {
-            Log.d("getTokenInfo", "NULLEXCEPTION")
             TokenInfoResult(tokens = listOf(), missing = listOf())
         }
     }

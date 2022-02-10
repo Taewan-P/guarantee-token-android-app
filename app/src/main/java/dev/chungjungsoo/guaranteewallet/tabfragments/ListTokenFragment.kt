@@ -15,6 +15,8 @@ import dev.chungjungsoo.guaranteewallet.adapter.ListViewItem
 import dev.chungjungsoo.guaranteewallet.adapter.TokenListViewAdapter
 import dev.chungjungsoo.guaranteewallet.dataclass.GetTokenListBody
 import dev.chungjungsoo.guaranteewallet.dataclass.GetTokenListResult
+import dev.chungjungsoo.guaranteewallet.dataclass.TokenInfoBody
+import dev.chungjungsoo.guaranteewallet.dataclass.TokenInfoResult
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
 import java.io.IOException
 import java.lang.NullPointerException
@@ -34,12 +36,16 @@ class ListTokenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prefs = PreferenceUtil(requireContext())
         val items = mutableListOf<ListViewItem>()
+        val adapter = TokenListViewAdapter(items)
+        val tokenListView = requireView().findViewById<ListView>(R.id.token_listview)
+
+        tokenListView.adapter = adapter
 
         thread {
             val tokenCall = getTokenList(prefs.getString("jwt", ""), prefs.getString("account", ""))
 
             var tokenStatus = false
-            var tokenList: List<Int>
+            var tokenList: List<Int> = listOf()
             if (tokenCall == null) {
                 Log.d("TOKENLIST", "Token List fetch failed")
                 requireActivity().runOnUiThread {
@@ -62,32 +68,59 @@ class ListTokenFragment : Fragment() {
                 }
             }
 
+            if (tokenStatus) {
+                val tokenInfoCall = getTokenInfo(tokenList)
 
+                if (tokenInfoCall == null) {
+                    Log.d("TOKENINFO", "Token information fetch failed")
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                val tokenInfo = tokenInfoCall?.tokens ?: listOf()
+                Log.d("TOKENINFO", "$tokenInfoCall")
+                if (tokenInfo.isNotEmpty()) {
+                    tokenInfo.forEach {
+                        items.add(ListViewItem(it.name, it.details, it.expDate))
+                    }
+                    Log.d("ITEMS", "$items")
+                    requireActivity().runOnUiThread {
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            }
         }
 
 
-        items.add(ListViewItem("Airpods Pro", "Apple care+", "2022-07-18"))
-        items.add(ListViewItem("Macbook Pro 16 inch", "Basic warranty", "2022-11-25"))
-        items.add(ListViewItem("iPad Pro 11 inch", "Apple care+", "2022-05-01"))
-        items.add(ListViewItem("Dell U3219Q", "5 Year full care warranty", "2024-11-30"))
-
-        val adapter = TokenListViewAdapter(items)
-        val tokenListView = requireView().findViewById<ListView>(R.id.token_listview)
-
-        tokenListView.adapter = adapter
     }
 
-    fun getTokenList(token : String, address : String) : GetTokenListResult? {
+    private fun getTokenList(token : String, address : String) : GetTokenListResult? {
         val server = RetrofitClass.getInstance()
 
         return try {
             val response = server.getTokenList(token, GetTokenListBody(address=address)).execute()
             response.body()
-        } catch (e: IOException)  {
+        } catch (e: IOException) {
             GetTokenListResult(account = address, tokens = listOf(), err = "Network Error")
         } catch (e: NullPointerException) {
             GetTokenListResult(account = address, tokens = listOf(), err = "Invalid Request")
         }
 
+    }
+
+    private fun getTokenInfo(tokens : List<Int>) : TokenInfoResult? {
+        val server = RetrofitClass.getInstance()
+
+        return try {
+            val response = server.getTokenInfo(TokenInfoBody(tokens = tokens)).execute()
+            Log.d("getTokenInfo", "$response")
+            response.body()
+        } catch (e: IOException) {
+            Log.d("getTokenInfo", "IOEXCEPTION")
+            TokenInfoResult(tokens = listOf(), missing = listOf())
+        } catch (e : NullPointerException) {
+            Log.d("getTokenInfo", "NULLEXCEPTION")
+            TokenInfoResult(tokens = listOf(), missing = listOf())
+        }
     }
 }

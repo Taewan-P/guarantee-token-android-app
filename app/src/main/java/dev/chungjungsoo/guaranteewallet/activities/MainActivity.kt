@@ -103,6 +103,9 @@ class MainActivity : AppCompatActivity() {
                                         .replace(R.id.main_fragment, ManufacturerFragment())
                                         .commitAllowingStateLoss()
                                 }
+                                prefs.setString("account", infoRes.account)
+                                prefs.setString("type", infoRes.user_type)
+
                             }
                             "reseller" -> {
                                 runOnUiThread {
@@ -111,6 +114,8 @@ class MainActivity : AppCompatActivity() {
                                         .replace(R.id.main_fragment, ResellerFragment())
                                         .commitAllowingStateLoss()
                                 }
+                                prefs.setString("account", infoRes.account)
+                                prefs.setString("type", infoRes.user_type)
                             }
                             "customer" -> {
                                 runOnUiThread {
@@ -119,6 +124,8 @@ class MainActivity : AppCompatActivity() {
                                         .replace(R.id.main_fragment, UserFragment())
                                         .commitAllowingStateLoss()
                                 }
+                                prefs.setString("account", infoRes.account)
+                                prefs.setString("type", infoRes.user_type)
                             }
                             else -> {
                                 runOnUiThread {

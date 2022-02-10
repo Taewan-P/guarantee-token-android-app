@@ -16,5 +16,7 @@ class PreferenceUtil(context: Context) {
 
     fun resetToken() {
         prefs.edit().remove("jwt").apply()
+        prefs.edit().remove("account").apply()
+        prefs.edit().remove("type").apply()
     }
 }

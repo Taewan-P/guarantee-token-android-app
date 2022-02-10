@@ -1,5 +1,8 @@
 package dev.chungjungsoo.guaranteewallet.tabfragments
 
+import android.app.Activity
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDialog
 import androidx.fragment.app.Fragment
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.MainActivity
@@ -24,11 +28,13 @@ import kotlin.concurrent.thread
 
 class ListTokenFragment : Fragment() {
     companion object { lateinit var prefs: PreferenceUtil }
+    lateinit var progressDialog : AppCompatDialog
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        progressDialog = AppCompatDialog(context)
         return inflater.inflate(R.layout.tab_list_token_fragment, container, false)
     }
 
@@ -41,6 +47,8 @@ class ListTokenFragment : Fragment() {
 
         tokenListView.adapter = adapter
 
+        showProgress(requireActivity())
+
         thread {
             val tokenCall = getTokenList(prefs.getString("jwt", ""), prefs.getString("account", ""))
 
@@ -50,6 +58,7 @@ class ListTokenFragment : Fragment() {
                 Log.d("TOKENLIST", "Token List fetch failed")
                 requireActivity().runOnUiThread {
                     Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
+                    hideProgress()
                 }
             }
             if (tokenCall?.err == null) {
@@ -65,6 +74,7 @@ class ListTokenFragment : Fragment() {
                 // Invalid. Error exists
                 requireActivity().runOnUiThread {
                     Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
+                    hideProgress()
                 }
             }
 
@@ -75,6 +85,7 @@ class ListTokenFragment : Fragment() {
                     Log.d("TOKENINFO", "Token information fetch failed")
                     requireActivity().runOnUiThread {
                         Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT).show()
+                        hideProgress()
                     }
                 }
                 val tokenInfo = tokenInfoCall?.tokens ?: listOf()
@@ -86,6 +97,13 @@ class ListTokenFragment : Fragment() {
                     Log.d("ITEMS", "$items")
                     requireActivity().runOnUiThread {
                         adapter.notifyDataSetChanged()
+                        hideProgress()
+                    }
+                }
+                else {
+                    // Empty list.
+                    requireActivity().runOnUiThread {
+                        hideProgress()
                     }
                 }
             }
@@ -121,6 +139,24 @@ class ListTokenFragment : Fragment() {
         } catch (e : NullPointerException) {
             Log.d("getTokenInfo", "NULLEXCEPTION")
             TokenInfoResult(tokens = listOf(), missing = listOf())
+        }
+    }
+
+    private fun showProgress(activity: Activity) {
+        if (activity.isFinishing) { return }
+
+        if (!progressDialog.isShowing) {
+            progressDialog.setCancelable(false)
+            progressDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            progressDialog.setContentView(R.layout.etc_loading_layout)
+            progressDialog.show()
+        }
+
+    }
+
+    private fun hideProgress() {
+        if (progressDialog.isShowing) {
+            progressDialog.dismiss()
         }
     }
 }

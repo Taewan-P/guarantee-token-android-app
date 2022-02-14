@@ -58,9 +58,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     else {
                         Log.d("PING", "Token is invalid")
-                        Toast.makeText(applicationContext, "Login expired. Please re-login.", Toast.LENGTH_SHORT).show()
                         prefs.resetToken()
                         runOnUiThread {
+                            Toast.makeText(applicationContext, "Login expired. Please re-login.", Toast.LENGTH_SHORT).show()
                             hideProgress()
                             val loginIntent = Intent(applicationContext, LoginActivity::class.java)
                             startActivity(loginIntent)

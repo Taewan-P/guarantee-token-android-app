@@ -96,7 +96,7 @@ class ListTokenFragment : Fragment() {
                 val tokenInfo = tokenInfoCall?.tokens ?: listOf()
                 if (tokenInfo.isNotEmpty()) {
                     tokenInfo.forEach {
-                        items.add(ListViewItem(it.name, it.details, it.expDate))
+                        items.add(ListViewItem(it.tid, it.logo, it.brand, it.name, it.prodDate, it.expDate, it.details))
                     }
                     requireActivity().runOnUiThread {
                         adapter.notifyDataSetChanged()

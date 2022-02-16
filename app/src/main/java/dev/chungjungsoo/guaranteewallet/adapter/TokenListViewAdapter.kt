@@ -4,11 +4,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import dev.chungjungsoo.guaranteewallet.R
 
 
-data class ListViewItem(val title : String, val content : String, val expDate: String)
+data class ListViewItem(
+    val tokenID : Int,
+    val logo : String,
+    val brand : String,
+    val productName : String,
+    val productionDate : String,
+    val expirationDate : String,
+    val details : String
+)
 
 class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseAdapter() {
     override fun getCount(): Int {
@@ -32,9 +41,11 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
 
         val item : ListViewItem = items[position]
 
-        listView!!.findViewById<TextView>(R.id.token_title).text = item.title
-        listView.findViewById<TextView>(R.id.token_content).text = item.content
-        listView.findViewById<TextView>(R.id.token_exp_date).text = item.expDate
+        listView!!.findViewById<TextView>(R.id.token_id).text = "No. ${item.tokenID}"
+        listView.findViewById<TextView>(R.id.product_name).text = item.productName
+        listView.findViewById<TextView>(R.id.brand_name).text = item.brand
+        listView.findViewById<TextView>(R.id.token_exp_date).text = item.expirationDate
+        listView.findViewById<ImageView>(R.id.product_logo).setImageResource(R.drawable.ic_apple_logo_black)
 
         return listView
     }

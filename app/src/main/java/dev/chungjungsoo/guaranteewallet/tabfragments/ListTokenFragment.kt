@@ -1,6 +1,7 @@
 package dev.chungjungsoo.guaranteewallet.tabfragments
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
@@ -16,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
+import dev.chungjungsoo.guaranteewallet.activities.TokenDetailActivity
 import dev.chungjungsoo.guaranteewallet.adapter.ListViewItem
 import dev.chungjungsoo.guaranteewallet.adapter.TokenListViewAdapter
 import dev.chungjungsoo.guaranteewallet.dataclass.GetTokenListBody
@@ -115,7 +118,9 @@ class ListTokenFragment : Fragment() {
             }
         }
 
+
         val pullToRefresh = requireView().findViewById<SwipeRefreshLayout>(R.id.swipe_to_refresh)
+
         pullToRefresh.setOnRefreshListener {
             thread {
                 val tokenCall = getTokenList(prefs.getString("jwt", ""), prefs.getString("account", ""))
@@ -177,6 +182,22 @@ class ListTokenFragment : Fragment() {
                     }
                 }
             }
+        }
+
+
+        tokenListView.onItemClickListener = AdapterView.OnItemClickListener {
+                parent, _, position, _ ->
+            val selectedItem : ListViewItem = parent.getItemAtPosition(position) as ListViewItem
+            val intent = Intent(activity, TokenDetailActivity::class.java)
+
+            intent.putExtra("tid", selectedItem.tokenID.toString())
+            intent.putExtra("logo", selectedItem.logo)
+            intent.putExtra("brand", selectedItem.brand)
+            intent.putExtra("name", selectedItem.productName)
+            intent.putExtra("prodDate", selectedItem.productionDate)
+            intent.putExtra("expDate", selectedItem.expirationDate)
+            intent.putExtra("details", selectedItem.details)
+            startActivity(intent)
         }
     }
 

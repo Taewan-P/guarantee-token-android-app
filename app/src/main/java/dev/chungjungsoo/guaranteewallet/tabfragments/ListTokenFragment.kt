@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialog
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
 import dev.chungjungsoo.guaranteewallet.adapter.ListViewItem
@@ -45,6 +46,7 @@ class ListTokenFragment : Fragment() {
         val tokenListView = requireView().findViewById<ListView>(R.id.token_listview)
         val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
 
+        tokenListView.addHeaderView(layoutInflater.inflate(R.layout.title_tokens_layout, tokenListView, false), null, false)
         tokenListView.adapter = adapter
 
         showProgress(requireActivity())

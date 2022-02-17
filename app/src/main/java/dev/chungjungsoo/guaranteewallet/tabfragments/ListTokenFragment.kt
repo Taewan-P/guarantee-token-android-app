@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialog
 import androidx.fragment.app.Fragment
 import dev.chungjungsoo.guaranteewallet.R
-import dev.chungjungsoo.guaranteewallet.activities.MainActivity
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
 import dev.chungjungsoo.guaranteewallet.adapter.ListViewItem
 import dev.chungjungsoo.guaranteewallet.adapter.TokenListViewAdapter
@@ -24,7 +23,6 @@ import dev.chungjungsoo.guaranteewallet.dataclass.TokenInfoBody
 import dev.chungjungsoo.guaranteewallet.dataclass.TokenInfoResult
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
 import java.io.IOException
-import java.lang.NullPointerException
 import kotlin.concurrent.thread
 
 class ListTokenFragment : Fragment() {
@@ -110,6 +108,70 @@ class ListTokenFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         tokenListView.emptyView = emptyListTextView
                         hideProgress()
+                    }
+                }
+            }
+        }
+
+        val pullToRefresh = requireView().findViewById<SwipeRefreshLayout>(R.id.swipe_to_refresh)
+        pullToRefresh.setOnRefreshListener {
+            thread {
+                val tokenCall = getTokenList(prefs.getString("jwt", ""), prefs.getString("account", ""))
+
+                var tokenStatus = false
+                var tokenList: List<Int> = listOf()
+                if (tokenCall == null) {
+                    Log.d("TOKENLIST", "Token List refresh failed")
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
+                        pullToRefresh.isRefreshing = false
+                    }
+                }
+                if (tokenCall?.err == null) {
+                    // Successful request
+                    if (tokenCall?.tokens!!.isNotEmpty()) {
+                        // Owns token
+                        tokenStatus = true
+                        tokenList = tokenCall.tokens
+                        Log.d("TOKENLIST", "Token list refresh successful")
+                    }
+                }
+                else {
+                    // Invalid. Error exists
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
+                        pullToRefresh.isRefreshing = false
+                    }
+                }
+
+                if (tokenStatus) {
+                    val tokenInfoCall = getTokenInfo(tokenList)
+
+                    if (tokenInfoCall == null) {
+                        Log.d("TOKENINFO", "Token information refresh failed")
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT).show()
+                            pullToRefresh.isRefreshing = false
+                        }
+                    }
+                    val tokenInfo = tokenInfoCall?.tokens ?: listOf()
+                    if (tokenInfo.isNotEmpty()) {
+                        items.clear()
+                        tokenInfo.forEach {
+                            items.add(ListViewItem(it.tid, it.logo, it.brand, it.name, it.prodDate, it.expDate, it.details))
+                        }
+                        requireActivity().runOnUiThread {
+                            adapter.notifyDataSetChanged()
+                            pullToRefresh.isRefreshing = false
+                        }
+                        Log.d("TOKENINFO", "Token information refresh successful")
+                    }
+                    else {
+                        // Empty list.
+                        requireActivity().runOnUiThread {
+                            tokenListView.emptyView = emptyListTextView
+                            pullToRefresh.isRefreshing = false
+                        }
                     }
                 }
             }

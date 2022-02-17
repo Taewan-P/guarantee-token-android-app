@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
-    <ListView
-        android:id="@+id/token_listview"
-        android:layout_width="match_parent"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_to_refresh"
         android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="22dp"
-        android:layout_marginTop="22dp"
+        android:layout_width="match_parent"
         android:layout_marginStart="22dp"
-        android:layout_marginEnd="22dp" />
+        android:layout_marginEnd="22dp" >
+
+        <ListView
+            android:id="@+id/token_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:scrollbars="none"
+            android:dividerHeight="22dp"
+            android:paddingTop="22dp"
+            android:paddingBottom="22dp"
+            android:clipToPadding="false" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/no_items_text"

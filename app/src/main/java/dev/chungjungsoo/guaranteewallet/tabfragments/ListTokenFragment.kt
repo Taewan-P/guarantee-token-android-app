@@ -19,7 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
 import dev.chungjungsoo.guaranteewallet.activities.TokenDetailActivity
-import dev.chungjungsoo.guaranteewallet.adapter.ListViewItem
+import dev.chungjungsoo.guaranteewallet.dataclass.ListViewItem
 import dev.chungjungsoo.guaranteewallet.adapter.TokenListViewAdapter
 import dev.chungjungsoo.guaranteewallet.dataclass.GetTokenListBody
 import dev.chungjungsoo.guaranteewallet.dataclass.GetTokenListResult

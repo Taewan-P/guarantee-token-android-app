@@ -54,3 +54,12 @@ data class TokenInfoResult(
     @SerializedName("NotFounded") val missing : List<Int>
 )
 
+data class ListViewItem(
+    val tokenID : Int,
+    val logo : String,
+    val brand : String,
+    val productName : String,
+    val productionDate : String,
+    val expirationDate : String,
+    val details : String
+)

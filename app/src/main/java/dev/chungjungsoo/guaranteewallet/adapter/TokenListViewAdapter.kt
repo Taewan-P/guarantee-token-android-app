@@ -7,17 +7,8 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import dev.chungjungsoo.guaranteewallet.R
+import dev.chungjungsoo.guaranteewallet.dataclass.ListViewItem
 
-
-data class ListViewItem(
-    val tokenID : Int,
-    val logo : String,
-    val brand : String,
-    val productName : String,
-    val productionDate : String,
-    val expirationDate : String,
-    val details : String
-)
 
 class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseAdapter() {
     override fun getCount(): Int {

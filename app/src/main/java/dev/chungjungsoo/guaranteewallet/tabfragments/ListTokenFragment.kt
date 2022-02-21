@@ -2,47 +2,37 @@ package dev.chungjungsoo.guaranteewallet.tabfragments
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDialog
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
 import dev.chungjungsoo.guaranteewallet.activities.TokenDetailActivity
-import dev.chungjungsoo.guaranteewallet.dataclass.ListViewItem
 import dev.chungjungsoo.guaranteewallet.adapter.TokenListViewAdapter
-import dev.chungjungsoo.guaranteewallet.dataclass.GetTokenListBody
-import dev.chungjungsoo.guaranteewallet.dataclass.GetTokenListResult
-import dev.chungjungsoo.guaranteewallet.dataclass.TokenInfoBody
-import dev.chungjungsoo.guaranteewallet.dataclass.TokenInfoResult
+import dev.chungjungsoo.guaranteewallet.dataclass.*
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
 import java.io.IOException
 import kotlin.concurrent.thread
 
 class ListTokenFragment : Fragment() {
     companion object { lateinit var prefs: PreferenceUtil }
-    lateinit var progressDialog : AppCompatDialog
+    lateinit var progressDialog : ProgressBar
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        progressDialog = AppCompatDialog(context)
         return inflater.inflate(R.layout.tab_list_token_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progressDialog = requireView().findViewById(R.id.list_progress_bar)
         prefs = PreferenceUtil(requireContext())
         val items = mutableListOf<ListViewItem>()
         val adapter = TokenListViewAdapter(items)
@@ -231,18 +221,15 @@ class ListTokenFragment : Fragment() {
     private fun showProgress(activity: Activity) {
         if (activity.isFinishing) { return }
 
-        if (!progressDialog.isShowing) {
-            progressDialog.setCancelable(false)
-            progressDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            progressDialog.setContentView(R.layout.etc_loading_layout)
-            progressDialog.show()
+        if (progressDialog.visibility != View.VISIBLE) {
+            progressDialog.visibility = View.VISIBLE
         }
 
     }
 
     private fun hideProgress() {
-        if (progressDialog.isShowing) {
-            progressDialog.dismiss()
+        if (progressDialog.visibility == View.VISIBLE) {
+            progressDialog.visibility = View.GONE
         }
     }
 }

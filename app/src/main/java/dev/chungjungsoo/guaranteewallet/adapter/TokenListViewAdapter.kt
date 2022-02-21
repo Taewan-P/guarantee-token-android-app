@@ -11,6 +11,8 @@ import dev.chungjungsoo.guaranteewallet.dataclass.ListViewItem
 
 
 class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseAdapter() {
+    private val colorList = listOf(R.drawable.shape_listiview_tokens, R.drawable.shape_listiview_tokens_color2, R.drawable.shape_listiview_tokens_color3, R.drawable.shape_listiview_tokens_color4, R.drawable.shape_listiview_tokens_color5, R.drawable.shape_listiview_tokens_color6).shuffled()
+
     override fun getCount(): Int {
         return items.size
     }
@@ -37,6 +39,7 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
         listView.findViewById<TextView>(R.id.brand_name).text = item.brand
         listView.findViewById<TextView>(R.id.token_exp_date).text = item.expirationDate
         listView.findViewById<ImageView>(R.id.product_logo).setImageResource(R.drawable.ic_apple_logo_black)
+        listView.setBackgroundResource(colorList[position % colorList.size])
 
         return listView
     }

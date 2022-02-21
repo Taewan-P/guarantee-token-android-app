@@ -8,4 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="mainColor">#1E192D</color>
+    <color name="cardColor1">#FF6E6E</color>
+    <color name="cardColor2">#ff9f0a</color>
+    <color name="cardColor3">#30d158</color>
+    <color name="cardColor4">#40c8e0</color>
+    <color name="cardColor5">#bf5af2</color>
+    <color name="cardColor6">#a7a9ac</color>
+
 </resources>

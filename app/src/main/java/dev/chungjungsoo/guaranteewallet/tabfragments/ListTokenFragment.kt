@@ -91,6 +91,7 @@ class ListTokenFragment : Fragment() {
                     tokenInfo.forEach {
                         items.add(ListViewItem(it.tid, it.logo, it.brand, it.name, it.prodDate, it.expDate, it.details))
                     }
+                    items.sortBy { it.tokenID }
                     requireActivity().runOnUiThread {
                         adapter.notifyDataSetChanged()
                         tokenListView.emptyView = emptyListTextView
@@ -157,6 +158,7 @@ class ListTokenFragment : Fragment() {
                         tokenInfo.forEach {
                             items.add(ListViewItem(it.tid, it.logo, it.brand, it.name, it.prodDate, it.expDate, it.details))
                         }
+                        items.sortBy { it.tokenID }
                         requireActivity().runOnUiThread {
                             adapter.notifyDataSetChanged()
                             pullToRefresh.isRefreshing = false

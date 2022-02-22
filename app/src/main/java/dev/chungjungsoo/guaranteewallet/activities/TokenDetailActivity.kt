@@ -97,8 +97,6 @@ class TokenDetailActivity : AppCompatActivity()  {
 
         return try {
             val response = server.createQRCode(token, CreateQRCodeBody(tid=tid, owner=owner)).execute()
-            Log.d("REQ", response.body().toString())
-            println(response.body().toString())
             response.body()
         } catch (e: IOException) {
             CreateQRCodeResult(result=null, error="Network Error")

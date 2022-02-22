@@ -22,4 +22,7 @@ interface RetrofitService {
 
     @POST("/tokens/tokenInfo")
     fun getTokenInfo(@Body body : TokenInfoBody) : Call<TokenInfoResult>
+
+    @POST("/tokens/create_qr")
+    fun createQRCode(@Header("X-access-token") token: String?, @Body body : CreateQRCodeBody) : Call<CreateQRCodeResult>
 }

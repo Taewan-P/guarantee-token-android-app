@@ -63,3 +63,13 @@ data class ListViewItem(
     val expirationDate : String,
     val details : String
 )
+
+data class CreateQRCodeBody(
+    @SerializedName("tid") val tid : Int,
+    @SerializedName("owner") val owner : String
+)
+
+data class CreateQRCodeResult(
+    @SerializedName("result") val result : String?,
+    @SerializedName("error") val error : String?
+)

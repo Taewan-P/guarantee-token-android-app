@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager2.widget.ViewPager2
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
 import dev.chungjungsoo.guaranteewallet.activities.TokenDetailActivity
@@ -92,12 +93,14 @@ class ListTokenFragment : Fragment() {
                         items.add(ListViewItem(it.tid, it.logo, it.brand, it.name, it.prodDate, it.expDate, it.details))
                     }
                     items.sortBy { it.tokenID }
-                    requireActivity().runOnUiThread {
-                        adapter.notifyDataSetChanged()
-                        tokenListView.emptyView = emptyListTextView
-                        hideProgress()
+                    if (activity != null) {
+                        requireActivity().runOnUiThread {
+                            adapter.notifyDataSetChanged()
+                            tokenListView.emptyView = emptyListTextView
+                            hideProgress()
+                        }
+                        Log.d("TOKENINFO", "Token information fetch successful")
                     }
-                    Log.d("TOKENINFO", "Token information fetch successful")
                 }
                 else {
                     // Empty list.

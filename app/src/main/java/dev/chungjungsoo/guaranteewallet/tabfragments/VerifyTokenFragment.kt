@@ -62,7 +62,7 @@ class VerifyTokenFragment : Fragment() {
 
             val tid = tokenInfo.getValue("tid") as Int
             val owner = tokenInfo.getValue("owner") as String
-            val exp = tokenInfo.getValue("exp") as String
+            val exp = (tokenInfo.getValue("exp") as Int).toString()
 
             Toast.makeText(requireContext(), "$tid / $owner / $exp", Toast.LENGTH_SHORT).show()
         }

@@ -195,6 +195,7 @@
             android:id="@+id/qr_progress_bar"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:indeterminateTint="#E3CCF3"
             android:layout_centerInParent="true"/>
 
         <ImageView

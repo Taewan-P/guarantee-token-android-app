@@ -28,7 +28,7 @@ class TokenDetailActivity : AppCompatActivity() {
     lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.details_token_info)
+        setContentView(R.layout.activity_token_details)
         window.statusBarColor = ContextCompat.getColor(this, R.color.mainColor)
         WindowCompat.getInsetsController(window, window.decorView)!!.isAppearanceLightStatusBars =
             false

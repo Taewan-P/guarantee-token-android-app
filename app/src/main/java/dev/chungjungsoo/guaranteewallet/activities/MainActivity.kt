@@ -38,109 +38,109 @@ class MainActivity : AppCompatActivity() {
             // Move to main screen
             Log.d("MAIN", "Token exists")
             setContentView(R.layout.activity_main)
-            showProgress(this)
 
-            thread {
-                val pingRes = pingServer(prefs.getString("jwt", null))
+            if (savedInstanceState == null) {
+                showProgress(this)
+                thread {
+                    val pingRes = pingServer(prefs.getString("jwt", null))
 
-                var pingStatus = false
-                if (pingRes == null) {
-                    Log.d("PING", "Ping Failed")
-                    runOnUiThread {
-                        Toast.makeText(applicationContext, "Server connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                if (pingRes?.status ?: "error" == "Geth node is connected.") {
-                    Log.d("PING", "Ping Successful")
-                    if (pingRes?.token_status ?: "invalid" == "valid") {
-                        Log.d("PING", "Token is validated")
-                        pingStatus = true
-                    }
-                    else {
-                        Log.d("PING", "Token is invalid")
-                        prefs.resetToken()
-                        runOnUiThread {
-                            Toast.makeText(applicationContext, "Login expired. Please re-login.", Toast.LENGTH_SHORT).show()
-                            hideProgress()
-                            val loginIntent = Intent(applicationContext, LoginActivity::class.java)
-                            startActivity(loginIntent)
-                            finish()
-                        }
-                    }
-                }
-                else {
-                    // Ping failed
-                    runOnUiThread {
-                        hideProgress()
-                        Log.d("PING", "Network Error")
-                        Toast.makeText(this@MainActivity, "Network connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                if (pingStatus) {
-                    val infoRes = getInfo(prefs.getString("jwt", null))
-
-                    if (infoRes == null) {
-                        Log.d("GETINFO", "User information fetch failed")
+                    var pingStatus = false
+                    if (pingRes == null) {
+                        Log.d("PING", "Ping Failed")
                         runOnUiThread {
                             Toast.makeText(applicationContext, "Server connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
                         }
                     }
-                    if (infoRes?.err != null) {
-                        runOnUiThread {
-                            hideProgress()
-                            fragmentManager.beginTransaction()
-                                .replace(R.id.main_fragment, InvalidFragment())
-                                .commitAllowingStateLoss()
+                    if (pingRes?.status ?: "error" == "Geth node is connected.") {
+                        Log.d("PING", "Ping Successful")
+                        if (pingRes?.token_status ?: "invalid" == "valid") {
+                            Log.d("PING", "Token is validated")
+                            pingStatus = true
+                        }
+                        else {
+                            Log.d("PING", "Token is invalid")
+                            prefs.resetToken()
+                            runOnUiThread {
+                                Toast.makeText(applicationContext, "Login expired. Please re-login.", Toast.LENGTH_SHORT).show()
+                                hideProgress()
+                                val loginIntent = Intent(applicationContext, LoginActivity::class.java)
+                                startActivity(loginIntent)
+                                finish()
+                            }
                         }
                     }
                     else {
-                        when (infoRes!!.user_type) {
-                            "manufacturer" -> {
-                                runOnUiThread {
-                                    hideProgress()
-                                    fragmentManager.beginTransaction()
-                                        .replace(R.id.main_fragment, ManufacturerFragment())
-                                        .commitAllowingStateLoss()
-                                }
-                                prefs.setString("account", infoRes.account)
-                                prefs.setString("type", infoRes.user_type)
+                        // Ping failed
+                        runOnUiThread {
+                            hideProgress()
+                            Log.d("PING", "Network Error")
+                            Toast.makeText(this@MainActivity, "Network connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
+                        }
+                    }
 
+                    if (pingStatus) {
+                        val infoRes = getInfo(prefs.getString("jwt", null))
+
+                        if (infoRes == null) {
+                            Log.d("GETINFO", "User information fetch failed")
+                            runOnUiThread {
+                                Toast.makeText(applicationContext, "Server connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
                             }
-                            "reseller" -> {
-                                runOnUiThread {
-                                    hideProgress()
-                                    fragmentManager.beginTransaction()
-                                        .replace(R.id.main_fragment, ResellerFragment())
-                                        .commitAllowingStateLoss()
+                        }
+                        if (infoRes?.err != null) {
+                            runOnUiThread {
+                                hideProgress()
+                                fragmentManager.beginTransaction()
+                                    .replace(R.id.main_fragment, InvalidFragment())
+                                    .commitAllowingStateLoss()
+                            }
+                        }
+                        else {
+                            when (infoRes!!.user_type) {
+                                "manufacturer" -> {
+                                    runOnUiThread {
+                                        hideProgress()
+                                        fragmentManager.beginTransaction()
+                                            .replace(R.id.main_fragment, ManufacturerFragment())
+                                            .commitAllowingStateLoss()
+                                    }
+                                    prefs.setString("account", infoRes.account)
+                                    prefs.setString("type", infoRes.user_type)
+
                                 }
-                                prefs.setString("account", infoRes.account)
-                                prefs.setString("type", infoRes.user_type)
-                            }
-                            "customer" -> {
-                                runOnUiThread {
-                                    hideProgress()
-                                    fragmentManager.beginTransaction()
-                                        .replace(R.id.main_fragment, UserFragment())
-                                        .commitAllowingStateLoss()
+                                "reseller" -> {
+                                    runOnUiThread {
+                                        hideProgress()
+                                        fragmentManager.beginTransaction()
+                                            .replace(R.id.main_fragment, ResellerFragment())
+                                            .commitAllowingStateLoss()
+                                    }
+                                    prefs.setString("account", infoRes.account)
+                                    prefs.setString("type", infoRes.user_type)
                                 }
-                                prefs.setString("account", infoRes.account)
-                                prefs.setString("type", infoRes.user_type)
-                            }
-                            else -> {
-                                runOnUiThread {
-                                    hideProgress()
-                                    fragmentManager.beginTransaction()
-                                        .replace(R.id.main_fragment, InvalidFragment())
-                                        .commitAllowingStateLoss()
+                                "customer" -> {
+                                    runOnUiThread {
+                                        hideProgress()
+                                        fragmentManager.beginTransaction()
+                                            .replace(R.id.main_fragment, UserFragment())
+                                            .commitAllowingStateLoss()
+                                    }
+                                    prefs.setString("account", infoRes.account)
+                                    prefs.setString("type", infoRes.user_type)
+                                }
+                                else -> {
+                                    runOnUiThread {
+                                        hideProgress()
+                                        fragmentManager.beginTransaction()
+                                            .replace(R.id.main_fragment, InvalidFragment())
+                                            .commitAllowingStateLoss()
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-
-
         }
         else {
             // Move to login screen

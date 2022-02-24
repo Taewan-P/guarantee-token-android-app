@@ -23,15 +23,18 @@ import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
-    companion object { lateinit var prefs: PreferenceUtil }
-    lateinit var progressDialog : AppCompatDialog
+    companion object {
+        lateinit var prefs: PreferenceUtil
+    }
+
+    lateinit var progressDialog: AppCompatDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = PreferenceUtil(applicationContext)
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         val fragmentManager = this.supportFragmentManager
 
-        val token :String = prefs.getString("jwt", "")
+        val token: String = prefs.getString("jwt", "")
         progressDialog = AppCompatDialog(this)
 
         if (token != "") {
@@ -48,7 +51,11 @@ class MainActivity : AppCompatActivity() {
                     if (pingRes == null) {
                         Log.d("PING", "Ping Failed")
                         runOnUiThread {
-                            Toast.makeText(applicationContext, "Server connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                applicationContext,
+                                "Server connection unstable. Please check your network status",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                     if (pingRes?.status ?: "error" == "Geth node is connected.") {
@@ -56,25 +63,32 @@ class MainActivity : AppCompatActivity() {
                         if (pingRes?.token_status ?: "invalid" == "valid") {
                             Log.d("PING", "Token is validated")
                             pingStatus = true
-                        }
-                        else {
+                        } else {
                             Log.d("PING", "Token is invalid")
                             prefs.resetToken()
                             runOnUiThread {
-                                Toast.makeText(applicationContext, "Login expired. Please re-login.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Login expired. Please re-login.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                                 hideProgress()
-                                val loginIntent = Intent(applicationContext, LoginActivity::class.java)
+                                val loginIntent =
+                                    Intent(applicationContext, LoginActivity::class.java)
                                 startActivity(loginIntent)
                                 finish()
                             }
                         }
-                    }
-                    else {
+                    } else {
                         // Ping failed
                         runOnUiThread {
                             hideProgress()
                             Log.d("PING", "Network Error")
-                            Toast.makeText(this@MainActivity, "Network connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Network connection unstable. Please check your network status",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
 
@@ -84,7 +98,11 @@ class MainActivity : AppCompatActivity() {
                         if (infoRes == null) {
                             Log.d("GETINFO", "User information fetch failed")
                             runOnUiThread {
-                                Toast.makeText(applicationContext, "Server connection unstable. Please check your network status", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Server connection unstable. Please check your network status",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
                         if (infoRes?.err != null) {
@@ -94,8 +112,7 @@ class MainActivity : AppCompatActivity() {
                                     .replace(R.id.main_fragment, InvalidFragment())
                                     .commitAllowingStateLoss()
                             }
-                        }
-                        else {
+                        } else {
                             when (infoRes!!.user_type) {
                                 "manufacturer" -> {
                                     runOnUiThread {
@@ -141,8 +158,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-        }
-        else {
+        } else {
             // Move to login screen
             Log.d("MAIN", "Token doesn't exist")
             val loginIntent = Intent(this, LoginActivity::class.java)
@@ -157,7 +173,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun pingServer(token: String?) : PingResult? {
+    private fun pingServer(token: String?): PingResult? {
         val server = RetrofitClass.getInstance()
 
         return try {
@@ -170,7 +186,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getInfo(token: String?) : GetInfoResult? {
+
+    private fun getInfo(token: String?): GetInfoResult? {
         val server = RetrofitClass.getInstance()
 
         return try {
@@ -185,7 +202,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun showProgress(activity: Activity) {
-        if (activity.isFinishing) { return }
+        if (activity.isFinishing) {
+            return
+        }
 
         if (!progressDialog.isShowing) {
             progressDialog.setCancelable(false)

@@ -20,14 +20,18 @@ import java.io.IOException
 import java.util.*
 import kotlin.concurrent.thread
 
-class TokenDetailActivity : AppCompatActivity()  {
-    companion object { lateinit var prefs: PreferenceUtil }
-    lateinit var progressBar : ProgressBar
+class TokenDetailActivity : AppCompatActivity() {
+    companion object {
+        lateinit var prefs: PreferenceUtil
+    }
+
+    lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.details_token_info)
         window.statusBarColor = ContextCompat.getColor(this, R.color.mainColor)
-        WindowCompat.getInsetsController(window, window.decorView)!!.isAppearanceLightStatusBars = false
+        WindowCompat.getInsetsController(window, window.decorView)!!.isAppearanceLightStatusBars =
+            false
 
         progressBar = findViewById(R.id.qr_progress_bar)
         prefs = PreferenceUtil(applicationContext)
@@ -58,7 +62,8 @@ class TokenDetailActivity : AppCompatActivity()  {
         showProgress(this)
 
         thread {
-            val qrCall = getQRCode(prefs.getString("jwt", ""), tokenID, prefs.getString("account", ""))
+            val qrCall =
+                getQRCode(prefs.getString("jwt", ""), tokenID, prefs.getString("account", ""))
 
             if (qrCall == null) {
                 Log.d("QRCODE", "QR Code fetch failed")
@@ -74,15 +79,15 @@ class TokenDetailActivity : AppCompatActivity()  {
                     Log.d("QRCODE", "QR Code fetch successful")
 
                     val decoded = Base64.getDecoder().decode(qrCall.result.split(",")[1])
-                    val decodedByte : Bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.size)
+                    val decodedByte: Bitmap =
+                        BitmapFactory.decodeByteArray(decoded, 0, decoded.size)
 
                     runOnUiThread {
                         hideProgress()
                         qrCodeImgView.setImageBitmap(decodedByte)
                     }
                 }
-            }
-            else {
+            } else {
                 // Invalid Request
                 runOnUiThread {
                     hideProgress()
@@ -92,21 +97,24 @@ class TokenDetailActivity : AppCompatActivity()  {
         }
     }
 
-    private fun getQRCode(token : String, tid : Int, owner : String) : CreateQRCodeResult? {
+    private fun getQRCode(token: String, tid: Int, owner: String): CreateQRCodeResult? {
         val server = RetrofitClass.getInstance()
 
         return try {
-            val response = server.createQRCode(token, CreateQRCodeBody(tid=tid, owner=owner)).execute()
+            val response =
+                server.createQRCode(token, CreateQRCodeBody(tid = tid, owner = owner)).execute()
             response.body()
         } catch (e: IOException) {
-            CreateQRCodeResult(result=null, error="Network Error")
+            CreateQRCodeResult(result = null, error = "Network Error")
         } catch (e: NullPointerException) {
-            CreateQRCodeResult(result=null, error="Invalid Request")
+            CreateQRCodeResult(result = null, error = "Invalid Request")
         }
     }
 
     private fun showProgress(activity: Activity) {
-        if (activity.isFinishing) { return }
+        if (activity.isFinishing) {
+            return
+        }
 
         if (progressBar.visibility != View.VISIBLE) {
             progressBar.visibility = View.VISIBLE
@@ -123,10 +131,9 @@ class TokenDetailActivity : AppCompatActivity()  {
 
     private fun logLargeString(string: String) {
         if (string.length > 2048) {
-            Log.d("LLOG", string.substring(0,2048))
+            Log.d("LLOG", string.substring(0, 2048))
             logLargeString(string.substring(2048))
-        }
-        else {
+        } else {
             Log.d("LLOG", string)
         }
     }

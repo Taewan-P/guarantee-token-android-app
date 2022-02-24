@@ -4,11 +4,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class ManuFragmentAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa) {
+class ManuFragmentAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
 
-    var fragments : ArrayList<Fragment> = ArrayList()
+    var fragments: ArrayList<Fragment> = ArrayList()
 
-    override fun getItemCount(): Int { return fragments.size }
+    override fun getItemCount(): Int {
+        return fragments.size
+    }
 
     override fun createFragment(position: Int): Fragment {
         return fragments[position]
@@ -16,7 +18,7 @@ class ManuFragmentAdapter(fa : FragmentActivity) : FragmentStateAdapter(fa) {
 
     fun addFragment(fragment: Fragment) {
         fragments.add(fragment)
-        notifyItemInserted(fragments.size-1)
+        notifyItemInserted(fragments.size - 1)
     }
 
     fun removeFragment() {

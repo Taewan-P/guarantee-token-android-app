@@ -13,15 +13,16 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialog
+import dev.chungjungsoo.guaranteewallet.R
+import dev.chungjungsoo.guaranteewallet.dataclass.LoginBody
+import dev.chungjungsoo.guaranteewallet.dataclass.LoginResult
+import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
+import dev.chungjungsoo.guaranteewallet.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import dev.chungjungsoo.guaranteewallet.R
-import dev.chungjungsoo.guaranteewallet.dataclass.*
-import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
-import dev.chungjungsoo.guaranteewallet.service.RetrofitService
 
 
 object RetrofitClass {
@@ -38,8 +39,12 @@ object RetrofitClass {
 }
 
 class LoginActivity : AppCompatActivity() {
-    lateinit var progressDialog : AppCompatDialog
-    companion object { lateinit var prefs: PreferenceUtil }
+    lateinit var progressDialog: AppCompatDialog
+
+    companion object {
+        lateinit var prefs: PreferenceUtil
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = PreferenceUtil(applicationContext)
         super.onCreate(savedInstanceState)
@@ -47,47 +52,49 @@ class LoginActivity : AppCompatActivity() {
 
         val server = RetrofitClass.getInstance()
 
-        val inputUserID : EditText = findViewById(R.id.user_id)
-        val inputUserPW : EditText = findViewById(R.id.user_pw)
-        val loginBtn : ImageButton = findViewById(R.id.login_btn)
+        val inputUserID: EditText = findViewById(R.id.user_id)
+        val inputUserPW: EditText = findViewById(R.id.user_pw)
+        val loginBtn: ImageButton = findViewById(R.id.login_btn)
 
         loginBtn.isEnabled = false
 
-        var userID : String = ""
-        var userPW : String = ""
+        var userID: String = ""
+        var userPW: String = ""
 
         var idStatus = false
         var pwStatus = false
 
         inputUserID.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
                 userID = s.toString()
                 if (!validateLoginText(userID)) {
                     inputUserID.error = "ID should be longer than 5 character"
                     idStatus = false
+                } else {
+                    idStatus = true
                 }
-                else { idStatus = true }
 
                 loginBtn.isEnabled = idStatus && pwStatus
             }
         })
 
         inputUserPW.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
                 userPW = s.toString()
                 if (!validateLoginText(userPW)) {
                     inputUserPW.error = "PW should be longer than 5 character"
                     pwStatus = false
+                } else {
+                    pwStatus = true
                 }
-                else { pwStatus = true }
 
                 loginBtn.isEnabled = idStatus && pwStatus
             }
@@ -107,18 +114,22 @@ class LoginActivity : AppCompatActivity() {
                         val mainIntent = Intent(applicationContext, MainActivity::class.java)
                         startActivity(mainIntent)
                         this@LoginActivity.finish()
-                    }
-                    else {
+                    } else {
                         Log.d("LOGIN", "Login Failed")
                         hideProgress()
-                        Toast.makeText(applicationContext, "ID/PW mismatch", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "ID/PW mismatch", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResult>, t: Throwable) {
                     Log.d("LOGIN", "Login Error")
                     hideProgress()
-                    Toast.makeText(applicationContext, "Login Failed. Check your network condition.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "Login Failed. Check your network condition.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             })
@@ -127,13 +138,17 @@ class LoginActivity : AppCompatActivity() {
 
     private fun validateLoginText(str: String): Boolean {
         val trimmed = str.trim()
-        if (TextUtils.isEmpty(trimmed)) { return false }
+        if (TextUtils.isEmpty(trimmed)) {
+            return false
+        }
 
         return trimmed.length >= 6
     }
 
     fun showProgress(activity: Activity) {
-        if (activity.isFinishing) { return }
+        if (activity.isFinishing) {
+            return
+        }
 
         if (!progressDialog.isShowing) {
             progressDialog.setCancelable(false)

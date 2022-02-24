@@ -7,19 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.zxing.integration.android.IntentIntegrator
-import com.journeyapps.barcodescanner.*
+import com.journeyapps.barcodescanner.BarcodeCallback
+import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import dev.chungjungsoo.guaranteewallet.R
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
-import io.jsonwebtoken.security.Keys
-import dev.chungjungsoo.guaranteewallet.databinding.ActivityMainBinding as ActivityMainBinding1
 
 
 class VerifyTokenFragment : Fragment() {
-    lateinit var barcodeView : DecoratedBarcodeView
-    lateinit var tokenInfo : Claims
+    lateinit var barcodeView: DecoratedBarcodeView
+    lateinit var tokenInfo: Claims
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -73,3 +73,11 @@ data class CreateQRCodeResult(
     @SerializedName("result") val result: String?,
     @SerializedName("error") val error: String?
 )
+
+data class ValidateTokenResult(
+    @SerializedName("result") val result: String,
+    @SerializedName("txHistory") val txHistory: List<String>?,
+    @SerializedName("info") val info: TokenInfo?,
+    @SerializedName("detail") val detail: String?,
+    @SerializedName("error") val error: String?
+)

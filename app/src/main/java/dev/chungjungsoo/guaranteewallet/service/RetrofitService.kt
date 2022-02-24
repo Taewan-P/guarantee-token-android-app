@@ -31,4 +31,8 @@ interface RetrofitService {
         @Header("X-access-token") token: String?,
         @Body body: CreateQRCodeBody
     ): Call<CreateQRCodeResult>
+
+    @POST("/node/validate")
+    fun validateToken(@Body body: CreateQRCodeBody): Call<ValidateTokenResult>
+
 }

@@ -119,7 +119,6 @@ class TokenDetailActivity : AppCompatActivity() {
         if (progressBar.visibility != View.VISIBLE) {
             progressBar.visibility = View.VISIBLE
         }
-
     }
 
 

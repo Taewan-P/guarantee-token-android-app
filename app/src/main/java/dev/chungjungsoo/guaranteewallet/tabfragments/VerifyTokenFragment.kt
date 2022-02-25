@@ -56,12 +56,24 @@ class VerifyTokenFragment : Fragment() {
                 e.claims
             }
 
-
             val tid = tokenInfo.getValue("tid") as Int
             val owner = tokenInfo.getValue("owner") as String
             val exp = (tokenInfo.getValue("exp") as Int).toString()
 
-            Toast.makeText(requireContext(), "$tid / $owner / $exp", Toast.LENGTH_SHORT).show()
+            val intent = Intent(activity, VerificationResultActivity::class.java)
+
+            intent.putExtra("tid", tid)
+            intent.putExtra("owner", owner)
+            intent.putExtra("exp", invalid)
+
+            startActivity(intent)
+        }
+    }
+
+    private val signingKeyResolver =  object : SigningKeyResolverAdapter() {
+        override fun resolveSigningKey(header: JwsHeader<*>?, claims: Claims?): Key? {
+            val kid = header?.keyId
+            return null
         }
     }
 }

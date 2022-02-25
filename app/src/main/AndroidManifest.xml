@@ -29,6 +29,11 @@
         <activity
             android:name=".activities.TokenDetailActivity"
             android:launchMode = "singleTop"/>
+
+        <activity
+            android:name=".activities.VerificationResultActivity"
+            android:launchMode="singleTop" />
+
     </application>
 
 </manifest>

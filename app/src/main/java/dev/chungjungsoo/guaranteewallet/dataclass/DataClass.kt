@@ -81,3 +81,9 @@ data class ValidateTokenResult(
     @SerializedName("detail") val detail: String?,
     @SerializedName("error") val error: String?
 )
+
+data class QRToken(
+    @SerializedName("tid") val tid: Int,
+    @SerializedName("owner") val owner: String,
+    @SerializedName("exp") val exp: Int
+)

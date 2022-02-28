@@ -63,6 +63,7 @@ class VerifyTokenFragment : Fragment() {
 
     private val callback = BarcodeCallback { result ->
         var invalid = false
+        var expired = false
         val key = Base64.getDecoder().decode(prefs.getString("key", ""))
         var strKey = String(key)
 
@@ -84,18 +85,15 @@ class VerifyTokenFragment : Fragment() {
             } catch (e: io.jsonwebtoken.ExpiredJwtException) {
                 Log.d("JWT", "Token Expired")
                 invalid = true
+                expired = true
                 e.claims
             } catch (e: io.jsonwebtoken.UnsupportedJwtException) {
                 Log.e("JWT", "Token not supported")
                 invalid = true
-                val splitted = resultString.split(".")[1]
-                val decoded = Base64.getDecoder().decode(splitted).decodeToString()
-                val jsonObject = JsonParser().parse(decoded).asJsonObject
-                val qrObject: QRToken = Gson().fromJson(jsonObject, QRToken::class.java)
                 val c = Jwts.claims()
-                c["tid"] = qrObject.tid
-                c["owner"] = qrObject.owner
-                c["exp"] = qrObject.exp
+                c["tid"] = -1
+                c["owner"] = ""
+                c["exp"] = 0
                 c
             }
 
@@ -108,6 +106,7 @@ class VerifyTokenFragment : Fragment() {
             intent.putExtra("tid", tid)
             intent.putExtra("owner", owner)
             intent.putExtra("exp", invalid)
+            intent.putExtra("exp2", expired)
 
             startActivity(intent)
         }

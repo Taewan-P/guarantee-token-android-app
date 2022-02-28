@@ -29,6 +29,7 @@ class VerificationResultActivity : AppCompatActivity() {
         val tid = intent.getIntExtra("tid", -1)
         val owner = intent.getStringExtra("owner")
         val exp = intent.getBooleanExtra("exp", true)
+        val exp2 = intent.getBooleanExtra("exp2", true)
 
         progressBar = findViewById(R.id.verification_result_progress_bar)
         tokenInfoLayout = findViewById(R.id.result_text_layout)
@@ -44,8 +45,19 @@ class VerificationResultActivity : AppCompatActivity() {
         val textViewDetails = findViewById<TextView>(R.id.verification_result_details)
 
         showProgress(this)
-
-        if (tid == -1 || exp) {
+        
+        if (exp2) {
+            hideProgress()
+            resultIcon.setImageResource(R.drawable.ic_invalid)
+            resultText.text = "Expired"
+            textViewID.text = "N/A"
+            textViewName.text = "N/A"
+            textViewBrand.text = "N/A"
+            textViewProdDate.text = "N/A"
+            textViewExpDate.text = "N/A"
+            textViewDetails.text = "N/A"
+        }
+        else if (tid == -1 || exp) {
             // Invalid intent result, or expired token
             hideProgress()
             resultIcon.setImageResource(R.drawable.ic_invalid)

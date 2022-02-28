@@ -123,6 +123,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                     prefs.setString("account", infoRes.account)
                                     prefs.setString("type", infoRes.user_type)
+                                    prefs.setString("key", infoRes.key)
 
                                 }
                                 "reseller" -> {
@@ -134,6 +135,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                     prefs.setString("account", infoRes.account)
                                     prefs.setString("type", infoRes.user_type)
+                                    prefs.setString("key", infoRes.key)
                                 }
                                 "customer" -> {
                                     runOnUiThread {
@@ -144,6 +146,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                     prefs.setString("account", infoRes.account)
                                     prefs.setString("type", infoRes.user_type)
+                                    prefs.setString("key", infoRes.key)
                                 }
                                 else -> {
                                     runOnUiThread {
@@ -194,9 +197,9 @@ class MainActivity : AppCompatActivity() {
             val response = server.getInfo(token).execute()
             response.body()
         } catch (e: IOException) {
-            GetInfoResult(user_id = "", account = "", user_type = "", err = "Network Error")
+            GetInfoResult(user_id = "", account = "", user_type = "", key="", err = "Network Error")
         } catch (e: NullPointerException) {
-            GetInfoResult(user_id = "", account = "", user_type = "", err = "Invalid User")
+            GetInfoResult(user_id = "", account = "", user_type = "", key="", err = "Invalid User")
         }
     }
 

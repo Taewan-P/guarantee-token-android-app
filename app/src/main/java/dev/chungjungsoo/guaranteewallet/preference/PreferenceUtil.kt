@@ -19,5 +19,6 @@ class PreferenceUtil(context: Context) {
         prefs.edit().remove("jwt").apply()
         prefs.edit().remove("account").apply()
         prefs.edit().remove("type").apply()
+        prefs.edit().remove("key").apply()
     }
 }

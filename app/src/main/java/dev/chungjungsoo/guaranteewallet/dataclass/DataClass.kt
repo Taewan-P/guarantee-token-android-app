@@ -22,6 +22,7 @@ data class GetInfoResult(
     @SerializedName("uid") val user_id: String,
     @SerializedName("account") val account: String,
     @SerializedName("user_type") val user_type: String,
+    @SerializedName("public_key") val key: String,
     @SerializedName("error") val err: String
 )
 

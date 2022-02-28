@@ -189,7 +189,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" >
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp" >
 
         <ProgressBar
             android:id="@+id/qr_progress_bar"
@@ -200,8 +201,8 @@
 
         <ImageView
             android:id="@+id/qr_image_view"
-            android:layout_width="200dp"
-            android:layout_height="200dp" />
+            android:layout_width="350dp"
+            android:layout_height="350dp" />
 
     </RelativeLayout>
 

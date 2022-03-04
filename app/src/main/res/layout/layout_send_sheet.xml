@@ -23,14 +23,16 @@
         android:textColor="@color/black" />
 
     <LinearLayout
+        android:id="@+id/send_from_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_below="@+id/send_token_title" >
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textStyle="bold"
             android:textSize="17sp"
             android:textColor="@color/black"
@@ -38,13 +40,46 @@
 
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/send_from_input"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="9"
+            android:textSize="15sp"
             android:enabled="false" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/send_from_layout" >
 
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:text="to: " />
+
+
+        <EditText
+            android:id="@+id/send_to_input"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="9"
+            android:enabled="true" />
+
+    </LinearLayout>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:text="Send" />
 
 
 

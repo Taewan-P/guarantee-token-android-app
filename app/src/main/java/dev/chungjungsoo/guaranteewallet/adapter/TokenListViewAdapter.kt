@@ -1,11 +1,16 @@
 package dev.chungjungsoo.guaranteewallet.adapter
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.dataclass.ListViewItem
 
@@ -49,6 +54,21 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
         listView.findViewById<ImageView>(R.id.product_logo)
             .setImageResource(R.drawable.ic_apple_logo_black)
         listView.setBackgroundResource(colorList[position % colorList.size])
+
+        listView.findViewById<ImageView>(R.id.send_token_btn).setOnClickListener {
+            val bottomSheetDialog = BottomSheetDialog(parent!!.context)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet, parent, false)
+            
+            bottomSheetDialog.setCancelable(true)
+            bottomSheetDialog.setContentView(view)
+            bottomSheetDialog.dismissWithAnimation = true
+
+            bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_send_btn)?.setOnClickListener {
+                bottomSheetDialog.cancel()
+            }
+            bottomSheetDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            bottomSheetDialog.show()
+        }
 
         return listView
     }

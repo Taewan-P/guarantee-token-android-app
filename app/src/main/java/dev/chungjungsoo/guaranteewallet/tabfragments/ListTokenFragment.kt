@@ -2,6 +2,7 @@ package dev.chungjungsoo.guaranteewallet.tabfragments
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.EncodeHintType
+import com.google.zxing.qrcode.QRCodeWriter
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
 import dev.chungjungsoo.guaranteewallet.activities.TokenDetailActivity
@@ -24,12 +29,15 @@ class ListTokenFragment : Fragment() {
         lateinit var prefs: PreferenceUtil
     }
 
+    private var mContainer: ViewGroup? = null
+
     lateinit var progressDialog: ProgressBar
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        mContainer = container
         return inflater.inflate(R.layout.tab_list_token_fragment, container, false)
     }
 
@@ -42,13 +50,8 @@ class ListTokenFragment : Fragment() {
         val tokenListView = requireView().findViewById<ListView>(R.id.token_listview)
         val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
 
-        tokenListView.addHeaderView(
-            layoutInflater.inflate(
-                R.layout.title_tokens_layout,
-                tokenListView,
-                false
-            ), null, false
-        )
+        val tokenListHeaderView = layoutInflater.inflate(R.layout.title_tokens_layout, tokenListView, false)
+        tokenListView.addHeaderView(tokenListHeaderView, null, false)
         tokenListView.adapter = adapter
 
         showProgress(requireActivity())
@@ -207,7 +210,6 @@ class ListTokenFragment : Fragment() {
             }
         }
 
-
         tokenListView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, _, position, _ ->
                 val selectedItem: ListViewItem = parent.getItemAtPosition(position) as ListViewItem
@@ -222,6 +224,26 @@ class ListTokenFragment : Fragment() {
                 intent.putExtra("details", selectedItem.details)
                 startActivity(intent)
             }
+
+        val myQrBtn = tokenListHeaderView.findViewById<ImageView>(R.id.qr_icon_btn)
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.layout_qr_sheet, mContainer,false)
+
+        bottomSheetDialog.setCancelable(true)
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.dismissWithAnimation = true
+
+        bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_address_btn)?.setOnClickListener {
+            bottomSheetDialog.cancel()
+        }
+
+        val qrImage = createQRCode(prefs.getString("account", ""))
+        bottomSheetDialog.findViewById<ImageView>(R.id.my_qr_img)?.setImageBitmap(qrImage)
+
+        myQrBtn.setOnClickListener {
+            bottomSheetDialog.show()
+        }
+
     }
 
     private fun getTokenList(token: String, address: String): GetTokenListResult? {
@@ -265,6 +287,20 @@ class ListTokenFragment : Fragment() {
     private fun hideProgress() {
         if (progressDialog.visibility == View.VISIBLE) {
             progressDialog.visibility = View.GONE
+        }
+    }
+
+    private fun createQRCode(string: String): Bitmap {
+        val size = 250
+        val hints = hashMapOf<EncodeHintType, Int>().also { it[EncodeHintType.MARGIN] = 1 }
+        val bits = QRCodeWriter().encode(string, BarcodeFormat.QR_CODE, size, size, hints)
+
+        return Bitmap.createBitmap(size, size, Bitmap.Config.RGB_565).also {
+            for (x in 0 until size) {
+                for (y in 0 until size) {
+                    it.setPixel(x, y, if (bits[x, y]) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+                }
+            }
         }
     }
 }

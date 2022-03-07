@@ -75,7 +75,6 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
             bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_send_btn)?.setOnClickListener {
                 bottomSheetDialog.cancel()
             }
-            bottomSheetDialog.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             bottomSheetDialog.show()
         }
 

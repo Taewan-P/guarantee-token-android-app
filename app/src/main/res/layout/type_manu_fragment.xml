@@ -17,9 +17,9 @@
         android:id="@+id/manu_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:tabIndicatorHeight="0dp"
+        android:layout_alignParentBottom="true"
         android:background="#181424"
-        app:tabRippleColor="@null"
-        android:layout_alignParentBottom="true"/>
+        app:tabIndicatorHeight="0dp"
+        app:tabRippleColor="@null" />
 
 </RelativeLayout>

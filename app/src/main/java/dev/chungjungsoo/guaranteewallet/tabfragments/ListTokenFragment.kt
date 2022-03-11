@@ -228,6 +228,7 @@ class ListTokenFragment : Fragment() {
         val myQrBtn = tokenListHeaderView.findViewById<ImageView>(R.id.qr_icon_btn)
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.layout_qr_sheet, mContainer,false)
+        var qrBtnClicked = false
 
         bottomSheetDialog.setCancelable(true)
         bottomSheetDialog.setContentView(view)
@@ -235,6 +236,11 @@ class ListTokenFragment : Fragment() {
 
         bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_address_btn)?.setOnClickListener {
             bottomSheetDialog.cancel()
+            qrBtnClicked = false
+        }
+
+        bottomSheetDialog.setOnCancelListener {
+            qrBtnClicked = false
         }
 
         val qrImage = createQRCode(prefs.getString("account", ""))
@@ -242,6 +248,7 @@ class ListTokenFragment : Fragment() {
 
         myQrBtn.setOnClickListener {
             bottomSheetDialog.show()
+            qrBtnClicked = true
         }
 
     }

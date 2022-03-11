@@ -61,21 +61,33 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
             .setImageResource(R.drawable.ic_apple_logo_black)
         listView.setBackgroundResource(colorList[position % colorList.size])
 
+        var clicked = false
+
         listView.findViewById<ImageView>(R.id.send_token_btn).setOnClickListener {
-            val bottomSheetDialog = BottomSheetDialog(parent.context)
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet, parent, false)
+            if (!clicked) {
+                val bottomSheetDialog = BottomSheetDialog(parent.context)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet, parent, false)
 
-            view.findViewById<EditText>(R.id.send_from_input).setText(prefs.getString("account", ""))
+                view.findViewById<EditText>(R.id.send_from_input).setText(prefs.getString("account", ""))
 
+                clicked = true
 
-            bottomSheetDialog.setCancelable(true)
-            bottomSheetDialog.setContentView(view)
-            bottomSheetDialog.dismissWithAnimation = true
+                bottomSheetDialog.setCancelable(true)
+                bottomSheetDialog.setContentView(view)
+                bottomSheetDialog.dismissWithAnimation = true
 
-            bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_send_btn)?.setOnClickListener {
-                bottomSheetDialog.cancel()
+                bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_send_btn)?.setOnClickListener {
+                    bottomSheetDialog.cancel()
+                    clicked = false
+                }
+
+                bottomSheetDialog.setOnCancelListener {
+                    clicked = false
+                }
+                bottomSheetDialog.show()
+
             }
-            bottomSheetDialog.show()
+
         }
 
         return listView

@@ -7,9 +7,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDialog
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.dataclass.GetInfoResult
 import dev.chungjungsoo.guaranteewallet.dataclass.PingResult
@@ -26,10 +29,22 @@ class MainActivity : AppCompatActivity() {
     companion object {
         lateinit var prefs: PreferenceUtil
     }
-
+    private lateinit var barcodeLauncher : ActivityResultLauncher<ScanOptions>
     lateinit var progressDialog: AppCompatDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = PreferenceUtil(applicationContext)
+
+        barcodeLauncher = this.registerForActivityResult(
+            ScanContract()
+        ) { result ->
+            if (result.contents == null) {
+                Log.d("SCAN_QR", "CANCELLED")
+            } else {
+                Log.d("SCAN_QR", "Scanned: ${result.contents}")
+            }
+        }
+
+        Log.d("BL", "BL Initialized")
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         val fragmentManager = this.supportFragmentManager
@@ -223,5 +238,10 @@ class MainActivity : AppCompatActivity() {
         if (progressDialog.isShowing) {
             progressDialog.dismiss()
         }
+    }
+
+
+    fun getQRCodeLauncher(): ActivityResultLauncher<ScanOptions> {
+        return barcodeLauncher
     }
 }

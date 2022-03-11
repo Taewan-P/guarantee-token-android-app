@@ -34,6 +34,12 @@
             android:name=".activities.VerificationResultActivity"
             android:launchMode="singleTop" />
 
+        <activity
+            android:name=".activities.AddressScanActivity"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/zxing_CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
     </application>
 
 </manifest>

@@ -247,8 +247,10 @@ class ListTokenFragment : Fragment() {
         bottomSheetDialog.findViewById<ImageView>(R.id.my_qr_img)?.setImageBitmap(qrImage)
 
         myQrBtn.setOnClickListener {
-            bottomSheetDialog.show()
-            qrBtnClicked = true
+            if (!qrBtnClicked) {
+                bottomSheetDialog.show()
+                qrBtnClicked = true
+            }
         }
 
     }

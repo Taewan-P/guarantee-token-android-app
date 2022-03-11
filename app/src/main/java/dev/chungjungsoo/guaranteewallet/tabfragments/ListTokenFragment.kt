@@ -30,7 +30,7 @@ class ListTokenFragment : Fragment() {
     }
 
     private var mContainer: ViewGroup? = null
-
+    lateinit var adapter : TokenListViewAdapter
     lateinit var progressDialog: ProgressBar
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +46,7 @@ class ListTokenFragment : Fragment() {
         progressDialog = requireView().findViewById(R.id.list_progress_bar)
         prefs = PreferenceUtil(requireContext())
         val items = mutableListOf<ListViewItem>()
-        val adapter = TokenListViewAdapter(items)
+        adapter = TokenListViewAdapter(items)
         val tokenListView = requireView().findViewById<ListView>(R.id.token_listview)
         val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
 
@@ -311,5 +311,9 @@ class ListTokenFragment : Fragment() {
                 }
             }
         }
+    }
+
+    fun setScannedAddress(string: String) {
+        adapter.setScannedAddress(string)
     }
 }

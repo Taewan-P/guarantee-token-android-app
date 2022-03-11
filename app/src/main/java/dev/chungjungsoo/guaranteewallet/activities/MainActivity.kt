@@ -21,6 +21,7 @@ import dev.chungjungsoo.guaranteewallet.fragments.ManufacturerFragment
 import dev.chungjungsoo.guaranteewallet.fragments.ResellerFragment
 import dev.chungjungsoo.guaranteewallet.fragments.UserFragment
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
+import dev.chungjungsoo.guaranteewallet.tabfragments.ListTokenFragment
 import java.io.IOException
 import kotlin.concurrent.thread
 
@@ -41,10 +42,11 @@ class MainActivity : AppCompatActivity() {
                 Log.d("SCAN_QR", "CANCELLED")
             } else {
                 Log.d("SCAN_QR", "Scanned: ${result.contents}")
+                val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
+                fragment.setScannedAddress(result.contents)
             }
         }
 
-        Log.d("BL", "BL Initialized")
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         val fragmentManager = this.supportFragmentManager

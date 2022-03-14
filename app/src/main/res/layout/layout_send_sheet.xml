@@ -45,6 +45,7 @@
                 android:layout_weight="6"
                 android:backgroundTint="@color/white"
                 android:enabled="true"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="15sp" />
 
@@ -71,14 +72,15 @@
 
 
     <Button
+        android:id="@+id/send_token_btn_next"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="6dp"
         android:layout_marginEnd="6dp"
-        android:layout_alignParentBottom="true"
         android:backgroundTint="#78DCD2"
-        android:textColor="@color/black"
-        android:text="Send" />
+        android:text="Send"
+        android:textColor="@color/black" />
 
 
 

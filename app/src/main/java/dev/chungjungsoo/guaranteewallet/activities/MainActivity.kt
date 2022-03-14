@@ -54,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         ) {
             if (it.resultCode == RESULT_OK) {
                 Log.d("PW", "PW input successful")
+                val pw = it.data?.getStringExtra("pw") ?: ""
+                Log.d("PW", pw)
             }
             else {
                 Log.d("PW", "Input cancelled")

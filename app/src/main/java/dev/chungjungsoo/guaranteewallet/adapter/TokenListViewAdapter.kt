@@ -66,18 +66,11 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                 bottomSheetDialog = BottomSheetDialog(parent.context)
                 sheetView = LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet, parent, false)
 
-                sheetView.findViewById<EditText>(R.id.send_from_input).setText(prefs.getString("account", ""))
-
                 clicked = true
 
                 bottomSheetDialog.setCancelable(true)
                 bottomSheetDialog.setContentView(sheetView)
                 bottomSheetDialog.dismissWithAnimation = true
-
-                bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_send_btn)?.setOnClickListener {
-                    bottomSheetDialog.cancel()
-                    clicked = false
-                }
 
                 val scanBtn = bottomSheetDialog.findViewById<RelativeLayout>(R.id.scan_address_btn)
                 val barcodeScanner = (parent.context as MainActivity).getQRCodeLauncher()

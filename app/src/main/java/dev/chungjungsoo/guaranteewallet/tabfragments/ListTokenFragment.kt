@@ -234,11 +234,6 @@ class ListTokenFragment : Fragment() {
         bottomSheetDialog.setContentView(view)
         bottomSheetDialog.dismissWithAnimation = true
 
-        bottomSheetDialog.findViewById<ImageView>(R.id.dismiss_address_btn)?.setOnClickListener {
-            bottomSheetDialog.cancel()
-            qrBtnClicked = false
-        }
-
         bottomSheetDialog.setOnCancelListener {
             qrBtnClicked = false
         }

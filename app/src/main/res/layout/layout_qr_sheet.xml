@@ -6,12 +6,6 @@
     android:clipToPadding="false"
     android:background="@drawable/shape_send_sheet">
 
-    <ImageView
-        android:id="@+id/dismiss_address_btn"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_xmark"/>
 
 
     <TextView

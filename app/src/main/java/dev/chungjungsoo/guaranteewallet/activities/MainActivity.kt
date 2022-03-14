@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDialog
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         lateinit var prefs: PreferenceUtil
     }
     private lateinit var barcodeLauncher : ActivityResultLauncher<ScanOptions>
+    private lateinit var passwordActivityLauncher : ActivityResultLauncher<Intent>
     lateinit var progressDialog: AppCompatDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = PreferenceUtil(applicationContext)
@@ -44,6 +46,17 @@ class MainActivity : AppCompatActivity() {
                 Log.d("SCAN_QR", "Scanned: ${result.contents}")
                 val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
                 fragment.setScannedAddress(result.contents)
+            }
+        }
+
+        passwordActivityLauncher = this.registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK) {
+                Log.d("PW", "PW input successful")
+            }
+            else {
+                Log.d("PW", "Input cancelled")
             }
         }
 
@@ -245,5 +258,9 @@ class MainActivity : AppCompatActivity() {
 
     fun getQRCodeLauncher(): ActivityResultLauncher<ScanOptions> {
         return barcodeLauncher
+    }
+
+    fun getPWInputLauncher(): ActivityResultLauncher<Intent> {
+        return passwordActivityLauncher
     }
 }

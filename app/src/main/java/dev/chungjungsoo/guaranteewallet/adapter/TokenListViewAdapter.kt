@@ -73,9 +73,9 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                 bottomSheetDialog.dismissWithAnimation = true
 
                 val scanBtn = bottomSheetDialog.findViewById<RelativeLayout>(R.id.scan_address_btn)
-                val barcodeScanner = (parent.context as MainActivity).getQRCodeLauncher()
 
                 scanBtn?.setOnClickListener {
+                    val barcodeScanner = (parent.context as MainActivity).getQRCodeLauncher()
                     val options = ScanOptions()
                     options.captureActivity = AddressScanActivity::class.java
                     options.setBeepEnabled(false)

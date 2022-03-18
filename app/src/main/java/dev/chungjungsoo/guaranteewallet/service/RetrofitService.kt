@@ -35,4 +35,7 @@ interface RetrofitService {
     @POST("/node/validate")
     fun validateToken(@Body body: CreateQRCodeBody): Call<ValidateTokenResult>
 
+    @POST("/node/transfer")
+    fun transferToken(@Body body: TransferTokenBody): Call<TransferTokenResult>
+
 }

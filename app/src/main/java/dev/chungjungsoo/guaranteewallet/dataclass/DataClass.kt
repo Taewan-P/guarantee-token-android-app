@@ -88,3 +88,17 @@ data class QRToken(
     @SerializedName("owner") val owner: String,
     @SerializedName("exp") val exp: Int
 )
+
+data class TransferTokenBody(
+    @SerializedName("sender") val sender: String,
+    @SerializedName("transactor") val transactor: String,
+    @SerializedName("receiver") val receiver: String,
+    @SerializedName("tid") val tid: Int,
+    @SerializedName("wallet_password") val pw: String
+)
+
+data class TransferTokenResult(
+    @SerializedName("result") val result: String,
+    @SerializedName("txhash") val txHash: String,
+    @SerializedName("error") val err: String
+)

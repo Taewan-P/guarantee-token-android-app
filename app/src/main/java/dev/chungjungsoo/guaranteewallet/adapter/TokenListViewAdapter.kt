@@ -191,6 +191,7 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
     fun isAddress(address: String): Boolean {
         val addressRegex = """^(0x)[0-9a-fA-F]{40}$""".toRegex()
         if (addressRegex.matchEntire(address)?.value == null) { return false }
+        if (prefs.getString("address", null) == addressRegex.matchEntire(address)?.value) { return false }
 
         return addressRegex.matchEntire(address)?.value == address
     }

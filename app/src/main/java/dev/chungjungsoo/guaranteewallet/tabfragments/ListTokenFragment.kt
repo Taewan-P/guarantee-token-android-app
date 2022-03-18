@@ -311,4 +311,12 @@ class ListTokenFragment : Fragment() {
     fun setScannedAddress(string: String) {
         adapter.setScannedAddress(string)
     }
+
+    fun getTokenInfo(): Pair<Int, String> {
+        return adapter.getTokenReceiverInfo()
+    }
+
+    fun disableSendBtn() {
+        adapter.disableSend()
+    }
 }

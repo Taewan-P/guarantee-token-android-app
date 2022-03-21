@@ -79,7 +79,6 @@ class ManufacturerFragment : Fragment() {
         pageAdapter.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Log.d("PAGEADAPTER", "Page ${position + 1}")
 
                 if (position == 2) {
                     when {

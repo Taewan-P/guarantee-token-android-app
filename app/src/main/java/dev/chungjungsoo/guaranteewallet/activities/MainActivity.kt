@@ -199,6 +199,10 @@ class MainActivity : AppCompatActivity() {
 
             if (savedInstanceState == null) {
                 showProgress(this)
+                fragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment, LoadingFragment())
+                    .commitAllowingStateLoss()
+
                 thread {
                     val pingRes = pingServer(prefs.getString("jwt", null))
 

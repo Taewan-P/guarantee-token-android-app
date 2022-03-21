@@ -16,6 +16,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDialog
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.fragment.app.Fragment
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import dev.chungjungsoo.guaranteewallet.R
@@ -23,10 +25,7 @@ import dev.chungjungsoo.guaranteewallet.dataclass.GetInfoResult
 import dev.chungjungsoo.guaranteewallet.dataclass.PingResult
 import dev.chungjungsoo.guaranteewallet.dataclass.TransferTokenBody
 import dev.chungjungsoo.guaranteewallet.dataclass.TransferTokenResult
-import dev.chungjungsoo.guaranteewallet.fragments.InvalidFragment
-import dev.chungjungsoo.guaranteewallet.fragments.ManufacturerFragment
-import dev.chungjungsoo.guaranteewallet.fragments.ResellerFragment
-import dev.chungjungsoo.guaranteewallet.fragments.UserFragment
+import dev.chungjungsoo.guaranteewallet.fragments.*
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
 import dev.chungjungsoo.guaranteewallet.tabfragments.ListTokenFragment
 import java.io.IOException
@@ -183,6 +182,8 @@ class MainActivity : AppCompatActivity() {
                 Log.d("PW", "Input cancelled")
             }
         }
+
+        val splashScreen = installSplashScreen()
 
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

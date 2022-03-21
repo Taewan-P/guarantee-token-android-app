@@ -32,6 +32,7 @@ class ListTokenFragment : Fragment() {
     private var mContainer: ViewGroup? = null
     lateinit var adapter : TokenListViewAdapter
     lateinit var progressDialog: ProgressBar
+    lateinit var items: MutableList<ListViewItem>
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,7 +46,7 @@ class ListTokenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         progressDialog = requireView().findViewById(R.id.list_progress_bar)
         prefs = PreferenceUtil(requireContext())
-        val items = mutableListOf<ListViewItem>()
+        items = mutableListOf<ListViewItem>()
         adapter = TokenListViewAdapter(items)
         val tokenListView = requireView().findViewById<ListView>(R.id.token_listview)
         val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
@@ -113,7 +114,6 @@ class ListTokenFragment : Fragment() {
                             )
                         )
                     }
-                    items.sortBy { it.tokenID }
                     if (activity != null) {
                         requireActivity().runOnUiThread {
                             adapter.notifyDataSetChanged()
@@ -318,5 +318,19 @@ class ListTokenFragment : Fragment() {
 
     fun disableSendBtn() {
         adapter.disableSend()
+    }
+
+    fun disableUI() {
+        adapter.disableUI()
+    }
+
+    fun enableUI() {
+        adapter.enableUI()
+    }
+
+    fun dismissDialog(item: Int) {
+        adapter.dismissDialog()
+        items.removeIf { it.tokenID == item }
+        adapter.notifyDataSetChanged()
     }
 }

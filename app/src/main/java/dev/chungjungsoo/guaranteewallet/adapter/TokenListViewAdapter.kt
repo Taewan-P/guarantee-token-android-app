@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -115,24 +114,46 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                         count: Int
                     ) {
                         val address = s.toString()
-                        if (isAddress(address) && reviewCheckBox!!.isChecked) {
-                            enableSend()
-                        }
-                        else {
-                            if (!isAddress(address)) {
-                                Log.d("SENDTOKEN", "Address Invalid")
-                            }
-                            else {
-                                Log.d("SENDTOKEN", "Checkbox not checked")
-                            }
+
+                        if (address == "") {
+                            receiverAddressInput.error = null
                             disableSend()
                         }
+                        else {
+                            if (isAddress(address) && reviewCheckBox!!.isChecked) {
+                                if (address == prefs.getString("account", "")) {
+                                    receiverAddressInput.error = "That's your address"
+                                    disableSend()
+                                }
+                                else {
+                                    enableSend()
+                                }
+                            }
+                            else {
+                                if (!isAddress(address)) {
+                                    receiverAddressInput.error = "Invalid address"
+                                }
+
+                                else if (address == prefs.getString("account", "")) {
+                                    receiverAddressInput.error = "That's your address"
+                                }
+                                disableSend()
+                            }
+                        }
+
                     }
                 })
 
                 reviewCheckBox!!.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked && isAddress(receiverAddressInput.text.toString())) {
-                        enableSend()
+                    val addressStatus = isAddress(receiverAddressInput.text.toString())
+                    if (isChecked && addressStatus) {
+                        if (receiverAddressInput.text.toString() == prefs.getString("account", null)) {
+                            receiverAddressInput.error = "That's your address"
+                            disableSend()
+                        }
+                        else {
+                            enableSend()
+                        }
                     }
                     else {
                         disableSend()
@@ -183,16 +204,48 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
 
     fun enableSend() {
         val sendBtn = sheetView.findViewById<Button>(R.id.send_token_btn_next)
+        val progressbar = sheetView.findViewById<ProgressBar>(R.id.send_progress_bar)
+
         sendBtn.isEnabled = true
         sendBtn.alpha = 1F
         sendBtn.setTextColor(Color.parseColor("#000000"))
+
+        progressbar.visibility = View.INVISIBLE
+
     }
 
     fun isAddress(address: String): Boolean {
         val addressRegex = """^(0x)[0-9a-fA-F]{40}$""".toRegex()
         if (addressRegex.matchEntire(address)?.value == null) { return false }
-        if (prefs.getString("address", null) == addressRegex.matchEntire(address)?.value) { return false }
 
         return addressRegex.matchEntire(address)?.value == address
+    }
+
+    fun disableUI() {
+        val checkBox = sheetView.findViewById<CheckBox>(R.id.send_token_review_checkbox)
+        val addressInput = sheetView.findViewById<EditText>(R.id.send_to_input)
+        val cameraBtn = sheetView.findViewById<RelativeLayout>(R.id.scan_address_btn)
+
+        bottomSheetDialog.setCancelable(false)
+        checkBox.isEnabled = false
+        addressInput.isEnabled = false
+        cameraBtn.isEnabled = false
+    }
+
+    fun enableUI() {
+        val checkBox = sheetView.findViewById<CheckBox>(R.id.send_token_review_checkbox)
+        val addressInput = sheetView.findViewById<EditText>(R.id.send_to_input)
+        val cameraBtn = sheetView.findViewById<RelativeLayout>(R.id.scan_address_btn)
+
+        bottomSheetDialog.setCancelable(true)
+        checkBox.isEnabled = true
+        addressInput.isEnabled = true
+        cameraBtn.isEnabled = true
+        enableSend()
+    }
+
+    fun dismissDialog() {
+        bottomSheetDialog.setCancelable(true)
+        bottomSheetDialog.cancel()
     }
 }

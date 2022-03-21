@@ -1,11 +1,15 @@
 package dev.chungjungsoo.guaranteewallet.activities
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +21,8 @@ import com.journeyapps.barcodescanner.ScanOptions
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.dataclass.GetInfoResult
 import dev.chungjungsoo.guaranteewallet.dataclass.PingResult
+import dev.chungjungsoo.guaranteewallet.dataclass.TransferTokenBody
+import dev.chungjungsoo.guaranteewallet.dataclass.TransferTokenResult
 import dev.chungjungsoo.guaranteewallet.fragments.InvalidFragment
 import dev.chungjungsoo.guaranteewallet.fragments.ManufacturerFragment
 import dev.chungjungsoo.guaranteewallet.fragments.ResellerFragment
@@ -54,8 +60,124 @@ class MainActivity : AppCompatActivity() {
         ) {
             if (it.resultCode == RESULT_OK) {
                 Log.d("PW", "PW input successful")
+                val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
+                val info = fragment.getTokenInfo()
+                val tid = info.first
+                val receiver = info.second
                 val pw = it.data?.getStringExtra("pw") ?: ""
-                Log.d("PW", pw)
+
+                fragment.disableUI()
+
+                val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val dialogView = inflater.inflate(R.layout.layout_transfer_result,null)
+                val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                thread {
+                    val transferResult = transferToken(tid = tid, receiver = receiver, password = pw)
+
+                    if (transferResult == null) {
+                        Log.d("TRANSFER", "Transfer failed with result null.")
+                    }
+
+                    when {
+                        transferResult?.result ?: "failed" == "success" -> {
+                            Log.d("TRANSFER", "Transfer success")
+                            runOnUiThread {
+                                resultText.text = "Transfer Successful."
+
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Result")
+                                    .setPositiveButton("OK") { _, _ ->
+                                        fragment.dismissDialog(tid)
+                                    }
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                            }
+                        }
+                        transferResult?.err ?: "Unknown error" == "Network Error" -> {
+                            Log.d("TRANSFER", "Network Error")
+                            runOnUiThread {
+                                fragment.enableUI()
+
+                                resultText.text = "Network Error. Try again in a few moments."
+
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK", null)
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                            }
+                        }
+                        transferResult?.err ?: "Unknown error" == "Invalid Request" -> {
+                            Log.d("TRANSFER", "Invalid Request")
+                            runOnUiThread {
+                                fragment.enableUI()
+
+                                resultText.text = "Invalid request. Please check transfer details and try again."
+
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK", null)
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                            }
+                        }
+                        transferResult?.err ?: "Unknown error" == "Authentication Error" -> {
+                            Log.d("TRANSFER", "Invalid Request")
+                            runOnUiThread {
+                                fragment.enableUI()
+
+                                resultText.text = "Authentication Error. Please check your password!"
+
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK", null)
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                            }
+                        }
+                        transferResult?.err ?: "Unknown error" == "Invalid Address" -> {
+                            Log.d("TRANSFER", "Invalid Request")
+                            runOnUiThread {
+                                fragment.enableUI()
+
+                                resultText.text = "Invalid address input. Please check the sender's address."
+
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK", null)
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                            }
+                        }
+                        else -> {
+                            Log.e("TRANSFER", "${transferResult?.err}")
+                            runOnUiThread {
+                                fragment.enableUI()
+
+                                resultText.text = "Unknown error."
+
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK", null)
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                            }
+                        }
+                    }
+                }
             }
             else {
                 Log.d("PW", "Input cancelled")
@@ -111,7 +233,8 @@ class MainActivity : AppCompatActivity() {
                                 finish()
                             }
                         }
-                    } else {
+                    }
+                    else {
                         // Ping failed
                         runOnUiThread {
                             hideProgress()
@@ -234,6 +357,44 @@ class MainActivity : AppCompatActivity() {
             GetInfoResult(user_id = "", account = "", user_type = "", key="", err = "Invalid User")
         }
     }
+
+
+    private fun transferToken(tid: Int, receiver: String, password: String): TransferTokenResult? {
+        val server = RetrofitClass.getInstance()
+        val sender = prefs.getString("account", "")
+
+        val txInfo = TransferTokenBody(sender = sender, transactor = sender, receiver = receiver, tid = tid,  pw = password )
+        Log.d("INFO", "sender: '$sender', receiver: '$receiver', password: '$password'")
+        Log.d("INFO", "$txInfo")
+
+        return try {
+            val response = server.transferToken(prefs.getString("jwt", null), txInfo).execute()
+            Log.d("TT", response.toString())
+            Log.d("TT", response.raw().toString())
+            when {
+                response.code() == 200 -> {
+                    response.body()
+                }
+                response.code() == 503 -> {
+                    TransferTokenResult(result = "failed", txHash = "", err = "Node Network Error")
+                }
+                response.code() == 401 -> {
+                    TransferTokenResult(result = "failed", txHash = "", err = "Authentication Error")
+                }
+                response.code() == 406 -> {
+                    TransferTokenResult(result = "failed", txHash = "", err = "Invalid Address")
+                }
+                else -> {
+                    TransferTokenResult(result = "failed", txHash = "", err = "Unknown Error")
+                }
+            }
+        } catch (e: IOException) {
+            TransferTokenResult(result = "failed", txHash = "", err = "Network Error")
+        } catch (e: java.lang.NullPointerException) {
+            TransferTokenResult(result = "failed", txHash = "", err = "Invalid Request")
+        }
+    }
+
 
 
     private fun showProgress(activity: Activity) {

@@ -28,7 +28,7 @@ interface RetrofitService {
 
     @POST("/tokens/create_qr")
     fun createQRCode(
-        @Header("X-access-token") token: String?,
+        @Header("x-access-token") token: String?,
         @Body body: CreateQRCodeBody
     ): Call<CreateQRCodeResult>
 
@@ -36,6 +36,8 @@ interface RetrofitService {
     fun validateToken(@Body body: CreateQRCodeBody): Call<ValidateTokenResult>
 
     @POST("/node/transfer")
-    fun transferToken(@Body body: TransferTokenBody): Call<TransferTokenResult>
+    fun transferToken(@Header("x-access-token")token: String?,
+                      @Body body: TransferTokenBody
+    ): Call<TransferTokenResult>
 
 }

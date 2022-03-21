@@ -21,7 +21,7 @@ import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.adapter.ManuFragmentAdapter
 import dev.chungjungsoo.guaranteewallet.tabfragments.ListTokenFragment
 import dev.chungjungsoo.guaranteewallet.tabfragments.MorePageFragment
-import dev.chungjungsoo.guaranteewallet.tabfragments.SendTokenFragment
+import dev.chungjungsoo.guaranteewallet.tabfragments.HistoryFragment
 import dev.chungjungsoo.guaranteewallet.tabfragments.VerifyTokenFragment
 
 class ManufacturerFragment : Fragment() {
@@ -54,8 +54,8 @@ class ManufacturerFragment : Fragment() {
         val fragmentAdapter = ManuFragmentAdapter(requireActivity())
 
         fragmentAdapter.addFragment(ListTokenFragment())
-        fragmentAdapter.addFragment(SendTokenFragment())
         fragmentAdapter.addFragment(VerifyTokenFragment())
+        fragmentAdapter.addFragment(HistoryFragment())
         fragmentAdapter.addFragment(MorePageFragment())
 
 
@@ -70,9 +70,9 @@ class ManufacturerFragment : Fragment() {
         bottomNav.getTabAt(0)?.customView =
             customTab.findViewById(R.id.list_token_tab) as LinearLayout
         bottomNav.getTabAt(1)?.customView =
-            customTab.findViewById(R.id.send_token_tab) as LinearLayout
-        bottomNav.getTabAt(2)?.customView =
             customTab.findViewById(R.id.verify_token_tab) as LinearLayout
+        bottomNav.getTabAt(2)?.customView =
+            customTab.findViewById(R.id.history_tab) as LinearLayout
         bottomNav.getTabAt(3)?.customView = customTab.findViewById(R.id.more_tab) as LinearLayout
 
 

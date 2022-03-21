@@ -26,7 +26,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/send_token_tab"
+        android:id="@+id/history_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -36,14 +36,14 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/selector_send_token" />
+            android:src="@drawable/selector_history" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/selector_text"
             android:gravity="center"
-            android:text="Send" />
+            android:text="History" />
 
     </LinearLayout>
 

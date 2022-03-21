@@ -36,7 +36,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/selector_send_token" />
+            android:src="@drawable/selector_history" />
 
         <TextView
             android:layout_width="match_parent"

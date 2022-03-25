@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="mainColor">#1E192D</color>
     <color name="subColor">#463f56</color>
+    <color name="tintColor">#78DCD2</color>
     <color name="cardColor1">#FF6E6E</color>
     <color name="cardColor2">#ff9f0a</color>
     <color name="cardColor3">#30d158</color>

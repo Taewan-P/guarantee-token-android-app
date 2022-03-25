@@ -68,7 +68,7 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
 
         var clicked = false
 
-        listView.findViewById<ImageView>(R.id.send_token_btn).setOnClickListener {
+        listView.findViewById<RelativeLayout>(R.id.send_token_btn).setOnClickListener {
             if (!clicked) {
                 bottomSheetDialog = BottomSheetDialog(parent.context)
                 sheetView = LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet, parent, false)
@@ -91,7 +91,7 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                     .setImageResource(R.drawable.ic_apple_logo_black)
                 tokenLayout.setBackgroundResource(colorList[position % colorList.size])
 
-                tokenLayout.findViewById<ImageView>(R.id.send_token_btn).visibility = View.GONE
+                tokenLayout.findViewById<RelativeLayout>(R.id.send_token_btn).visibility = View.GONE
 
                 tokenView!!.addView(tokenLayout)
 

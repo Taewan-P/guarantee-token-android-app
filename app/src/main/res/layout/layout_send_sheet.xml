@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/send_sheet"
     android:layout_width="match_parent"
-    android:layout_height="350dp"
+    android:layout_height="610dp"
     android:padding="20dp"
     android:clipToPadding="false"
     android:background="@drawable/shape_send_sheet">
@@ -23,28 +24,23 @@
         android:layout_marginTop="24dp"
         android:layout_below="@+id/send_token_title" >
 
-        <TextView
-            android:layout_width="8dp"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="17sp"
-            android:textColor="@color/white"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:text="to: " />
+
 
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="10">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/send_to_input"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="6"
-                android:backgroundTint="@color/white"
+                android:drawablePadding="12dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:drawableStart="@drawable/ic_paperplane_empty"
+                android:background="@drawable/selector_edittext"
                 android:enabled="true"
                 android:singleLine="true"
                 android:textColor="@color/white"
@@ -57,12 +53,12 @@
                 android:layout_weight="1" >
 
                 <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerInParent="true"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_baseline_camera_alt_24" />
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_qrcode_viewfinder" />
 
             </RelativeLayout>
 
@@ -72,11 +68,21 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/send_token_token_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:orientation="vertical"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
         android:layout_below="@+id/send_token_input_layout">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/send_token_btn_layout"
+        android:layout_below="@+id/send_token_token_layout"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/token_review_title"
@@ -94,8 +100,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/token_review_title"
             android:text="Token ID: "
-            android:textSize="17sp"
             android:textColor="@color/white"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
         <TextView
@@ -113,8 +119,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/token_id_review_text"
             android:text="Token Name: "
-            android:textSize="17sp"
             android:textColor="@color/white"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
         <TextView
@@ -139,9 +145,11 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/send_token_btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="25dp"
         android:clipToPadding="true" >
 
         <ProgressBar

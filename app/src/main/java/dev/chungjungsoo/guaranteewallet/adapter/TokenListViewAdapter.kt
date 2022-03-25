@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.journeyapps.barcodescanner.ScanOptions
 import dev.chungjungsoo.guaranteewallet.R
@@ -72,11 +73,27 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                 bottomSheetDialog = BottomSheetDialog(parent.context)
                 sheetView = LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet, parent, false)
 
+                val tokenLayout = LayoutInflater.from(parent.context).inflate(R.layout.listview_item_list_token, parent, false)
                 clicked = true
 
                 bottomSheetDialog.setCancelable(true)
                 bottomSheetDialog.setContentView(sheetView)
                 bottomSheetDialog.dismissWithAnimation = true
+                bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+                val tokenView = bottomSheetDialog.findViewById<RelativeLayout>(R.id.send_token_token_layout)
+
+                tokenLayout.findViewById<TextView>(R.id.token_id).text = "No. ${item.tokenID}"
+                tokenLayout.findViewById<TextView>(R.id.product_name).text = item.productName
+                tokenLayout.findViewById<TextView>(R.id.brand_name).text = item.brand
+                tokenLayout.findViewById<TextView>(R.id.token_exp_date).text = item.expirationDate
+                tokenLayout.findViewById<ImageView>(R.id.product_logo)
+                    .setImageResource(R.drawable.ic_apple_logo_black)
+                tokenLayout.setBackgroundResource(colorList[position % colorList.size])
+
+                tokenLayout.findViewById<ImageView>(R.id.send_token_btn).visibility = View.GONE
+
+                tokenView!!.addView(tokenLayout)
 
                 val checkTokenID = bottomSheetDialog.findViewById<TextView>(R.id.token_id_check_value)
                 val checkTokenName = bottomSheetDialog.findViewById<TextView>(R.id.token_name_check_value)

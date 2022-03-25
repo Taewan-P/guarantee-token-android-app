@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
-        android:background="#181424"
+        android:background="@color/mainDarkColor"
         app:tabIndicatorHeight="0dp"
         app:tabRippleColor="@null" />
 

@@ -161,6 +161,12 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                     }
                 })
 
+                val reviewLayout = bottomSheetDialog.findViewById<RelativeLayout>(R.id.send_token_check_layout)
+
+                reviewLayout!!.setOnClickListener {
+                    reviewCheckBox!!.isChecked = !reviewCheckBox.isChecked
+                }
+
                 reviewCheckBox!!.setOnCheckedChangeListener { _, isChecked ->
                     val addressStatus = isAddress(receiverAddressInput.text.toString())
                     if (isChecked && addressStatus) {

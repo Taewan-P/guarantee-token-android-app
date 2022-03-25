@@ -171,7 +171,7 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                         val paperPlane = AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty)
                         val wrappedDrawable = DrawableCompat.wrap(paperPlane!!)
                         DrawableCompat.setTint(wrappedDrawable, Color.RED)
-                        receiverAddressInput.error = message
+                        receiverAddressInput.setError(message, null)
                         receiverAddressInput.setBackgroundResource(R.drawable.selector_edittext_error)
                         receiverAddressInput.setCompoundDrawablesWithIntrinsicBounds(wrappedDrawable, null, null, null)
                     }

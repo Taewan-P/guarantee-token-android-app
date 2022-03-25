@@ -41,8 +41,9 @@
                 android:paddingEnd="12dp"
                 android:drawableStart="@drawable/ic_paperplane_empty"
                 android:background="@drawable/selector_edittext"
-                android:enabled="true"
                 android:singleLine="true"
+                android:hint="Please enter address"
+                android:textColorHint="@color/cardColor6"
                 android:textColor="@color/white"
                 android:textSize="15sp" />
 

@@ -1,14 +1,18 @@
 package dev.chungjungsoo.guaranteewallet.adapter
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Color.red
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.journeyapps.barcodescanner.ScanOptions
@@ -133,31 +137,61 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                         val address = s.toString()
 
                         if (address == "") {
-                            receiverAddressInput.error = null
+                            revertErrorSetting()
                             disableSend()
                         }
                         else {
-                            if (isAddress(address) && reviewCheckBox!!.isChecked) {
+                            if (isAddress(address)) {
                                 if (address == prefs.getString("account", "")) {
-                                    receiverAddressInput.error = "That's your address"
+                                    setErrorSetting("That's your address")
                                     disableSend()
                                 }
                                 else {
-                                    enableSend()
+                                    approveText()
+                                    if (reviewCheckBox!!.isChecked) {
+                                        enableSend()
+                                    }
                                 }
                             }
                             else {
                                 if (!isAddress(address)) {
-                                    receiverAddressInput.error = "Invalid address"
+                                    setErrorSetting("Invalid address")
                                 }
 
-                                else if (address == prefs.getString("account", "")) {
-                                    receiverAddressInput.error = "That's your address"
+                                else if (address == prefs.getString("account", null)) {
+                                    setErrorSetting("That's your address")
                                 }
                                 disableSend()
                             }
                         }
 
+                    }
+
+                    fun setErrorSetting(message: String) {
+                        val paperPlane = AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty)
+                        val wrappedDrawable = DrawableCompat.wrap(paperPlane!!)
+                        DrawableCompat.setTint(wrappedDrawable, Color.RED)
+                        receiverAddressInput.error = message
+                        receiverAddressInput.setBackgroundResource(R.drawable.selector_edittext_error)
+                        receiverAddressInput.setCompoundDrawablesWithIntrinsicBounds(wrappedDrawable, null, null, null)
+                    }
+
+                    fun revertErrorSetting() {
+                        val paperPlane = AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty)
+                        val wrappedDrawable = DrawableCompat.wrap(paperPlane!!)
+                        DrawableCompat.setTint(wrappedDrawable, Color.WHITE)
+                        receiverAddressInput.error = null
+                        receiverAddressInput.setBackgroundResource(R.drawable.selector_edittext)
+                        receiverAddressInput.setCompoundDrawablesWithIntrinsicBounds(wrappedDrawable, null, null, null)
+                    }
+
+                    fun approveText() {
+                        val paperPlane = AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty)
+                        val wrappedDrawable = DrawableCompat.wrap(paperPlane!!)
+                        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(parent.context, R.color.cardColor3))
+                        receiverAddressInput.error = null
+                        receiverAddressInput.setBackgroundResource(R.drawable.selector_edittext_ok)
+                        receiverAddressInput.setCompoundDrawablesWithIntrinsicBounds(wrappedDrawable, null, null, null)
                     }
                 })
 
@@ -169,13 +203,24 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
 
                 reviewCheckBox!!.setOnCheckedChangeListener { _, isChecked ->
                     val addressStatus = isAddress(receiverAddressInput.text.toString())
-                    if (isChecked && addressStatus) {
-                        if (receiverAddressInput.text.toString() == prefs.getString("account", null)) {
-                            receiverAddressInput.error = "That's your address"
-                            disableSend()
+
+                    fun approveText() {
+                        val paperPlane = AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty)
+                        val wrappedDrawable = DrawableCompat.wrap(paperPlane!!)
+                        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(parent.context, R.color.cardColor3))
+                        receiverAddressInput.error = null
+                        receiverAddressInput.setBackgroundResource(R.drawable.selector_edittext_ok)
+                        receiverAddressInput.setCompoundDrawablesWithIntrinsicBounds(wrappedDrawable, null, null, null)
+                    }
+
+                    if (addressStatus) {
+                        approveText()
+
+                        if (isChecked) {
+                            enableSend()
                         }
                         else {
-                            enableSend()
+                            disableSend()
                         }
                     }
                     else {

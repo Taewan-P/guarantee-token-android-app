@@ -180,6 +180,8 @@ class MainActivity : AppCompatActivity() {
             }
             else {
                 Log.d("PW", "Input cancelled")
+                val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
+                fragment.enableUI()
             }
         }
 

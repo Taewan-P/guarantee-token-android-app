@@ -83,9 +83,9 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                 bottomSheetDialog.setCancelable(true)
                 bottomSheetDialog.setContentView(sheetView)
                 bottomSheetDialog.dismissWithAnimation = true
-                bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+//                bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-                val tokenView = bottomSheetDialog.findViewById<RelativeLayout>(R.id.send_token_token_layout)
+                val tokenView = sheetView.findViewById<RelativeLayout>(R.id.send_token_token_layout)
 
                 tokenLayout.findViewById<TextView>(R.id.token_id).text = "No. ${item.tokenID}"
                 tokenLayout.findViewById<TextView>(R.id.product_name).text = item.productName

@@ -123,7 +123,9 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
 
                 val receiverAddressInput = bottomSheetDialog.findViewById<EditText>(R.id.send_to_input)
 
-                receiverAddressInput!!.addTextChangedListener(object : TextWatcher {
+                receiverAddressInput!!.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty), null, null, null)
+
+                receiverAddressInput.addTextChangedListener(object : TextWatcher {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
                     override fun afterTextChanged(s: Editable?) { }

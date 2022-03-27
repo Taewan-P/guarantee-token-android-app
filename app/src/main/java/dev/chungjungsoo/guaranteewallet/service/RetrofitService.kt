@@ -8,7 +8,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface RetrofitService {
-    @GET("/node")
+    @GET("/node/")
     fun ping(@Header("x-access-token") token: String?): Call<PingResult>
 
     @POST("/account/login")

@@ -27,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClass {
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://gtk-main-server.herokuapp.com")
+        .baseUrl("https://gtkserver.chungjungsoo.dev")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

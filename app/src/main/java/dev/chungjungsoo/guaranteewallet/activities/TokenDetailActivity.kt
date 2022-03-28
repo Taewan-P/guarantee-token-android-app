@@ -51,7 +51,8 @@ class TokenDetailActivity : AppCompatActivity() {
         brandNameText.text = tokenBrand
         tokenExpDateText.text = tokenExpDate
 
-        findViewById<RelativeLayout>(R.id.send_token_btn).visibility = View.GONE
+        val sendBtn = findViewById<RelativeLayout>(R.id.send_token_btn)
+        sendBtn.animate().alpha(0.0f)
 
         val color = intent.getStringExtra("color")!!.toInt()
         val tokenView = findViewById<RelativeLayout>(R.id.token_view_details)
@@ -130,6 +131,14 @@ class TokenDetailActivity : AppCompatActivity() {
 
         }
     }
+
+
+    override fun onBackPressed() {
+        val sendBtn = findViewById<RelativeLayout>(R.id.send_token_btn)
+        sendBtn.animate().alpha(1.0f)
+        super.onBackPressed()
+    }
+
 
     private fun getQRCode(token: String, tid: Int, owner: String): CreateQRCodeResult? {
         val server = RetrofitClass.getInstance()

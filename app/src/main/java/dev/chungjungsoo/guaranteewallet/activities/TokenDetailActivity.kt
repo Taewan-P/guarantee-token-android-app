@@ -4,10 +4,13 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.transition.*
 import android.util.Log
 import android.view.View
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -25,8 +28,55 @@ class TokenDetailActivity : AppCompatActivity() {
         lateinit var prefs: PreferenceUtil
     }
 
+    override fun onStart() {
+        super.onStart()
+        val color = intent.getStringExtra("color")!!.toInt()
+        val tokenView = findViewById<RelativeLayout>(R.id.token_view_details)
+        tokenView.setBackgroundResource(color)
+    }
+
+    override fun onEnterAnimationComplete() {
+        super.onEnterAnimationComplete()
+
+        val tokenID = intent.getStringExtra("tid")!!.toInt()
+        val tokenLogo = intent.getStringExtra("logo")
+        val tokenBrand = intent.getStringExtra("brand")
+        val tokenProdName = intent.getStringExtra("name")
+        val tokenProdDate = intent.getStringExtra("prodDate")
+        val tokenExpDate = intent.getStringExtra("expDate")
+        val tokenDetails = intent.getStringExtra("details")
+
+        val tokenIDText = findViewById<TextView>(R.id.token_id)
+        val productNameText = findViewById<TextView>(R.id.product_name)
+        val productLogo = findViewById<ImageView>(R.id.product_logo)
+        val brandNameText = findViewById<TextView>(R.id.brand_name)
+        val tokenExpDateText = findViewById<TextView>(R.id.token_exp_date)
+
+        tokenIDText.text = "No. $tokenID"
+        productNameText.text = tokenProdName
+        productLogo.setImageResource(R.drawable.ic_apple_logo_black)
+        brandNameText.text = tokenBrand
+        tokenExpDateText.text = tokenExpDate
+
+        findViewById<RelativeLayout>(R.id.send_token_btn).visibility = View.GONE
+
+    }
+
     lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        window.sharedElementEnterTransition =
+            TransitionSet().apply {
+                interpolator = OvershootInterpolator(0.5F)
+                ordering = TransitionSet.ORDERING_TOGETHER
+                addTransition(ChangeBounds().apply {
+                    pathMotion = ArcMotion()
+                })
+
+                addTransition(ChangeTransform())
+                addTransition(ChangeClipBounds())
+                addTransition(ChangeImageTransform())
+            }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_token_details)
         window.statusBarColor = ContextCompat.getColor(this, R.color.mainColor)
@@ -37,26 +87,14 @@ class TokenDetailActivity : AppCompatActivity() {
         prefs = PreferenceUtil(applicationContext)
 
         val tokenID = intent.getStringExtra("tid")!!.toInt()
-        val tokenLogo = intent.getStringExtra("logo")
-        val tokenBrand = intent.getStringExtra("brand")
-        val tokenProdName = intent.getStringExtra("name")
         val tokenProdDate = intent.getStringExtra("prodDate")
-        val tokenExpDate = intent.getStringExtra("expDate")
         val tokenDetails = intent.getStringExtra("details")
 
-        val txtViewID = findViewById<TextView>(R.id.token_detail_id)
-        val txtViewName = findViewById<TextView>(R.id.token_detail_name)
-        val txtViewBrand = findViewById<TextView>(R.id.token_detail_brand)
         val txtViewProdDate = findViewById<TextView>(R.id.token_detail_prod_date)
-        val txtViewExpDate = findViewById<TextView>(R.id.token_detail_exp_date)
         val txtViewDetails = findViewById<TextView>(R.id.token_detail_details)
         val qrCodeImgView = findViewById<ImageView>(R.id.qr_image_view)
 
-        txtViewID.text = "No. $tokenID"
-        txtViewName.text = tokenProdName
-        txtViewBrand.text = tokenBrand
         txtViewProdDate.text = tokenProdDate
-        txtViewExpDate.text = tokenExpDate
         txtViewDetails.text = tokenDetails
 
         showProgress(this)

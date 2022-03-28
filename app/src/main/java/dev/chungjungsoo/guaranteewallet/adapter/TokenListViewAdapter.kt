@@ -318,4 +318,8 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
         bottomSheetDialog.setCancelable(true)
         bottomSheetDialog.cancel()
     }
+
+    fun getColorList(): List<Int> {
+        return colorList
+    }
 }

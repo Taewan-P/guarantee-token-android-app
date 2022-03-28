@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -46,7 +48,7 @@ class ListTokenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         progressDialog = requireView().findViewById(R.id.list_progress_bar)
         prefs = PreferenceUtil(requireContext())
-        items = mutableListOf<ListViewItem>()
+        items = mutableListOf()
         adapter = TokenListViewAdapter(items)
         val tokenListView = requireView().findViewById<ListView>(R.id.token_listview)
         val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
@@ -222,7 +224,20 @@ class ListTokenFragment : Fragment() {
                 intent.putExtra("prodDate", selectedItem.productionDate)
                 intent.putExtra("expDate", selectedItem.expirationDate)
                 intent.putExtra("details", selectedItem.details)
-                startActivity(intent)
+
+                val itemView = parent.getChildAt(position - parent.firstVisiblePosition) as RelativeLayout
+
+                val colorList = adapter.getColorList()
+                intent.putExtra("color", colorList[(position % colorList.size) - 1].toString())
+
+                ActivityCompat.startActivity(
+                    requireContext(), intent,
+                    ActivityOptionsCompat
+                        .makeSceneTransitionAnimation(
+                            requireActivity(),
+                            androidx.core.util.Pair(itemView, itemView.transitionName),
+                        ).toBundle()
+                )
             }
 
         val myQrBtn = tokenListHeaderView.findViewById<ImageView>(R.id.qr_icon_btn)

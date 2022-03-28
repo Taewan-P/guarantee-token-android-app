@@ -228,7 +228,7 @@ class ListTokenFragment : Fragment() {
                 val itemView = parent.getChildAt(position - parent.firstVisiblePosition) as RelativeLayout
 
                 val colorList = adapter.getColorList()
-                intent.putExtra("color", colorList[(position % colorList.size) - 1].toString())
+                intent.putExtra("color", colorList[((position-1) % colorList.size)].toString())
 
                 ActivityCompat.startActivity(
                     requireContext(), intent,

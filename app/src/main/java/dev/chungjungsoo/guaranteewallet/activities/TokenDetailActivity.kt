@@ -30,13 +30,6 @@ class TokenDetailActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val color = intent.getStringExtra("color")!!.toInt()
-        val tokenView = findViewById<RelativeLayout>(R.id.token_view_details)
-        tokenView.setBackgroundResource(color)
-    }
-
-    override fun onEnterAnimationComplete() {
-        super.onEnterAnimationComplete()
 
         val tokenID = intent.getStringExtra("tid")!!.toInt()
         val tokenLogo = intent.getStringExtra("logo")
@@ -60,9 +53,12 @@ class TokenDetailActivity : AppCompatActivity() {
 
         findViewById<RelativeLayout>(R.id.send_token_btn).visibility = View.GONE
 
+        val color = intent.getStringExtra("color")!!.toInt()
+        val tokenView = findViewById<RelativeLayout>(R.id.token_view_details)
+        tokenView.setBackgroundResource(color)
     }
 
-    lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
 
         window.sharedElementEnterTransition =

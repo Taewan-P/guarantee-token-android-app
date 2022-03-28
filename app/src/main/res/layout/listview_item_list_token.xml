@@ -80,7 +80,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="BRAND NAME"
             android:textSize="20sp"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -111,7 +110,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="1970-01-01"
             android:textColor="@color/white"
             android:textSize="13sp"
             android:textStyle="bold" />

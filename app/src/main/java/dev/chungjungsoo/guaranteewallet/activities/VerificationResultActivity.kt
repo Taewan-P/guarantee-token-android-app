@@ -1,6 +1,7 @@
 package dev.chungjungsoo.guaranteewallet.activities
 
 import android.app.Activity
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,8 +13,6 @@ import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.dataclass.CreateQRCodeBody
 import dev.chungjungsoo.guaranteewallet.dataclass.ValidateTokenResult
 import java.io.IOException
-import java.lang.NullPointerException
-import java.util.concurrent.TimeoutException
 import kotlin.concurrent.thread
 
 class VerificationResultActivity : AppCompatActivity() {
@@ -44,11 +43,15 @@ class VerificationResultActivity : AppCompatActivity() {
         val textViewExpDate = findViewById<TextView>(R.id.verification_result_exp_date)
         val textViewDetails = findViewById<TextView>(R.id.verification_result_details)
 
+        val animatedInvalidIcon = ContextCompat.getDrawable(this.applicationContext, R.drawable.animation_invalid) as AnimatedVectorDrawable
+        val animatedCheckmarkIcon = ContextCompat.getDrawable(this.applicationContext, R.drawable.animation_checkmark) as AnimatedVectorDrawable
+
         showProgress(this)
         
         if (exp2) {
             hideProgress()
-            resultIcon.setImageResource(R.drawable.ic_invalid)
+            resultIcon.setImageDrawable(animatedInvalidIcon)
+            animatedInvalidIcon.start()
             resultText.text = "Expired"
             textViewID.text = "N/A"
             textViewName.text = "N/A"
@@ -60,7 +63,8 @@ class VerificationResultActivity : AppCompatActivity() {
         else if (tid == -1 || exp) {
             // Invalid intent result, or expired token
             hideProgress()
-            resultIcon.setImageResource(R.drawable.ic_invalid)
+            resultIcon.setImageDrawable(animatedInvalidIcon)
+            animatedInvalidIcon.start()
             resultText.text = "Invalid"
             textViewID.text = "N/A"
             textViewName.text = "N/A"
@@ -77,7 +81,8 @@ class VerificationResultActivity : AppCompatActivity() {
                     Log.d("VALIDATE", "Token validation failed")
                     runOnUiThread {
                         hideProgress()
-                        resultIcon.setImageResource(R.drawable.ic_invalid)
+                        resultIcon.setImageDrawable(animatedInvalidIcon)
+                        animatedInvalidIcon.start()
                         resultText.text = "Invalid"
                         textViewID.text = "N/A"
                         textViewName.text = "N/A"
@@ -100,7 +105,8 @@ class VerificationResultActivity : AppCompatActivity() {
 
                             runOnUiThread {
                                 hideProgress()
-                                resultIcon.setImageResource(R.drawable.ic_invalid)
+                                resultIcon.setImageDrawable(animatedInvalidIcon)
+                                animatedInvalidIcon.start()
                                 resultText.text = "Invalid"
                                 textViewID.text = "N/A"
                                 textViewName.text = "N/A"
@@ -114,7 +120,8 @@ class VerificationResultActivity : AppCompatActivity() {
                             // Regular route. Successfully retrieved information
                             runOnUiThread {
                                 hideProgress()
-                                resultIcon.setImageResource(R.drawable.ic_certified)
+                                resultIcon.setImageDrawable(animatedCheckmarkIcon)
+                                animatedCheckmarkIcon.start()
                                 resultText.text = "Valid"
                                 textViewID.text = "No. ${tokenInfo!!.tid}"
                                 textViewName.text = tokenInfo.name
@@ -129,7 +136,8 @@ class VerificationResultActivity : AppCompatActivity() {
                         // Invalid Token
                         runOnUiThread {
                             hideProgress()
-                            resultIcon.setImageResource(R.drawable.ic_invalid)
+                            resultIcon.setImageDrawable(animatedInvalidIcon)
+                            animatedInvalidIcon.start()
                             resultText.text = "Invalid"
                             textViewID.text = "N/A"
                             textViewName.text = "N/A"
@@ -146,7 +154,8 @@ class VerificationResultActivity : AppCompatActivity() {
 
                     runOnUiThread {
                         hideProgress()
-                        resultIcon.setImageResource(R.drawable.ic_invalid)
+                        resultIcon.setImageDrawable(animatedInvalidIcon)
+                        animatedInvalidIcon.start()
                         resultText.text = "Invalid"
                         textViewID.text = "N/A"
                         textViewName.text = "N/A"

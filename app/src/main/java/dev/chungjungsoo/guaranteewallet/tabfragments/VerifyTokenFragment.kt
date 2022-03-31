@@ -64,7 +64,18 @@ class VerifyTokenFragment : Fragment() {
     private val callback = BarcodeCallback { result ->
         var invalid = false
         var expired = false
-        val key = Base64.getDecoder().decode(prefs.getString("key", ""))
+        val publicKeyString = prefs.getString("key", "")
+
+        if (publicKeyString == "") {
+            val intent = requireContext().packageManager.getLaunchIntentForPackage(requireContext().packageName)
+
+            intent!!.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+            startActivity(intent)
+        }
+
+        val key = Base64.getDecoder().decode(publicKeyString)
         var strKey = String(key)
 
         strKey = strKey.replace("-----BEGIN PUBLIC KEY-----", "")

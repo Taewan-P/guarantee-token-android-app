@@ -68,8 +68,8 @@ class ListTokenFragment : Fragment() {
                 Log.d("TOKENLIST", "Token List fetch failed")
                 requireActivity().runOnUiThread {
                     Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
-                    tokenListView.emptyView = emptyListTextView
                     hideProgress()
+                    emptyListTextView.visibility = View.VISIBLE
                 }
             }
             if (tokenCall?.err == null) {
@@ -78,14 +78,25 @@ class ListTokenFragment : Fragment() {
                     // Owns token
                     tokenStatus = true
                     tokenList = tokenCall.tokens
+                    emptyListTextView.visibility = View.GONE
                     Log.d("TOKENLIST", "Token list fetch successful")
+                }
+                else {
+                    // Does not own token at all.
+                    tokenStatus = false
+                    tokenList = tokenCall.tokens
+                    Log.d("TOKENLIST", "Empty token list.")
+                    requireActivity().runOnUiThread {
+                        hideProgress()
+                        emptyListTextView.visibility = View.VISIBLE
+                    }
                 }
             } else {
                 // Invalid. Error exists
                 requireActivity().runOnUiThread {
                     Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
-                    tokenListView.emptyView = emptyListTextView
                     hideProgress()
+                    emptyListTextView.visibility = View.VISIBLE
                 }
             }
 
@@ -97,7 +108,6 @@ class ListTokenFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT)
                             .show()
-                        tokenListView.emptyView = emptyListTextView
                         hideProgress()
                     }
                 }
@@ -119,7 +129,6 @@ class ListTokenFragment : Fragment() {
                     if (activity != null) {
                         requireActivity().runOnUiThread {
                             adapter.notifyDataSetChanged()
-                            tokenListView.emptyView = emptyListTextView
                             hideProgress()
                         }
                         Log.d("TOKENINFO", "Token information fetch successful")
@@ -127,7 +136,6 @@ class ListTokenFragment : Fragment() {
                 } else {
                     // Empty list.
                     requireActivity().runOnUiThread {
-                        tokenListView.emptyView = emptyListTextView
                         hideProgress()
                     }
                 }
@@ -150,6 +158,7 @@ class ListTokenFragment : Fragment() {
                         Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT)
                             .show()
                         pullToRefresh.isRefreshing = false
+                        emptyListTextView.visibility = View.VISIBLE
                     }
                 }
                 if (tokenCall?.err == null) {
@@ -159,12 +168,22 @@ class ListTokenFragment : Fragment() {
                         tokenStatus = true
                         tokenList = tokenCall.tokens
                         Log.d("TOKENLIST", "Token list refresh successful")
+                        emptyListTextView.visibility = View.GONE
+                    }
+                    else {
+                        // Empty token list
+                        tokenStatus = false
+                        tokenList = tokenCall.tokens
+                        Log.d("TOKENLIST", "Token list refreshed, but no tokens")
+                        pullToRefresh.isRefreshing = false
+                        emptyListTextView.visibility = View.VISIBLE
                     }
                 } else {
                     // Invalid. Error exists
                     requireActivity().runOnUiThread {
                         Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
                         pullToRefresh.isRefreshing = false
+                        emptyListTextView.visibility = View.VISIBLE
                     }
                 }
 
@@ -204,7 +223,6 @@ class ListTokenFragment : Fragment() {
                     } else {
                         // Empty list.
                         requireActivity().runOnUiThread {
-                            tokenListView.emptyView = emptyListTextView
                             pullToRefresh.isRefreshing = false
                         }
                     }

@@ -40,4 +40,9 @@ interface RetrofitService {
                       @Body body: TransferTokenBody
     ): Call<TransferTokenResult>
 
+    @POST("/account/history")
+    fun getHistory(@Header("x-access-token")token: String?,
+                   @Body body: GetHistoryBody
+    ): Call<GetHistoryResult>
+
 }

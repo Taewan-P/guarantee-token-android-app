@@ -102,3 +102,12 @@ data class TransferTokenResult(
     @SerializedName("txhash") val txHash: String,
     @SerializedName("error") val err: String
 )
+
+data class GetHistoryBody(
+    @SerializedName("address") val address: String
+)
+
+data class GetHistoryResult(
+    @SerializedName("result") val result: List<List<Any>?>,
+    @SerializedName("error") val err: String
+)

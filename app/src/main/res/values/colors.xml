@@ -19,5 +19,6 @@
     <color name="cardColor5">#bf5af2</color>
     <color name="cardColor6">#a7a9ac</color>
     <color name="sheetColor">#332d47</color>
+    <color name="iconBackGround">#463f56</color>
 
 </resources>

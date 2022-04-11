@@ -64,7 +64,7 @@ class ManufacturerFragment : Fragment() {
         pageAdapter.adapter = fragmentAdapter
 
         val bottomNav: TabLayout = requireView().findViewById(R.id.manu_bottom_nav)
-        TabLayoutMediator(bottomNav, pageAdapter) { _, _ -> }.attach()
+        TabLayoutMediator(bottomNav, pageAdapter, false, false) { _, _ -> }.attach()
 
         val customTab = LayoutInflater.from(context).inflate(R.layout.layout_manu_tab, null, false)
         bottomNav.getTabAt(0)?.customView =

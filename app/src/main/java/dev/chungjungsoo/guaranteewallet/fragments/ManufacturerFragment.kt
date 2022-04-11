@@ -75,6 +75,7 @@ class ManufacturerFragment : Fragment() {
             customTab.findViewById(R.id.history_tab) as LinearLayout
         bottomNav.getTabAt(3)?.customView = customTab.findViewById(R.id.more_tab) as LinearLayout
 
+        pageAdapter.isUserInputEnabled = false
 
         pageAdapter.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {

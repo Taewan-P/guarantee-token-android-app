@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
 import dev.chungjungsoo.guaranteewallet.dataclass.GetHistoryBody
@@ -85,6 +86,63 @@ class HistoryFragment : Fragment() {
             }
         }
 
+        val pullToRefresh = requireView().findViewById<SwipeRefreshLayout>(R.id.history_refresh)
+
+        pullToRefresh.setOnRefreshListener {
+            thread {
+                val historyCall = getHistory(token, account)
+
+                if (historyCall == null) {
+                    Log.e("HISTORY", "History refresh failed")
+                    requireActivity().runOnUiThread {
+                        // Error handling
+                        pullToRefresh.isRefreshing = false
+                        TODO()
+                    }
+                }
+
+                if (historyCall?.err == null) {
+                    // Successful request
+                    val records = historyTable.childCount
+
+                    if (historyCall?.result!!.isNotEmpty()) {
+                        // Owns history
+                        requireActivity().runOnUiThread {
+                            pullToRefresh.isRefreshing = false
+                            historyTable.removeViews(1, records-1)
+                        }
+                        for (h in historyCall.result) {
+                            val tid = h?.get(0)
+                            val from = h?.get(1)
+                            val to = h?.get(2)
+                            val date = h?.get(3)
+
+                            val tableRow = createTableRow((tid as Double).toInt(), from.toString(),
+                                to.toString(), date.toString()
+                            )
+                            requireActivity().runOnUiThread {
+                                historyTable.addView(tableRow)
+                            }
+                        }
+
+
+                    }
+                    else {
+                        // No history
+                        requireActivity().runOnUiThread {
+                            pullToRefresh.isRefreshing = false
+                        }
+                    }
+                }
+                else {
+                    // Invalid
+                    requireActivity().runOnUiThread {
+                        pullToRefresh.isRefreshing = false
+                    }
+                }
+            }
+        }
+
     }
 
     private fun getHistory(token: String, address: String) : GetHistoryResult? {
@@ -122,6 +180,7 @@ class HistoryFragment : Fragment() {
                 oneAddress = from
             }
             else -> {
+                // Error?
                 bound = "UNKNOWN"
                 oneAddress = ""
             }
@@ -148,15 +207,19 @@ class HistoryFragment : Fragment() {
 
         tidTextView.gravity = Gravity.CENTER
         boundTextView.gravity = Gravity.CENTER
-        TextViewCompat.setAutoSizeTextTypeWithDefaults(addressTextView, TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
-        addressTextView.maxLines = 1
-        addressTextView.ellipsize = TextUtils.TruncateAt.END
 
         row.addView(dateTextView)
         row.addView(tidTextView)
         row.addView(boundTextView)
         row.addView(addressTextView)
 
+        row.setPadding(0, dpToPixel(10), 0, dpToPixel(10))
+
         return row
+    }
+
+    private fun dpToPixel(dp: Int) : Int {
+        val density = requireContext().resources.displayMetrics.density
+        return (dp * density).toInt()
     }
 }

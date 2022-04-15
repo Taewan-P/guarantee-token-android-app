@@ -37,7 +37,8 @@
                     android:stretchColumns="3"
                     android:paddingBottom="10dp" >
 
-                    <TableRow>
+                    <TableRow
+                        android:layout_marginBottom="5dp">
 
                         <TextView
                             android:padding="5dp"

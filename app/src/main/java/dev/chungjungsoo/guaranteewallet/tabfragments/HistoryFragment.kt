@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
@@ -50,9 +51,13 @@ class HistoryFragment : Fragment() {
 
             if (historyCall == null) {
                 Log.e("HISTORY", "History fetch failed")
-                requireActivity().runOnUiThread {
-                    // Error handling
-                    TODO()
+                if (isAdded) {
+                    requireActivity().runOnUiThread {
+                        // Error handling
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(requireContext(), "History unavailable. Please try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
 
@@ -69,20 +74,24 @@ class HistoryFragment : Fragment() {
                         val tableRow = createTableRow((tid as Double).toInt(), from.toString(),
                             to.toString(), date.toString()
                         )
-                        requireActivity().runOnUiThread {
-                            historyTable.addView(tableRow)
+                        if (isAdded) {
+                            requireActivity().runOnUiThread {
+                                historyTable.addView(tableRow)
+                            }
                         }
                     }
-
-
                 }
                 else {
-                    // No history
+                    // No history. Do nothing.
                 }
             }
             else {
                 // Invalid
-
+                if (isAdded) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(requireContext(), "Error occurred.", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
@@ -97,7 +106,7 @@ class HistoryFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         // Error handling
                         pullToRefresh.isRefreshing = false
-                        TODO()
+                        Toast.makeText(requireContext(), "History unavailable. Please try again.", Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -138,6 +147,7 @@ class HistoryFragment : Fragment() {
                     // Invalid
                     requireActivity().runOnUiThread {
                         pullToRefresh.isRefreshing = false
+                        Toast.makeText(requireContext(), "Error occurred.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -189,6 +199,7 @@ class HistoryFragment : Fragment() {
         val row = TableRow(requireContext())
         val lp = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT)
         row.layoutParams = lp
+        row.setBackgroundResource(R.drawable.table_border)
 
         val tidTextView = TextView(requireContext())
         val boundTextView = TextView(requireContext())
@@ -213,7 +224,7 @@ class HistoryFragment : Fragment() {
         row.addView(boundTextView)
         row.addView(addressTextView)
 
-        row.setPadding(0, dpToPixel(10), 0, dpToPixel(10))
+        row.setPadding(dpToPixel(10), dpToPixel(10), dpToPixel(10), dpToPixel(10))
 
         return row
     }

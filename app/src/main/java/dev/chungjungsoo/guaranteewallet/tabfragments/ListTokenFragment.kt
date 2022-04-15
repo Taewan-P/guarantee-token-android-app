@@ -66,10 +66,12 @@ class ListTokenFragment : Fragment() {
             var tokenList: List<Int> = listOf()
             if (tokenCall == null) {
                 Log.d("TOKENLIST", "Token List fetch failed")
-                requireActivity().runOnUiThread {
-                    Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
-                    hideProgress()
-                    emptyListTextView.visibility = View.VISIBLE
+                if (isAdded) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
+                        hideProgress()
+                        emptyListTextView.visibility = View.VISIBLE
+                    }
                 }
             }
             if (tokenCall?.err == null) {
@@ -86,17 +88,21 @@ class ListTokenFragment : Fragment() {
                     tokenStatus = false
                     tokenList = tokenCall.tokens
                     Log.d("TOKENLIST", "Empty token list.")
-                    requireActivity().runOnUiThread {
-                        hideProgress()
-                        emptyListTextView.visibility = View.VISIBLE
+                    if (isAdded) {
+                        requireActivity().runOnUiThread {
+                            hideProgress()
+                            emptyListTextView.visibility = View.VISIBLE
+                        }
                     }
                 }
             } else {
                 // Invalid. Error exists
-                requireActivity().runOnUiThread {
-                    Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
-                    hideProgress()
-                    emptyListTextView.visibility = View.VISIBLE
+                if (isAdded) {
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
+                        hideProgress()
+                        emptyListTextView.visibility = View.VISIBLE
+                    }
                 }
             }
 
@@ -105,10 +111,12 @@ class ListTokenFragment : Fragment() {
 
                 if (tokenInfoCall == null) {
                     Log.d("TOKENINFO", "Token information fetch failed")
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT)
-                            .show()
-                        hideProgress()
+                    if (isAdded) {
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT)
+                                .show()
+                            hideProgress()
+                        }
                     }
                 }
                 val tokenInfo = tokenInfoCall?.tokens ?: listOf()
@@ -135,8 +143,10 @@ class ListTokenFragment : Fragment() {
                     }
                 } else {
                     // Empty list.
-                    requireActivity().runOnUiThread {
-                        hideProgress()
+                    if (isAdded) {
+                        requireActivity().runOnUiThread {
+                            hideProgress()
+                        }
                     }
                 }
             }

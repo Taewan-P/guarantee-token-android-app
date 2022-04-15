@@ -112,6 +112,7 @@ class HistoryFragment : Fragment() {
 
                 if (historyCall?.err == null) {
                     // Successful request
+                    Log.d("HISTORY", "History refresh successful")
                     val records = historyTable.childCount
 
                     if (historyCall?.result!!.isNotEmpty()) {

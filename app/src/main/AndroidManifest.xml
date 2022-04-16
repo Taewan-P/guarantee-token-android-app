@@ -25,6 +25,7 @@
         </activity>
         <activity
             android:name=".activities.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:launchMode = "singleInstance"/>
 
         <activity

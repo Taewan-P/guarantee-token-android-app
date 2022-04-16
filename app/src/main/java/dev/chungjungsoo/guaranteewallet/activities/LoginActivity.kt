@@ -2,14 +2,15 @@ package dev.chungjungsoo.guaranteewallet.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
+import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialog
@@ -54,9 +55,9 @@ class LoginActivity : AppCompatActivity() {
 
         val inputUserID: EditText = findViewById(R.id.user_id)
         val inputUserPW: EditText = findViewById(R.id.user_pw)
-        val loginBtn: ImageButton = findViewById(R.id.login_btn)
+        val loginBtn: Button = findViewById(R.id.login_btn)
 
-        loginBtn.isEnabled = false
+        disableLoginBtn()
 
         var userID: String = ""
         var userPW: String = ""
@@ -77,8 +78,12 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     idStatus = true
                 }
-
-                loginBtn.isEnabled = idStatus && pwStatus
+                if (idStatus && pwStatus) {
+                    enableLoginBtn()
+                }
+                else {
+                    disableLoginBtn()
+                }
             }
         })
 
@@ -96,7 +101,12 @@ class LoginActivity : AppCompatActivity() {
                     pwStatus = true
                 }
 
-                loginBtn.isEnabled = idStatus && pwStatus
+                if (idStatus && pwStatus) {
+                    enableLoginBtn()
+                }
+                else {
+                    disableLoginBtn()
+                }
             }
         })
 
@@ -145,7 +155,7 @@ class LoginActivity : AppCompatActivity() {
         return trimmed.length >= 6
     }
 
-    fun showProgress(activity: Activity) {
+    private fun showProgress(activity: Activity) {
         if (activity.isFinishing) {
             return
         }
@@ -163,5 +173,19 @@ class LoginActivity : AppCompatActivity() {
         if (progressDialog.isShowing) {
             progressDialog.dismiss()
         }
+    }
+
+    fun disableLoginBtn() {
+        val loginBtn = findViewById<Button>(R.id.login_btn)
+        loginBtn.isEnabled = false
+        loginBtn.alpha = 0.5F
+        loginBtn.setTextColor(Color.parseColor("#a7a9ac"))
+    }
+
+    fun enableLoginBtn() {
+        val loginBtn = findViewById<Button>(R.id.login_btn)
+        loginBtn.isEnabled = true
+        loginBtn.alpha = 1F
+        loginBtn.setTextColor(Color.parseColor("#000000"))
     }
 }

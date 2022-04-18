@@ -45,4 +45,8 @@ interface RetrofitService {
                    @Body body: GetHistoryBody
     ): Call<GetHistoryResult>
 
+    @POST("/node/mint")
+    fun mintToken(@Header("x-access-token")token: String?,
+                  @Body body: MintTokenBody
+    ): Call<MintTokenResult>
 }

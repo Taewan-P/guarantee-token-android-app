@@ -109,3 +109,18 @@ data class GetHistoryResult(
     @SerializedName("result") val result: List<List<Any>?>,
     @SerializedName("error") val err: String
 )
+
+data class MintTokenBody(
+    @SerializedName("address") val account: String,
+    @SerializedName("wallet_password") val pw: String,
+    @SerializedName("product_name") val name: String,
+    @SerializedName("prod_date") val prod_date: String,
+    @SerializedName("exp_date") val exp_date: String,
+    @SerializedName("details") val details: String
+)
+
+data class MintTokenResult(
+    @SerializedName("result") val result: String?,
+    @SerializedName("txhash") val txhash: String?,
+    @SerializedName("error") val err: String?
+)

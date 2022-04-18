@@ -125,7 +125,6 @@ class ListTokenFragment : Fragment() {
                         items.add(
                             ListViewItem(
                                 it.tid,
-                                it.logo,
                                 it.brand,
                                 it.name,
                                 it.prodDate,
@@ -215,7 +214,6 @@ class ListTokenFragment : Fragment() {
                             items.add(
                                 ListViewItem(
                                     it.tid,
-                                    it.logo,
                                     it.brand,
                                     it.name,
                                     it.prodDate,
@@ -246,7 +244,6 @@ class ListTokenFragment : Fragment() {
                 val intent = Intent(activity, TokenDetailActivity::class.java)
 
                 intent.putExtra("tid", selectedItem.tokenID.toString())
-                intent.putExtra("logo", selectedItem.logo)
                 intent.putExtra("brand", selectedItem.brand)
                 intent.putExtra("name", selectedItem.productName)
                 intent.putExtra("prodDate", selectedItem.productionDate)

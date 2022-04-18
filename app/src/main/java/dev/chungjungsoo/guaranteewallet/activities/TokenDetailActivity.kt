@@ -32,7 +32,6 @@ class TokenDetailActivity : AppCompatActivity() {
         super.onStart()
 
         val tokenID = intent.getStringExtra("tid")!!.toInt()
-        val tokenLogo = intent.getStringExtra("logo")
         val tokenBrand = intent.getStringExtra("brand")
         val tokenProdName = intent.getStringExtra("name")
         val tokenProdDate = intent.getStringExtra("prodDate")

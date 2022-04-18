@@ -42,7 +42,6 @@ data class TokenInfoBody(
 
 data class TokenInfo(
     @SerializedName("TokenID") val tid: Int,
-    @SerializedName("Logo") val logo: String,
     @SerializedName("Brand") val brand: String,
     @SerializedName("ProductName") val name: String,
     @SerializedName("ProductionDate") val prodDate: String,
@@ -57,7 +56,6 @@ data class TokenInfoResult(
 
 data class ListViewItem(
     val tokenID: Int,
-    val logo: String,
     val brand: String,
     val productName: String,
     val productionDate: String,

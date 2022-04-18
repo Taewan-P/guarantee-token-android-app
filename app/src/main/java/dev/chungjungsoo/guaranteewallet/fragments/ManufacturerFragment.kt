@@ -19,10 +19,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.adapter.ManuFragmentAdapter
-import dev.chungjungsoo.guaranteewallet.tabfragments.ListTokenFragment
-import dev.chungjungsoo.guaranteewallet.tabfragments.MorePageFragment
-import dev.chungjungsoo.guaranteewallet.tabfragments.HistoryFragment
-import dev.chungjungsoo.guaranteewallet.tabfragments.VerifyTokenFragment
+import dev.chungjungsoo.guaranteewallet.tabfragments.*
 
 class ManufacturerFragment : Fragment() {
     private val requestPermissionLauncher =
@@ -55,6 +52,7 @@ class ManufacturerFragment : Fragment() {
 
         fragmentAdapter.addFragment(ListTokenFragment())
         fragmentAdapter.addFragment(VerifyTokenFragment())
+        fragmentAdapter.addFragment(MintFragment())
         fragmentAdapter.addFragment(HistoryFragment())
         fragmentAdapter.addFragment(MorePageFragment())
 
@@ -72,8 +70,11 @@ class ManufacturerFragment : Fragment() {
         bottomNav.getTabAt(1)?.customView =
             customTab.findViewById(R.id.verify_token_tab) as LinearLayout
         bottomNav.getTabAt(2)?.customView =
+            customTab.findViewById(R.id.mint_token_tab) as LinearLayout
+        bottomNav.getTabAt(3)?.customView =
             customTab.findViewById(R.id.history_tab) as LinearLayout
-        bottomNav.getTabAt(3)?.customView = customTab.findViewById(R.id.more_tab) as LinearLayout
+        bottomNav.getTabAt(4)?.customView =
+            customTab.findViewById(R.id.more_tab) as LinearLayout
 
         pageAdapter.isUserInputEnabled = false
 

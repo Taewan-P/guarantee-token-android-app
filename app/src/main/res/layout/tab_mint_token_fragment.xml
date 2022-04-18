@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="22dp" >
+
+    <TextView
+        android:id="@+id/mint_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mint Token"
+        android:layout_marginBottom="22dp"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/mint_prod_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mint_title"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product name"
+            android:textSize="20sp"
+            android:textColor="@color/white" />
+
+        <EditText
+            android:id="@+id/prod_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/white"
+            android:hint="" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mint_prod_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mint_prod_name"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Production Date"
+            android:textSize="20sp"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/prod_date_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Date" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mint_exp_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mint_prod_date"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expiration Date"
+            android:textSize="20sp"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/exp_date_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Date" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mint_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mint_exp_date"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Details"
+            android:textSize="20sp"
+            android:textColor="@color/white" />
+
+        <EditText
+            android:id="@+id/details_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="5"
+            android:inputType="textMultiLine|textCapSentences"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/white"
+            android:hint="" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/mint_btn"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:text="Mint Token"
+        />
+
+</RelativeLayout>

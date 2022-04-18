@@ -95,6 +95,21 @@ class MainActivity : AppCompatActivity() {
                                 alertDialog.show()
                             }
                         }
+                        transferResult?.err ?: "Unknown error" == "Node Network Error" -> {
+                            Log.d("TRANSFER", "Node Network Error")
+                            runOnUiThread {
+                                fragment.enableUI()
+
+                                resultText.text = "Node Network Error. Try again in a few moments."
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK", null)
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                        }
+                    }
                         transferResult?.err ?: "Unknown error" == "Network Error" -> {
                             Log.d("TRANSFER", "Network Error")
                             runOnUiThread {

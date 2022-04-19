@@ -63,17 +63,17 @@ class HistoryFragment : Fragment() {
 
             if (historyCall?.err == null) {
                 // Successful request
+                Log.d("HISTORY", "History fetch successful")
                 if (historyCall?.result!!.isNotEmpty()) {
                     // Owns history
                     for (h in historyCall.result) {
-                        val tid = h?.get(0)
-                        val from = h?.get(1)
-                        val to = h?.get(2)
-                        val date = h?.get(3)
+                        val tid = h!!.tid
+                        val from = h.from
+                        val to = h.to
+                        val date = h.time
 
-                        val tableRow = createTableRow((tid as Double).toInt(), from.toString(),
-                            to.toString(), date.toString()
-                        )
+                        val tableRow = createTableRow(tid, from.toString(), to, date)
+
                         if (isAdded) {
                             requireActivity().runOnUiThread {
                                 historyTable.addView(tableRow)
@@ -122,20 +122,17 @@ class HistoryFragment : Fragment() {
                             historyTable.removeViews(1, records-1)
                         }
                         for (h in historyCall.result) {
-                            val tid = h?.get(0)
-                            val from = h?.get(1)
-                            val to = h?.get(2)
-                            val date = h?.get(3)
+                            val tid = h!!.tid
+                            val from = h.from
+                            val to = h.to
+                            val date = h.time
 
-                            val tableRow = createTableRow((tid as Double).toInt(), from.toString(),
-                                to.toString(), date.toString()
-                            )
+                            val tableRow = createTableRow(tid, from.toString(), to, date)
+
                             requireActivity().runOnUiThread {
                                 historyTable.addView(tableRow)
                             }
                         }
-
-
                     }
                     else {
                         // No history
@@ -153,7 +150,6 @@ class HistoryFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun getHistory(token: String, address: String) : GetHistoryResult? {

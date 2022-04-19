@@ -105,9 +105,16 @@ data class GetHistoryBody(
     @SerializedName("address") val address: String
 )
 
+data class HistoryItem(
+    @SerializedName("token_id") val tid: Int,
+    @SerializedName("token_from") val from: String?,
+    @SerializedName("token_to") val to: String,
+    @SerializedName("event_time") val time: String
+)
+
 data class GetHistoryResult(
-    @SerializedName("result") val result: List<List<Any>?>,
-    @SerializedName("error") val err: String
+    @SerializedName("result") val result: List<HistoryItem?>,
+    @SerializedName("error") val err: String?
 )
 
 data class MintTokenBody(

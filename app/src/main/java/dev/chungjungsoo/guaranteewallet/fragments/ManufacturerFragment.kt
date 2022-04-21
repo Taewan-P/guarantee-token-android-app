@@ -18,7 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dev.chungjungsoo.guaranteewallet.R
-import dev.chungjungsoo.guaranteewallet.adapter.ManuFragmentAdapter
+import dev.chungjungsoo.guaranteewallet.adapter.FragmentAdapter
 import dev.chungjungsoo.guaranteewallet.tabfragments.*
 
 class ManufacturerFragment : Fragment() {
@@ -48,7 +48,7 @@ class ManufacturerFragment : Fragment() {
         WindowInsetsControllerCompat(requireActivity().window, view).isAppearanceLightStatusBars =
             false
 
-        val fragmentAdapter = ManuFragmentAdapter(requireActivity())
+        val fragmentAdapter = FragmentAdapter(requireActivity())
 
         fragmentAdapter.addFragment(ListTokenFragment())
         fragmentAdapter.addFragment(VerifyTokenFragment())

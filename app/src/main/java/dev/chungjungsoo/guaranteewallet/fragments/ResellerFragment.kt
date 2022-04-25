@@ -38,7 +38,7 @@ class ResellerFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.type_reseller_fragment, container, false)
+        return inflater.inflate(R.layout.type_manu_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

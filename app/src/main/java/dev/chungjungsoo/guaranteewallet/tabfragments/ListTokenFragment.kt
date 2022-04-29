@@ -80,7 +80,9 @@ class ListTokenFragment : Fragment() {
                     // Owns token
                     tokenStatus = true
                     tokenList = tokenCall.tokens
-                    emptyListTextView.visibility = View.GONE
+                    requireActivity().runOnUiThread {
+                        emptyListTextView.visibility = View.GONE
+                    }
                     Log.d("TOKENLIST", "Token list fetch successful")
                 }
                 else {
@@ -140,7 +142,8 @@ class ListTokenFragment : Fragment() {
                         }
                         Log.d("TOKENINFO", "Token information fetch successful")
                     }
-                } else {
+                }
+                else {
                     // Empty list.
                     if (isAdded) {
                         requireActivity().runOnUiThread {

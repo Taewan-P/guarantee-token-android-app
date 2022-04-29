@@ -297,9 +297,9 @@ class ListTokenFragment : Fragment() {
             val response = server.getTokenList(token, GetTokenListBody(address = address)).execute()
             response.body()
         } catch (e: IOException) {
-            GetTokenListResult(account = address, tokens = listOf(), err = "Network Error")
+            GetTokenListResult(account = address, tokens = listOf(), approved = null, err = "Network Error")
         } catch (e: NullPointerException) {
-            GetTokenListResult(account = address, tokens = listOf(), err = "Invalid Request")
+            GetTokenListResult(account = address, tokens = listOf(), approved = null, err = "Invalid Request")
         }
 
     }

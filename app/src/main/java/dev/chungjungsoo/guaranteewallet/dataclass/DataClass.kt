@@ -33,6 +33,7 @@ data class GetTokenListBody(
 data class GetTokenListResult(
     @SerializedName("account") val account: String,
     @SerializedName("tokens") val tokens: List<Int>,
+    @SerializedName("approved") val approved: List<Int>?,
     @SerializedName("error") val err: String
 )
 

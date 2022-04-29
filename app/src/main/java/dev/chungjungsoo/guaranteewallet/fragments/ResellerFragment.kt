@@ -52,6 +52,7 @@ class ResellerFragment : Fragment() {
         val fragmentAdapter = FragmentAdapter(requireActivity())
 
         fragmentAdapter.addFragment(ListTokenFragment())
+        fragmentAdapter.addFragment(ApprovedTokenFragment())
         fragmentAdapter.addFragment(VerifyTokenFragment())
         fragmentAdapter.addFragment(HistoryFragment())
         fragmentAdapter.addFragment(MorePageFragment())
@@ -68,10 +69,12 @@ class ResellerFragment : Fragment() {
         bottomNav.getTabAt(0)?.customView =
             customTab.findViewById(R.id.list_token_tab) as LinearLayout
         bottomNav.getTabAt(1)?.customView =
-            customTab.findViewById(R.id.verify_token_tab) as LinearLayout
+            customTab.findViewById(R.id.approve_token_tab) as LinearLayout
         bottomNav.getTabAt(2)?.customView =
-            customTab.findViewById(R.id.history_tab) as LinearLayout
+            customTab.findViewById(R.id.verify_token_tab) as LinearLayout
         bottomNav.getTabAt(3)?.customView =
+            customTab.findViewById(R.id.history_tab) as LinearLayout
+        bottomNav.getTabAt(4)?.customView =
             customTab.findViewById(R.id.more_tab) as LinearLayout
 
         pageAdapter.isUserInputEnabled = false
@@ -80,7 +83,7 @@ class ResellerFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                if (position == 1) {
+                if (position == 2) {
                     when {
                         ContextCompat.checkSelfPermission(
                             requireActivity(),

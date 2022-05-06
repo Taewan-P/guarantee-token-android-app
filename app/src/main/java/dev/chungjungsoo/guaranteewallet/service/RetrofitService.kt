@@ -49,4 +49,7 @@ interface RetrofitService {
     fun mintToken(@Header("x-access-token")token: String?,
                   @Body body: MintTokenBody
     ): Call<MintTokenResult>
+
+    @POST("/tokens/manufacturer")
+    fun getManuAddr(@Body body: GetManufacturerAddressBody): Call<GetManufacturerAddressResult>
 }

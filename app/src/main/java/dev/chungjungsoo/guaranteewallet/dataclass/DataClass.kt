@@ -132,3 +132,12 @@ data class MintTokenResult(
     @SerializedName("txhash") val txhash: String?,
     @SerializedName("error") val err: String?
 )
+
+data class GetManufacturerAddressBody(
+    @SerializedName("tid") val tid: Int
+)
+
+data class GetManufacturerAddressResult(
+    @SerializedName("result") val result: String,
+    @SerializedName("detail") val detail: String?
+)

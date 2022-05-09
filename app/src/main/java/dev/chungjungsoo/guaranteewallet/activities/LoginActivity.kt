@@ -28,7 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClass {
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://gtkserver.chungjungsoo.dev")
+        .baseUrl("https://capstone-337506.du.r.appspot.com")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

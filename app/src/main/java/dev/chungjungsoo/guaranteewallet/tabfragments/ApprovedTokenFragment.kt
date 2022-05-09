@@ -1,25 +1,27 @@
 package dev.chungjungsoo.guaranteewallet.tabfragments
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
+import dev.chungjungsoo.guaranteewallet.activities.TokenDetailActivity
 import dev.chungjungsoo.guaranteewallet.adapter.ApprovedTokenListViewAdapter
 import dev.chungjungsoo.guaranteewallet.dataclass.*
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
+import org.w3c.dom.Text
 import java.io.IOException
 import kotlin.concurrent.thread
 
@@ -54,6 +56,8 @@ class ApprovedTokenFragment : Fragment() {
         val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
 
         val tokenListHeaderView = layoutInflater.inflate(R.layout.title_tokens_layout, tokenListView, false)
+        tokenListHeaderView.findViewById<TextView>(R.id.token_title).text = "Approved"
+        tokenListHeaderView.findViewById<ImageView>(R.id.qr_icon_btn).visibility = View.GONE
         tokenListView.addHeaderView(tokenListHeaderView, null, false)
         tokenListView.adapter = adapter
 
@@ -127,7 +131,6 @@ class ApprovedTokenFragment : Fragment() {
 
             if (tokenStatus) {
                 val tokenInfoCall = getTokenInfo(tokenList)
-
                 if (tokenInfoCall == null) {
                     Log.e("APPROVEDTOKENINFO", "Approved token information fetch failed")
                     if (isAdded) {
@@ -140,7 +143,7 @@ class ApprovedTokenFragment : Fragment() {
                 }
 
                 val tokenInfo = tokenInfoCall?.tokens ?: listOf()
-
+                println(tokenInfoCall)
                 if (tokenInfo.isNotEmpty()) {
                     tokenInfo.forEach {
                         items.add(
@@ -166,6 +169,7 @@ class ApprovedTokenFragment : Fragment() {
                     // Empty list.
                     if (isAdded) {
                         requireActivity().runOnUiThread {
+                            emptyListTextView.visibility = View.VISIBLE
                             hideProgress()
                         }
                     }
@@ -230,5 +234,27 @@ class ApprovedTokenFragment : Fragment() {
         } catch (e: NullPointerException) {
             TokenInfoResult(tokens = listOf(), missing = listOf())
         }
+    }
+
+    fun setScannedAddress(string: String) {
+        adapter.setScannedAddress(string)
+    }
+
+    fun getTokenInfo(): Pair<Int, String> {
+        return adapter.getTokenReceiverInfo()
+    }
+
+    fun disableUI() {
+        adapter.disableUI()
+    }
+
+    fun enableUI() {
+        adapter.enableUI()
+    }
+
+    fun dismissDialog(item: Int) {
+        adapter.dismissDialog()
+        items.removeIf { it.tokenID == item }
+        adapter.notifyDataSetChanged()
     }
 }

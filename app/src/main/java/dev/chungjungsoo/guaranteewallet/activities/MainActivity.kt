@@ -21,12 +21,11 @@ import androidx.fragment.app.Fragment
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import dev.chungjungsoo.guaranteewallet.R
-import dev.chungjungsoo.guaranteewallet.dataclass.GetInfoResult
-import dev.chungjungsoo.guaranteewallet.dataclass.PingResult
-import dev.chungjungsoo.guaranteewallet.dataclass.TransferTokenBody
-import dev.chungjungsoo.guaranteewallet.dataclass.TransferTokenResult
+import dev.chungjungsoo.guaranteewallet.adapter.ApprovedTokenListViewAdapter
+import dev.chungjungsoo.guaranteewallet.dataclass.*
 import dev.chungjungsoo.guaranteewallet.fragments.*
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
+import dev.chungjungsoo.guaranteewallet.tabfragments.ApprovedTokenFragment
 import dev.chungjungsoo.guaranteewallet.tabfragments.ListTokenFragment
 import java.io.IOException
 import kotlin.concurrent.thread
@@ -37,7 +36,9 @@ class MainActivity : AppCompatActivity() {
         lateinit var prefs: PreferenceUtil
     }
     private lateinit var barcodeLauncher : ActivityResultLauncher<ScanOptions>
+    private lateinit var approvedBarcodeLauncher : ActivityResultLauncher<ScanOptions>
     private lateinit var passwordActivityLauncher : ActivityResultLauncher<Intent>
+    private lateinit var approvedPasswordActivityLauncher : ActivityResultLauncher<Intent>
     lateinit var progressDialog: AppCompatDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         prefs = PreferenceUtil(applicationContext)
@@ -50,6 +51,18 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("SCAN_QR", "Scanned: ${result.contents}")
                 val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
+                fragment.setScannedAddress(result.contents)
+            }
+        }
+
+        approvedBarcodeLauncher = this.registerForActivityResult(
+            ScanContract()
+        ) { result ->
+            if (result.contents == null) {
+                Log.d("SCAN_QR", "CANCELLED")
+            } else {
+                Log.d("SCAN_QR", "Scanned: ${result.contents}")
+                val fragment = this.supportFragmentManager.fragments[2] as ApprovedTokenFragment
                 fragment.setScannedAddress(result.contents)
             }
         }
@@ -196,6 +209,201 @@ class MainActivity : AppCompatActivity() {
             else {
                 Log.d("PW", "Input cancelled")
                 val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
+                fragment.enableUI()
+            }
+        }
+
+        approvedPasswordActivityLauncher = this.registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK) {
+                Log.d("PW", "PW input successful")
+                val fragment = this.supportFragmentManager.fragments[2] as ApprovedTokenFragment
+                val info = fragment.getTokenInfo()
+                val tid = info.first
+                val receiver = info.second
+                val pw = it.data?.getStringExtra("pw") ?: ""
+
+                fragment.disableUI()
+
+                val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val dialogView = inflater.inflate(R.layout.layout_transfer_result,null)
+                val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                thread {
+                    val manuAddress = getManufacturerAddress(tid)
+                    var manuStatus = false
+                    if (manuAddress == null) {
+                        Log.e("MANUREQ", "Manufacturer address call failed with result null.")
+                    }
+                    else {
+                        if (manuAddress.result != "error") {
+                            manuStatus = true
+                        }
+                        else {
+                            Log.e("MANUREQ", "${manuAddress.detail}")
+                        }
+
+                        if (manuStatus) {
+                            val resellerTransfer = resellerTransferToken(tid = tid, manufacturer = manuAddress.detail!!, receiver = receiver, password = pw)
+
+                            if (resellerTransfer == null) {
+                                Log.e("RESELLTRANSFER", "Reseller transfer call failed with result null")
+                            }
+                            else {
+                                when {
+                                    resellerTransfer.result == "success" -> {
+                                        // Success
+                                        Log.d("RESELLTRANSFER", "Reseller transfer successful")
+                                        runOnUiThread {
+                                            resultText.text = "Transfer Successful."
+
+                                            val alertDialog = AlertDialog.Builder(this)
+                                                .setTitle("Result")
+                                                .setPositiveButton("OK") { _, _ ->
+                                                    fragment.dismissDialog(tid)
+                                                }
+                                                .create()
+
+                                            alertDialog.setView(dialogView)
+                                            alertDialog.show()
+                                        }
+                                    }
+
+                                    resellerTransfer.err == "Node Network Error" -> {
+                                        Log.e("RESELLTRANSFER", "Node Network Error")
+                                        runOnUiThread {
+                                            fragment.enableUI()
+
+                                            resultText.text = "Node Network Error. Try again in a few moments."
+                                            val alertDialog = AlertDialog.Builder(this)
+                                                .setTitle("Error")
+                                                .setPositiveButton("OK", null)
+                                                .create()
+
+                                            alertDialog.setView(dialogView)
+                                            alertDialog.show()
+                                        }
+                                    }
+
+                                    resellerTransfer.err == "Authentication Error" -> {
+                                        Log.e("RESELLTRANSFER", "Authentication Error")
+                                        runOnUiThread {
+                                            fragment.enableUI()
+
+                                            resultText.text = "Authentication Error"
+                                            val alertDialog = AlertDialog.Builder(this)
+                                                .setTitle("Error")
+                                                .setPositiveButton("OK", null)
+                                                .create()
+
+                                            alertDialog.setView(dialogView)
+                                            alertDialog.show()
+                                        }
+                                    }
+
+                                    resellerTransfer.err == "Invalid Address" -> {
+                                        Log.e("RESELLTRANSFER", "Invalid address")
+                                        runOnUiThread {
+                                            fragment.enableUI()
+
+                                            resultText.text = "Invalid address. Please check again."
+                                            val alertDialog = AlertDialog.Builder(this)
+                                                .setTitle("Error")
+                                                .setPositiveButton("OK", null)
+                                                .create()
+
+                                            alertDialog.setView(dialogView)
+                                            alertDialog.show()
+                                        }
+                                    }
+
+                                    resellerTransfer.err == "Network Error" -> {
+                                        Log.e("RESELLTRANSFER", "Network error")
+                                        runOnUiThread {
+                                            fragment.enableUI()
+
+                                            resultText.text = "Network Error. Try again."
+                                            val alertDialog = AlertDialog.Builder(this)
+                                                .setTitle("Error")
+                                                .setPositiveButton("OK", null)
+                                                .create()
+
+                                            alertDialog.setView(dialogView)
+                                            alertDialog.show()
+                                        }
+                                    }
+
+                                    resellerTransfer.err == "Invalid Request" -> {
+                                        Log.e("RESELLTRANSFER", "Invalid request")
+                                        runOnUiThread {
+                                            fragment.enableUI()
+
+                                            resultText.text = "Invalid Request. Please check your parameters"
+                                            val alertDialog = AlertDialog.Builder(this)
+                                                .setTitle("Error")
+                                                .setPositiveButton("OK", null)
+                                                .create()
+
+                                            alertDialog.setView(dialogView)
+                                            alertDialog.show()
+                                        }
+                                    }
+
+                                    resellerTransfer.err == "Unknown Error" -> {
+                                        Log.e("RESELLTRANSFER", "Unknown error in request")
+                                        runOnUiThread {
+                                            fragment.enableUI()
+
+                                            resultText.text = "Unknown error. Please try again."
+                                            val alertDialog = AlertDialog.Builder(this)
+                                                .setTitle("Error")
+                                                .setPositiveButton("OK", null)
+                                                .create()
+
+                                            alertDialog.setView(dialogView)
+                                            alertDialog.show()
+                                        }
+                                    }
+
+                                    else -> {
+                                        Log.e("RESELLTRANSFER", "Unknown error!!")
+                                        runOnUiThread {
+                                            fragment.enableUI()
+
+                                            resultText.text = "Error! Please check the logs"
+                                            val alertDialog = AlertDialog.Builder(this)
+                                                .setTitle("Error")
+                                                .setPositiveButton("OK", null)
+                                                .create()
+
+                                            alertDialog.setView(dialogView)
+                                            alertDialog.show()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            runOnUiThread {
+                                fragment.enableUI()
+
+                                resultText.text = "Cannot get token info. Please try again."
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK", null)
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                Log.d("PW", "Input cancelled")
+                val fragment = this.supportFragmentManager.fragments[2] as ApprovedTokenFragment
                 fragment.enableUI()
             }
         }
@@ -417,7 +625,65 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getManufacturerAddress(tid: Int) : GetManufacturerAddressResult? {
+        val server = RetrofitClass.getInstance()
+        val data = GetManufacturerAddressBody(tid)
 
+        return try {
+            val response = server.getManuAddr(data).execute()
+
+            when (response.code()) {
+                200 -> {
+                    response.body()
+                }
+                503 -> {
+                    GetManufacturerAddressResult("error", "Server error")
+                }
+                404 -> {
+                    GetManufacturerAddressResult("error", "Account error")
+                }
+                else -> {
+                    GetManufacturerAddressResult("error", "Unknown")
+                }
+            }
+        } catch (e: IOException) {
+            GetManufacturerAddressResult("error", "Network Error")
+        } catch (e: java.lang.NullPointerException) {
+            GetManufacturerAddressResult("error", "Invalid Request")
+        }
+    }
+
+    private fun resellerTransferToken(tid: Int, manufacturer: String, receiver: String, password: String) : TransferTokenResult? {
+        val server = RetrofitClass.getInstance()
+        val transactor = prefs.getString("account", "")
+
+        val txInfo = TransferTokenBody(sender = manufacturer, transactor = transactor, receiver = receiver, tid = tid, pw = password)
+
+        return try {
+            val response = server.transferToken(prefs.getString("jwt", null), txInfo).execute()
+            when {
+                response.code() == 200 -> {
+                    response.body()
+                }
+                response.code() == 503 -> {
+                    TransferTokenResult(result = "failed", txHash = "", err = "Node Network Error")
+                }
+                response.code() == 401 -> {
+                    TransferTokenResult(result = "failed", txHash = "", err = "Authentication Error")
+                }
+                response.code() == 406 -> {
+                    TransferTokenResult(result = "failed", txHash = "", err = "Invalid Address")
+                }
+                else -> {
+                    TransferTokenResult(result = "failed", txHash = "", err = "Unknown Error")
+                }
+            }
+        } catch (e: IOException) {
+            TransferTokenResult(result = "failed", txHash = "", err = "Network Error")
+        } catch (e: java.lang.NullPointerException) {
+            TransferTokenResult(result = "failed", txHash = "", err = "Invalid Request")
+        }
+    }
 
     private fun showProgress(activity: Activity) {
         if (activity.isFinishing) {
@@ -433,7 +699,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     private fun hideProgress() {
         if (progressDialog.isShowing) {
             progressDialog.dismiss()
@@ -445,7 +710,15 @@ class MainActivity : AppCompatActivity() {
         return barcodeLauncher
     }
 
+    fun getApprQRCodeLauncher() : ActivityResultLauncher<ScanOptions> {
+        return approvedBarcodeLauncher
+    }
+
     fun getPWInputLauncher(): ActivityResultLauncher<Intent> {
         return passwordActivityLauncher
+    }
+
+    fun getApprPWInputLauncher(): ActivityResultLauncher<Intent> {
+        return approvedPasswordActivityLauncher
     }
 }

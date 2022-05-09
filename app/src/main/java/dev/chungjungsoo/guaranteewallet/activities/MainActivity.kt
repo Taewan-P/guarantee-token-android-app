@@ -17,11 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.fragment.app.Fragment
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import dev.chungjungsoo.guaranteewallet.R
-import dev.chungjungsoo.guaranteewallet.adapter.ApprovedTokenListViewAdapter
 import dev.chungjungsoo.guaranteewallet.dataclass.*
 import dev.chungjungsoo.guaranteewallet.fragments.*
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil

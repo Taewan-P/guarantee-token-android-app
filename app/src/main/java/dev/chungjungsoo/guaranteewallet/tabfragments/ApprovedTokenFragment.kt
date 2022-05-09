@@ -1,7 +1,6 @@
 package dev.chungjungsoo.guaranteewallet.tabfragments
 
 import android.app.Activity
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -9,19 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
-import dev.chungjungsoo.guaranteewallet.activities.TokenDetailActivity
 import dev.chungjungsoo.guaranteewallet.adapter.ApprovedTokenListViewAdapter
 import dev.chungjungsoo.guaranteewallet.dataclass.*
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
-import org.w3c.dom.Text
 import java.io.IOException
 import kotlin.concurrent.thread
 

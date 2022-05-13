@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/send_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="660dp"
+    android:padding="20dp"
+    android:clipToPadding="false"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/shape_send_sheet">
+
+    <TextView
+        android:id="@+id/send_token_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="Send Token"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/send_token_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/send_token_title"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:checkedButton="@+id/offer"
+            android:id="@+id/send_type_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/custom_switch"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginStart="1dp"
+                android:id="@+id/send_toggle"
+                android:background="@drawable/custom_toggle_switch_background"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:button="@null"
+                android:gravity="center"
+                android:text="Send"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="1dp"
+                android:id="@+id/approve_toggle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/custom_toggle_switch_background"
+                android:button="@null"
+                android:gravity="center"
+                android:text="Approve"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/white" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/send_to_input"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="6"
+                android:drawablePadding="12dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:drawableStart="@drawable/ic_paperplane_empty"
+                android:background="@drawable/selector_edittext"
+                android:singleLine="true"
+                android:hint="Please enter address"
+                android:textColorHint="@color/cardColor6"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <RelativeLayout
+                android:id="@+id/scan_address_btn"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1" >
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="12dp"
+                    android:src="@drawable/ic_qrcode_viewfinder" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/send_token_token_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_below="@+id/send_token_input_layout">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/send_token_check_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/send_token_btn_layout"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/token_review_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Check if this is correct"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/token_id_review_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/token_review_title"
+            android:text="Token ID: "
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/token_id_check_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/token_review_title"
+            android:layout_toEndOf="@+id/token_id_review_text"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/token_name_review_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/token_id_review_text"
+            android:text="Token Name: "
+            android:textColor="@color/white"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/token_name_check_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/token_id_review_text"
+            android:layout_toEndOf="@+id/token_name_review_text"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+        <CheckBox
+            android:id="@+id/send_token_review_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/token_review_title"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:buttonTint="#78DCD2"
+            android:foregroundTint="#78DCD2" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/send_token_btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="25dp"
+        android:clipToPadding="true" >
+
+        <ProgressBar
+            android:id="@+id/send_progress_bar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_centerInParent="true"
+            android:elevation="5dp"
+            android:indeterminateTint="@color/black"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/send_token_btn_next"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/track_shape_button"
+            android:elevation="1dp"
+            android:text="Send"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

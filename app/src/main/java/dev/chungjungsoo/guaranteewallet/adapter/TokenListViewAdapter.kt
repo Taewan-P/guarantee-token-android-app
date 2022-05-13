@@ -75,7 +75,12 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
         listView.findViewById<RelativeLayout>(R.id.send_token_btn).setOnClickListener {
             if (!clicked) {
                 bottomSheetDialog = BottomSheetDialog(parent.context)
-                sheetView = LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet, parent, false)
+
+                sheetView = if (prefs.getString("type", "") == "manufacturer") {
+                    LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet_manu, parent, false)
+                } else {
+                    LayoutInflater.from(parent.context).inflate(R.layout.layout_send_sheet, parent, false)
+                }
 
                 val tokenLayout = LayoutInflater.from(parent.context).inflate(R.layout.listview_item_list_token, parent, false)
                 clicked = true
@@ -83,7 +88,7 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                 bottomSheetDialog.setCancelable(true)
                 bottomSheetDialog.setContentView(sheetView)
                 bottomSheetDialog.dismissWithAnimation = true
-//                bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
                 val tokenView = sheetView.findViewById<RelativeLayout>(R.id.send_token_token_layout)
 
@@ -230,7 +235,7 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                     }
                 }
 
-                sendBtn?.setOnClickListener {
+                sendBtn!!.setOnClickListener {
                     val pwInputLauncher = (parent.context as MainActivity).getPWInputLauncher()
                     val intent = Intent(parent.context as MainActivity, PasswordInputActivity::class.java)
 
@@ -240,6 +245,40 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                     sendBtn.setTextColor(ContextCompat.getColor(parent.context, R.color.cardColor6))
                     bottomSheetDialog.setCancelable(false)
                     pwInputLauncher.launch(intent)
+                }
+
+                if (prefs.getString("type", "") == "manufacturer") {
+                    val sendToggle = sheetView.findViewById<RadioButton>(R.id.send_toggle)
+                    val approveToggle = sheetView.findViewById<RadioButton>(R.id.approve_toggle)
+
+                    sendToggle.isChecked = true // Default set to send, not approve
+                    sendToggle.setTextColor(ContextCompat.getColor(parent.context, R.color.black))
+
+                    val title = sheetView.findViewById<TextView>(R.id.send_token_title)
+
+                    sendToggle.setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            title.text = "Send Token"
+                            sendBtn.text = "SEND"
+                            sendToggle.setTextColor(ContextCompat.getColor(parent.context, R.color.black))
+                        }
+                        else {
+                            sendToggle.setTextColor(ContextCompat.getColor(parent.context, R.color.white))
+                        }
+                    }
+
+                    approveToggle.setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            title.text = "Approve Token"
+                            sendBtn.text = "APPROVE"
+                            approveToggle.setTextColor(ContextCompat.getColor(parent.context, R.color.black))
+                        }
+                        else {
+                            approveToggle.setTextColor(ContextCompat.getColor(parent.context, R.color.white))
+                        }
+                    }
+
+
                 }
 
                 bottomSheetDialog.setOnCancelListener {
@@ -258,11 +297,12 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
         sheetView.findViewById<EditText>(R.id.send_to_input).setText(string)
     }
 
-    fun getTokenReceiverInfo(): Pair<Int, String> {
+    fun getTokenReceiverInfo(): Triple<Int, String, String> {
         val tid = sheetView.findViewById<TextView>(R.id.token_id_check_value).text.toString().toInt()
         val receiver = sheetView.findViewById<EditText>(R.id.send_to_input).text.toString()
+        val type = if (sheetView.findViewById<RadioButton>(R.id.send_toggle).isChecked) "send" else "approve"
 
-        return Pair(tid, receiver)
+        return Triple(tid, receiver, type)
     }
 
     fun disableSend() {

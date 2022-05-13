@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
                 val info = fragment.getTokenInfo()
                 val tid = info.first
                 val receiver = info.second
+                val type = info.third
                 val pw = it.data?.getStringExtra("pw") ?: ""
 
                 fragment.disableUI()
@@ -82,123 +83,268 @@ class MainActivity : AppCompatActivity() {
                 val dialogView = inflater.inflate(R.layout.layout_transfer_result,null)
                 val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
 
-                thread {
-                    val transferResult = transferToken(tid = tid, receiver = receiver, password = pw)
+                if (type == "send") {
+                    thread {
+                        val transferResult = transferToken(tid = tid, receiver = receiver, password = pw)
 
-                    if (transferResult == null) {
-                        Log.d("TRANSFER", "Transfer failed with result null.")
+                        if (transferResult == null) {
+                            Log.e("TRANSFER", "Transfer failed with result null.")
+                        }
+
+                        when {
+                            (transferResult?.result ?: "failed") == "success" -> {
+                                Log.d("TRANSFER", "Transfer success")
+                                runOnUiThread {
+                                    resultText.text = "Transfer Successful."
+
+                                    val alertDialog = AlertDialog.Builder(this)
+                                        .setTitle("Result")
+                                        .setPositiveButton("OK") { _, _ ->
+                                            fragment.dismissDialog(tid)
+                                        }
+                                        .create()
+
+                                    alertDialog.setView(dialogView)
+                                    alertDialog.show()
+                                }
+                            }
+                            (transferResult?.err ?: "Unknown error") == "Node Network Error" -> {
+                                Log.d("TRANSFER", "Node Network Error")
+                                runOnUiThread {
+                                    fragment.enableUI()
+
+                                    resultText.text = "Node Network Error. Try again in a few moments."
+                                    val alertDialog = AlertDialog.Builder(this)
+                                        .setTitle("Error")
+                                        .setPositiveButton("OK", null)
+                                        .create()
+
+                                    alertDialog.setView(dialogView)
+                                    alertDialog.show()
+                                }
+                            }
+                            (transferResult?.err ?: "Unknown error") == "Network Error" -> {
+                                Log.d("TRANSFER", "Network Error")
+                                runOnUiThread {
+                                    fragment.enableUI()
+
+                                    resultText.text = "Network Error. Try again in a few moments."
+
+                                    val alertDialog = AlertDialog.Builder(this)
+                                        .setTitle("Error")
+                                        .setPositiveButton("OK", null)
+                                        .create()
+
+                                    alertDialog.setView(dialogView)
+                                    alertDialog.show()
+                                }
+                            }
+                            (transferResult?.err ?: "Unknown error") == "Invalid Request" -> {
+                                Log.d("TRANSFER", "Invalid Request")
+                                runOnUiThread {
+                                    fragment.enableUI()
+
+                                    resultText.text = "Invalid request. Please check transfer details and try again."
+
+                                    val alertDialog = AlertDialog.Builder(this)
+                                        .setTitle("Error")
+                                        .setPositiveButton("OK", null)
+                                        .create()
+
+                                    alertDialog.setView(dialogView)
+                                    alertDialog.show()
+                                }
+                            }
+                            (transferResult?.err ?: "Unknown error") == "Authentication Error" -> {
+                                Log.d("TRANSFER", "Invalid Request")
+                                runOnUiThread {
+                                    fragment.enableUI()
+
+                                    resultText.text = "Authentication Error. Please check your password!"
+
+                                    val alertDialog = AlertDialog.Builder(this)
+                                        .setTitle("Error")
+                                        .setPositiveButton("OK", null)
+                                        .create()
+
+                                    alertDialog.setView(dialogView)
+                                    alertDialog.show()
+                                }
+                            }
+                            (transferResult?.err ?: "Unknown error") == "Invalid Address" -> {
+                                Log.d("TRANSFER", "Invalid Request")
+                                runOnUiThread {
+                                    fragment.enableUI()
+
+                                    resultText.text = "Invalid address input. Please check the sender's address."
+
+                                    val alertDialog = AlertDialog.Builder(this)
+                                        .setTitle("Error")
+                                        .setPositiveButton("OK", null)
+                                        .create()
+
+                                    alertDialog.setView(dialogView)
+                                    alertDialog.show()
+                                }
+                            }
+                            else -> {
+                                Log.e("TRANSFER", "${transferResult?.err}")
+                                runOnUiThread {
+                                    fragment.enableUI()
+
+                                    resultText.text = "Unknown error."
+
+                                    val alertDialog = AlertDialog.Builder(this)
+                                        .setTitle("Error")
+                                        .setPositiveButton("OK", null)
+                                        .create()
+
+                                    alertDialog.setView(dialogView)
+                                    alertDialog.show()
+                                }
+                            }
+                        }
                     }
+                }
+                else if (type == "approve"){
+                    // Approve
+                    thread {
+                        val approveResult = approveToken(tid = tid, receiver = receiver, password = pw)
 
-                    when {
-                        transferResult?.result ?: "failed" == "success" -> {
-                            Log.d("TRANSFER", "Transfer success")
-                            runOnUiThread {
-                                resultText.text = "Transfer Successful."
+                        if (approveResult == null) {
+                            Log.e("APPROVE", "Approve failed with result null.")
+                        }
+                        if (approveResult != null) {
+                            when {
+                                approveResult.result == "success" -> {
+                                    // Success
+                                    Log.d("APPROVE", "Approve successful")
+                                    runOnUiThread {
+                                        resultText.text = "Approve Successful."
 
-                                val alertDialog = AlertDialog.Builder(this)
-                                    .setTitle("Result")
-                                    .setPositiveButton("OK") { _, _ ->
-                                        fragment.dismissDialog(tid)
+                                        val alertDialog = AlertDialog.Builder(this)
+                                            .setTitle("Result")
+                                            .setPositiveButton("OK") { _, _ ->
+                                                fragment.dismissDialog(tid)
+                                            }
+                                            .create()
+
+                                        alertDialog.setView(dialogView)
+                                        alertDialog.show()
                                     }
-                                    .create()
+                                }
 
-                                alertDialog.setView(dialogView)
-                                alertDialog.show()
-                            }
-                        }
-                        transferResult?.err ?: "Unknown error" == "Node Network Error" -> {
-                            Log.d("TRANSFER", "Node Network Error")
-                            runOnUiThread {
-                                fragment.enableUI()
+                                approveResult.err == "Node Network Error" -> {
+                                    Log.e("APPROVE", "Node Network Error")
+                                    runOnUiThread {
+                                        fragment.enableUI()
 
-                                resultText.text = "Node Network Error. Try again in a few moments."
-                                val alertDialog = AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setPositiveButton("OK", null)
-                                    .create()
+                                        resultText.text = "Node Network Error. Try again in a few moments."
+                                        val alertDialog = AlertDialog.Builder(this)
+                                            .setTitle("Error")
+                                            .setPositiveButton("OK", null)
+                                            .create()
 
-                                alertDialog.setView(dialogView)
-                                alertDialog.show()
-                        }
-                    }
-                        transferResult?.err ?: "Unknown error" == "Network Error" -> {
-                            Log.d("TRANSFER", "Network Error")
-                            runOnUiThread {
-                                fragment.enableUI()
+                                        alertDialog.setView(dialogView)
+                                        alertDialog.show()
+                                    }
+                                }
 
-                                resultText.text = "Network Error. Try again in a few moments."
+                                approveResult.err == "Authentication Error" -> {
+                                    Log.e("APPROVE", "Authentication Error")
+                                    runOnUiThread {
+                                        fragment.enableUI()
 
-                                val alertDialog = AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setPositiveButton("OK", null)
-                                    .create()
+                                        resultText.text = "Authentication Error"
+                                        val alertDialog = AlertDialog.Builder(this)
+                                            .setTitle("Error")
+                                            .setPositiveButton("OK", null)
+                                            .create()
 
-                                alertDialog.setView(dialogView)
-                                alertDialog.show()
-                            }
-                        }
-                        transferResult?.err ?: "Unknown error" == "Invalid Request" -> {
-                            Log.d("TRANSFER", "Invalid Request")
-                            runOnUiThread {
-                                fragment.enableUI()
+                                        alertDialog.setView(dialogView)
+                                        alertDialog.show()
+                                    }
+                                }
 
-                                resultText.text = "Invalid request. Please check transfer details and try again."
+                                approveResult.err == "Invalid Address" -> {
+                                    Log.e("APPROVE", "Invalid address")
+                                    runOnUiThread {
+                                        fragment.enableUI()
 
-                                val alertDialog = AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setPositiveButton("OK", null)
-                                    .create()
+                                        resultText.text = "Invalid address. Please check again."
+                                        val alertDialog = AlertDialog.Builder(this)
+                                            .setTitle("Error")
+                                            .setPositiveButton("OK", null)
+                                            .create()
 
-                                alertDialog.setView(dialogView)
-                                alertDialog.show()
-                            }
-                        }
-                        transferResult?.err ?: "Unknown error" == "Authentication Error" -> {
-                            Log.d("TRANSFER", "Invalid Request")
-                            runOnUiThread {
-                                fragment.enableUI()
+                                        alertDialog.setView(dialogView)
+                                        alertDialog.show()
+                                    }
+                                }
 
-                                resultText.text = "Authentication Error. Please check your password!"
+                                approveResult.err == "Unknown Error" -> {
+                                    Log.e("APPROVE", "Unknown error in request")
+                                    runOnUiThread {
+                                        fragment.enableUI()
 
-                                val alertDialog = AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setPositiveButton("OK", null)
-                                    .create()
+                                        resultText.text = "Unknown error. Please try again."
+                                        val alertDialog = AlertDialog.Builder(this)
+                                            .setTitle("Error")
+                                            .setPositiveButton("OK", null)
+                                            .create()
 
-                                alertDialog.setView(dialogView)
-                                alertDialog.show()
-                            }
-                        }
-                        transferResult?.err ?: "Unknown error" == "Invalid Address" -> {
-                            Log.d("TRANSFER", "Invalid Request")
-                            runOnUiThread {
-                                fragment.enableUI()
+                                        alertDialog.setView(dialogView)
+                                        alertDialog.show()
+                                    }
+                                }
 
-                                resultText.text = "Invalid address input. Please check the sender's address."
+                                approveResult.err == "Network Error" -> {
+                                    Log.e("APPROVE", "Network error")
+                                    runOnUiThread {
+                                        fragment.enableUI()
 
-                                val alertDialog = AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setPositiveButton("OK", null)
-                                    .create()
+                                        resultText.text = "Network Error. Try again."
+                                        val alertDialog = AlertDialog.Builder(this)
+                                            .setTitle("Error")
+                                            .setPositiveButton("OK", null)
+                                            .create()
 
-                                alertDialog.setView(dialogView)
-                                alertDialog.show()
-                            }
-                        }
-                        else -> {
-                            Log.e("TRANSFER", "${transferResult?.err}")
-                            runOnUiThread {
-                                fragment.enableUI()
+                                        alertDialog.setView(dialogView)
+                                        alertDialog.show()
+                                    }
+                                }
 
-                                resultText.text = "Unknown error."
+                                approveResult.err == "Invalid Request" -> {
+                                    Log.e("APPROVE", "Invalid request")
+                                    runOnUiThread {
+                                        fragment.enableUI()
 
-                                val alertDialog = AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setPositiveButton("OK", null)
-                                    .create()
+                                        resultText.text = "Invalid Request. Please check your parameters"
+                                        val alertDialog = AlertDialog.Builder(this)
+                                            .setTitle("Error")
+                                            .setPositiveButton("OK", null)
+                                            .create()
 
-                                alertDialog.setView(dialogView)
-                                alertDialog.show()
+                                        alertDialog.setView(dialogView)
+                                        alertDialog.show()
+                                    }
+                                }
+
+                                else -> {
+                                    Log.e("APPROVE", "Unknown error in exception")
+                                    runOnUiThread {
+                                        fragment.enableUI()
+
+                                        resultText.text = "Unknown error. Please try again."
+                                        val alertDialog = AlertDialog.Builder(this)
+                                            .setTitle("Error")
+                                            .setPositiveButton("OK", null)
+                                            .create()
+
+                                        alertDialog.setView(dialogView)
+                                        alertDialog.show()
+                                    }
+                                }
                             }
                         }
                     }
@@ -620,6 +766,37 @@ class MainActivity : AppCompatActivity() {
             TransferTokenResult(result = "failed", txHash = "", err = "Network Error")
         } catch (e: java.lang.NullPointerException) {
             TransferTokenResult(result = "failed", txHash = "", err = "Invalid Request")
+        }
+    }
+
+    private fun approveToken(tid: Int, receiver: String, password: String): ApproveTokenResult? {
+        val server = RetrofitClass.getInstance()
+        val approveBody = ApproveTokenBody(receiver = receiver, tid = tid, pw = password)
+
+        return try {
+            val response = server.approveToken(prefs.getString("jwt", null), approveBody).execute()
+
+            when (response.code()) {
+                200 -> {
+                    response.body()
+                }
+                503 -> {
+                    ApproveTokenResult(result = "failed", err = "Node Network Error")
+                }
+                401 -> {
+                    ApproveTokenResult(result = "failed", err = "Authentication Error")
+                }
+                406 -> {
+                    ApproveTokenResult(result = "failed", err = "Invalid Address")
+                }
+                else -> {
+                    ApproveTokenResult(result = "failed", err = "Unknown Error")
+                }
+            }
+        } catch (e: IOException) {
+            ApproveTokenResult(result = "failed", err = "Network Error")
+        } catch (e: java.lang.NullPointerException) {
+            ApproveTokenResult(result = "failed", err = "Invalid Request")
         }
     }
 

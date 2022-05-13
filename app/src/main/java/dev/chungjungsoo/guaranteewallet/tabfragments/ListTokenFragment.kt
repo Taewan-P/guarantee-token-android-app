@@ -355,7 +355,7 @@ class ListTokenFragment : Fragment() {
         adapter.setScannedAddress(string)
     }
 
-    fun getTokenInfo(): Pair<Int, String> {
+    fun getTokenInfo(): Triple<Int, String, String> {
         return adapter.getTokenReceiverInfo()
     }
 

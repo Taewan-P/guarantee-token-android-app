@@ -141,3 +141,14 @@ data class GetManufacturerAddressResult(
     @SerializedName("result") val result: String,
     @SerializedName("detail") val detail: String?
 )
+
+data class ApproveTokenBody(
+    @SerializedName("receiver") val receiver: String,
+    @SerializedName("tid") val tid: Int,
+    @SerializedName("wallet_password") val pw: String
+)
+
+data class ApproveTokenResult(
+    @SerializedName("result") val result: String,
+    @SerializedName("error") val err: String?
+)

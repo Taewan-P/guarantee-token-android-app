@@ -52,4 +52,9 @@ interface RetrofitService {
 
     @POST("/tokens/manufacturer")
     fun getManuAddr(@Body body: GetManufacturerAddressBody): Call<GetManufacturerAddressResult>
+
+    @POST("/node/approve")
+    fun approveToken(@Header("x-access-token")token: String?,
+                     @Body body: ApproveTokenBody
+    ): Call<ApproveTokenResult>
 }

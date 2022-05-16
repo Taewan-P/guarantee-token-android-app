@@ -114,6 +114,14 @@ class VerifyTokenFragment : Fragment() {
                 c["owner"] = ""
                 c["exp"] = 0
                 c
+            } catch (e: io.jsonwebtoken.security.SignatureException) {
+                Log.e("JWT", "Signature Mismatch")
+                invalid = true
+                val c = Jwts.claims()
+                c["tid"] = -1
+                c["owner"] = ""
+                c["exp"] = 0
+                c
             }
 
             val tid = tokenInfo.getValue("tid") as Int

@@ -22,6 +22,7 @@ import dev.chungjungsoo.guaranteewallet.activities.MainActivity
 import dev.chungjungsoo.guaranteewallet.activities.PasswordInputActivity
 import dev.chungjungsoo.guaranteewallet.dataclass.ListViewItem
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
+import java.lang.NullPointerException
 
 
 class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseAdapter() {
@@ -300,7 +301,11 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
     fun getTokenReceiverInfo(): Triple<Int, String, String> {
         val tid = sheetView.findViewById<TextView>(R.id.token_id_check_value).text.toString().toInt()
         val receiver = sheetView.findViewById<EditText>(R.id.send_to_input).text.toString()
-        val type = if (sheetView.findViewById<RadioButton>(R.id.send_toggle).isChecked) "send" else "approve"
+        val type = try {
+            if (sheetView.findViewById<RadioButton>(R.id.send_toggle).isChecked) "send" else "approve"
+        } catch (e: NullPointerException) {
+            "send"
+        }
 
         return Triple(tid, receiver, type)
     }

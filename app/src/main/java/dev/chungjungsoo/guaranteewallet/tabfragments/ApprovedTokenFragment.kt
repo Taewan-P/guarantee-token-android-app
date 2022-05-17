@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
@@ -138,7 +139,6 @@ class ApprovedTokenFragment : Fragment() {
                 }
 
                 val tokenInfo = tokenInfoCall?.tokens ?: listOf()
-                println(tokenInfoCall)
                 if (tokenInfo.isNotEmpty()) {
                     tokenInfo.forEach {
                         items.add(
@@ -166,6 +166,128 @@ class ApprovedTokenFragment : Fragment() {
                         requireActivity().runOnUiThread {
                             emptyListTextView.visibility = View.VISIBLE
                             hideProgress()
+                        }
+                    }
+                }
+            }
+        }
+
+        val pullToRefresh = requireView().findViewById<SwipeRefreshLayout>(R.id.swipe_to_refresh)
+
+        pullToRefresh.setOnRefreshListener {
+            thread {
+                val approvedCall = getApprovedTokenList(prefs.getString("jwt", null), prefs.getString("account", ""))
+
+                var tokenStatus = false
+                var tokenList: List<Int> = listOf()
+
+                if (approvedCall == null) {
+                    Log.e("APPROVEDLIST", "Approved token list refresh failed")
+
+                    if (isAdded) {
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
+                            emptyListTextView.visibility = View.VISIBLE
+                            pullToRefresh.isRefreshing = false
+                        }
+                    }
+                }
+
+                else {
+                    if (approvedCall.err == null) {
+                        // Successful Request
+                        if (approvedCall.approved != null) {
+                            // Reseller has called the request
+                            if (approvedCall.approved.isNotEmpty()) {
+                                // Owns approved token
+                                tokenStatus = true
+                                tokenList = approvedCall.approved
+                                Log.d("APPROVEDLIST", "Approved token list refresh successful.")
+                            }
+                            else {
+                                // Empty token list
+                                tokenStatus = false
+                                Log.d("APPROVEDLIST", "Empty token list")
+                                if (isAdded) {
+                                    requireActivity().runOnUiThread {
+                                        hideProgress()
+                                        emptyListTextView.visibility = View.VISIBLE
+                                        pullToRefresh.isRefreshing = false
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            // Not a reseller
+                            tokenStatus = false
+                            Log.d("APPROVEDLIST", "Not a reseller")
+                            if (isAdded) {
+                                requireActivity().runOnUiThread {
+                                    hideProgress()
+                                    emptyListTextView.visibility = View.VISIBLE
+                                    pullToRefresh.isRefreshing = false
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        // Invalid. Error exists
+                        if (isAdded) {
+                            requireActivity().runOnUiThread {
+                                Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
+                                hideProgress()
+                                emptyListTextView.visibility = View.VISIBLE
+                                pullToRefresh.isRefreshing = false
+                            }
+                        }
+                    }
+
+
+                    if (tokenStatus) {
+                        val tokenInfoCall = getTokenInfo(tokenList)
+
+                        if (tokenInfoCall == null) {
+                            Log.e("APPROVEDTOKENINFO", "Approved token info refresh failed")
+                            if (isAdded) {
+                                requireActivity().runOnUiThread {
+                                    Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT).show()
+                                    pullToRefresh.isRefreshing = false
+                                }
+                            }
+                        }
+                        else {
+                            val tokenInfo = tokenInfoCall.tokens
+
+                            if (tokenInfo.isNotEmpty()) {
+                                tokenInfo.forEach {
+                                    items.add(
+                                        ListViewItem(
+                                            it.tid,
+                                            it.brand,
+                                            it.name,
+                                            it.prodDate,
+                                            it.expDate,
+                                            it.details
+                                        )
+                                    )
+                                }
+                                if (activity != null) {
+                                    requireActivity().runOnUiThread {
+                                        adapter.notifyDataSetChanged()
+                                        pullToRefresh.isRefreshing = false
+                                    }
+                                    Log.d("APPROVEDTOKENINFO", "Token information refresh successful")
+                                }
+                            }
+                            else {
+                                // Empty list
+                                if (isAdded) {
+                                    requireActivity().runOnUiThread {
+                                        emptyListTextView.visibility = View.VISIBLE
+                                        pullToRefresh.isRefreshing = false
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -259,6 +259,7 @@ class ApprovedTokenFragment : Fragment() {
                             val tokenInfo = tokenInfoCall.tokens
 
                             if (tokenInfo.isNotEmpty()) {
+                                items.clear()
                                 tokenInfo.forEach {
                                     items.add(
                                         ListViewItem(

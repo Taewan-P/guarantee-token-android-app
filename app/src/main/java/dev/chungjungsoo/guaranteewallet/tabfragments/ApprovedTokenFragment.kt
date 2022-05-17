@@ -43,7 +43,7 @@ class ApprovedTokenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressDialog = requireView().findViewById(R.id.list_progress_bar)
-        ListTokenFragment.prefs = PreferenceUtil(requireContext())
+        prefs = PreferenceUtil(requireContext())
         items = mutableListOf()
         adapter = ApprovedTokenListViewAdapter(items)
 
@@ -59,7 +59,7 @@ class ApprovedTokenFragment : Fragment() {
         showProgress(requireActivity())
 
         thread {
-            val approvedCall = getApprovedTokenList(ListTokenFragment.prefs.getString("jwt", null), ListTokenFragment.prefs.getString("account", ""))
+            val approvedCall = getApprovedTokenList(prefs.getString("jwt", null), prefs.getString("account", ""))
 
             var tokenStatus = false
             var tokenList: List<Int> = listOf()

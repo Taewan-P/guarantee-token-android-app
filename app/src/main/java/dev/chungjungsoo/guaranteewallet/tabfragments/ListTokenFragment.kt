@@ -376,4 +376,8 @@ class ListTokenFragment : Fragment() {
         items.removeIf { it.tokenID == item }
         adapter.notifyDataSetChanged()
     }
+
+    fun dismissDialogWithoutDeletion() {
+        adapter.dismissDialog()
+    }
 }

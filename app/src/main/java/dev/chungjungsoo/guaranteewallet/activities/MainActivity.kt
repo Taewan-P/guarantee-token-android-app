@@ -225,7 +225,7 @@ class MainActivity : AppCompatActivity() {
                                         val alertDialog = AlertDialog.Builder(this)
                                             .setTitle("Result")
                                             .setPositiveButton("OK") { _, _ ->
-                                                fragment.dismissDialog(tid)
+                                                fragment.dismissDialogWithoutDeletion()
                                             }
                                             .create()
 

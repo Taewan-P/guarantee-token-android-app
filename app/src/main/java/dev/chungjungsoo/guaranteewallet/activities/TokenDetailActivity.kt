@@ -118,6 +118,7 @@ class TokenDetailActivity : AppCompatActivity() {
 
                     runOnUiThread {
                         hideProgress()
+                        qrCodeImgView.clipToOutline = true
                         qrCodeImgView.setImageBitmap(decodedByte)
                     }
                 }

@@ -33,7 +33,9 @@
         <ImageView
             android:id="@+id/qr_image_view"
             android:layout_width="220dp"
-            android:layout_height="220dp" />
+            android:layout_height="220dp"
+            android:background="@drawable/shape_rounded_corners_only"
+            android:contentDescription="QR Code Image" />
 
     </RelativeLayout>
 

@@ -95,28 +95,25 @@
 
         </LinearLayout>
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="22dp">
-
-            <Button
-                android:id="@+id/login_btn"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/track_shape_button"
-                android:elevation="5dp"
-                android:text="Login"
-                android:textStyle="bold"
-                android:contentDescription="@string/login_btn_desc"
-                android:textColor="@color/black" />
-
-        </RelativeLayout>
-
-
     </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="22dp">
+
+        <Button
+            android:id="@+id/login_btn"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/track_shape_button"
+            android:elevation="5dp"
+            android:text="Login"
+            android:textStyle="bold"
+            android:contentDescription="@string/login_btn_desc"
+            android:textColor="@color/black" />
+
+    </RelativeLayout>
 
 
 

@@ -26,6 +26,7 @@ import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
 import dev.chungjungsoo.guaranteewallet.tabfragments.ApprovedTokenFragment
 import dev.chungjungsoo.guaranteewallet.tabfragments.ListTokenFragment
 import java.io.IOException
+import java.lang.ClassCastException
 import kotlin.concurrent.thread
 
 
@@ -48,8 +49,12 @@ class MainActivity : AppCompatActivity() {
                 Log.d("SCAN_QR", "CANCELLED")
             } else {
                 Log.d("SCAN_QR", "Scanned: ${result.contents}")
-                val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
-                fragment.setScannedAddress(result.contents)
+                try {
+                    val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
+                    fragment.setScannedAddress(result.contents)
+                } catch (e: ClassCastException) {
+                    Log.e("SCAN_QR", "Class cast exception occurred")
+                }
             }
         }
 

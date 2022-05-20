@@ -91,6 +91,14 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                 bottomSheetDialog.dismissWithAnimation = true
                 bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
+                val receiverAddressInput = bottomSheetDialog.findViewById<EditText>(R.id.send_to_input)
+                val paperPlane = AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty)
+                val wrappedDrawable = DrawableCompat.wrap(paperPlane!!)
+                DrawableCompat.setTint(wrappedDrawable, Color.WHITE)
+                receiverAddressInput!!.error = null
+                receiverAddressInput.setBackgroundResource(R.drawable.selector_edittext)
+                receiverAddressInput.setCompoundDrawablesWithIntrinsicBounds(wrappedDrawable, null, null, null)
+
                 val tokenView = sheetView.findViewById<RelativeLayout>(R.id.send_token_token_layout)
 
                 tokenLayout.findViewById<TextView>(R.id.token_id).text = "No. ${item.tokenID}"
@@ -126,10 +134,8 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
                 val reviewCheckBox = bottomSheetDialog.findViewById<CheckBox>(R.id.send_token_review_checkbox)
 
                 disableSend()
-
-                val receiverAddressInput = bottomSheetDialog.findViewById<EditText>(R.id.send_to_input)
-
-                receiverAddressInput!!.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty), null, null, null)
+                
+                receiverAddressInput.setCompoundDrawablesWithIntrinsicBounds(AppCompatResources.getDrawable(parent.context, R.drawable.ic_paperplane_empty), null, null, null)
 
                 receiverAddressInput.addTextChangedListener(object : TextWatcher {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }

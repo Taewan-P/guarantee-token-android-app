@@ -50,10 +50,14 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("SCAN_QR", "Scanned: ${result.contents}")
                 try {
-                    val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
-                    Log.d("SCAN_QR", this.supportFragmentManager.fragments.toString())
+                    this.supportFragmentManager.beginTransaction().replace(R.id.main_fragment, ListTokenFragment())
+                    this.supportFragmentManager.beginTransaction().addToBackStack(null)
+                    val fragments = this.supportFragmentManager.fragments
+                    Log.d("SCAN_QR", fragments.toString())
+                    val fragment = this.supportFragmentManager.fragments.find { it is ListTokenFragment } as ListTokenFragment
                     fragment.setScannedAddress(result.contents)
                 } catch (e: ClassCastException) {
+                    Log.d("SCAN_QR", this.supportFragmentManager.fragments.toString())
                     Log.e("SCAN_QR", "Class cast exception occurred")
                 }
             }
@@ -67,10 +71,14 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("SCAN_QR", "Scanned: ${result.contents}")
                 try {
-                    val fragment = this.supportFragmentManager.fragments[2] as ApprovedTokenFragment
-                    Log.d("SCAN_QR", this.supportFragmentManager.fragments.toString())
+                    this.supportFragmentManager.beginTransaction().replace(R.id.main_fragment, ApprovedTokenFragment())
+                    this.supportFragmentManager.beginTransaction().addToBackStack(null)
+                    val fragments = this.supportFragmentManager.fragments
+                    Log.d("SCAN_QR", fragments.toString())
+                    val fragment = this.supportFragmentManager.fragments.find { it is ApprovedTokenFragment } as ApprovedTokenFragment
                     fragment.setScannedAddress(result.contents)
                 } catch (e: ClassCastException) {
+                    Log.d("SCAN_QR", this.supportFragmentManager.fragments.toString())
                     Log.e("SCAN_QR", "Class cast exception occurred")
                 }
             }
@@ -78,15 +86,19 @@ class MainActivity : AppCompatActivity() {
 
         passwordActivityLauncher = this.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == RESULT_OK) {
+        ) { activityResult ->
+            if (activityResult.resultCode == RESULT_OK) {
                 Log.d("PW", "PW input successful")
-                val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
+                this.supportFragmentManager.beginTransaction().replace(R.id.main_fragment, ListTokenFragment())
+                this.supportFragmentManager.beginTransaction().addToBackStack(null)
+                val fragments = this.supportFragmentManager.fragments
+                Log.d("PW", fragments.toString())
+                val fragment = this.supportFragmentManager.fragments.find { it is ListTokenFragment } as ListTokenFragment
                 val info = fragment.getTokenInfo()
                 val tid = info.first
                 val receiver = info.second
                 val type = info.third
-                val pw = it.data?.getStringExtra("pw") ?: ""
+                val pw = activityResult.data?.getStringExtra("pw") ?: ""
 
                 fragment.disableUI()
 
@@ -363,21 +375,29 @@ class MainActivity : AppCompatActivity() {
             }
             else {
                 Log.d("PW", "Input cancelled")
-                val fragment = this.supportFragmentManager.fragments[1] as ListTokenFragment
+                this.supportFragmentManager.beginTransaction().replace(R.id.main_fragment, ListTokenFragment())
+                this.supportFragmentManager.beginTransaction().addToBackStack(null)
+                val fragments = this.supportFragmentManager.fragments
+                Log.d("PW", fragments.toString())
+                val fragment = this.supportFragmentManager.fragments.find { it is ListTokenFragment } as ListTokenFragment
                 fragment.enableUI()
             }
         }
 
         approvedPasswordActivityLauncher = this.registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == RESULT_OK) {
+        ) { activityResult ->
+            if (activityResult.resultCode == RESULT_OK) {
                 Log.d("PW", "PW input successful")
-                val fragment = this.supportFragmentManager.fragments[2] as ApprovedTokenFragment
+                this.supportFragmentManager.beginTransaction().replace(R.id.main_fragment, ApprovedTokenFragment())
+                this.supportFragmentManager.beginTransaction().addToBackStack(null)
+                val fragments = this.supportFragmentManager.fragments
+                Log.d("PW", fragments.toString())
+                val fragment = this.supportFragmentManager.fragments.find { it is ApprovedTokenFragment } as ApprovedTokenFragment
                 val info = fragment.getTokenInfo()
                 val tid = info.first
                 val receiver = info.second
-                val pw = it.data?.getStringExtra("pw") ?: ""
+                val pw = activityResult.data?.getStringExtra("pw") ?: ""
 
                 fragment.disableUI()
 
@@ -558,7 +578,11 @@ class MainActivity : AppCompatActivity() {
             }
             else {
                 Log.d("PW", "Input cancelled")
-                val fragment = this.supportFragmentManager.fragments[2] as ApprovedTokenFragment
+                this.supportFragmentManager.beginTransaction().replace(R.id.main_fragment, ApprovedTokenFragment())
+                this.supportFragmentManager.beginTransaction().addToBackStack(null)
+                val fragments = this.supportFragmentManager.fragments
+                Log.d("PW", fragments.toString())
+                val fragment = this.supportFragmentManager.fragments.find { it is ApprovedTokenFragment } as ApprovedTokenFragment
                 fragment.enableUI()
             }
         }

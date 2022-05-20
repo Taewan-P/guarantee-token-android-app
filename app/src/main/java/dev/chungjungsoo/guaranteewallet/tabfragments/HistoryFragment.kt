@@ -46,50 +46,51 @@ class HistoryFragment : Fragment() {
         val token = prefs.getString("jwt", "")
         val historyTable = requireView().findViewById<TableLayout>(R.id.history_table)
 
-        thread {
-            val historyCall = getHistory(token, account)
+        if (isAdded) {
+            thread {
+                val historyCall = getHistory(token, account)
 
-            if (historyCall == null) {
-                Log.e("HISTORY", "History fetch failed")
-                if (isAdded) {
-                    requireActivity().runOnUiThread {
-                        // Error handling
+                if (historyCall == null) {
+                    Log.e("HISTORY", "History fetch failed")
+                    if (isAdded) {
                         requireActivity().runOnUiThread {
-                            Toast.makeText(requireContext(), "History unavailable. Please try again.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-
-            if (historyCall?.err == null) {
-                // Successful request
-                Log.d("HISTORY", "History fetch successful")
-                if (historyCall?.result!!.isNotEmpty()) {
-                    // Owns history
-                    for (h in historyCall.result) {
-                        val tid = h!!.tid
-                        val from = h.from
-                        val to = h.to
-                        val date = h.time
-
-                        val tableRow = createTableRow(tid, from.toString(), to, date)
-
-                        if (isAdded) {
+                            // Error handling
                             requireActivity().runOnUiThread {
-                                historyTable.addView(tableRow)
+                                Toast.makeText(requireContext(), "History unavailable. Please try again.", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
                 }
-                else {
-                    // No history. Do nothing.
+
+                if (historyCall?.err == null) {
+                    // Successful request
+                    Log.d("HISTORY", "History fetch successful")
+                    if (historyCall?.result!!.isNotEmpty()) {
+                        // Owns history
+                        for (h in historyCall.result) {
+                            val tid = h!!.tid
+                            val from = h.from
+                            val to = h.to
+                            val date = h.time
+
+                            if (isAdded) {
+                                val tableRow = createTableRow(tid, from.toString(), to, date)
+                                requireActivity().runOnUiThread {
+                                    historyTable.addView(tableRow)
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        // No history. Do nothing.
+                    }
                 }
-            }
-            else {
-                // Invalid
-                if (isAdded) {
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), "Error occurred.", Toast.LENGTH_SHORT).show()
+                else {
+                    // Invalid
+                    if (isAdded) {
+                        requireActivity().runOnUiThread {
+                            Toast.makeText(requireContext(), "Error occurred.", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -198,10 +199,10 @@ class HistoryFragment : Fragment() {
         row.layoutParams = lp
         row.setBackgroundResource(R.drawable.table_border)
 
-        val tidTextView = TextView(requireContext())
-        val boundTextView = TextView(requireContext())
-        val addressTextView = TextView(requireContext())
-        val dateTextView = TextView(requireContext())
+        val tidTextView = lazy { TextView(requireContext()) }.value
+        val boundTextView = lazy { TextView(requireContext()) }.value
+        val addressTextView = lazy { TextView(requireContext()) }.value
+        val dateTextView = lazy { TextView(requireContext()) }.value
 
         tidTextView.text = "$tid"
         boundTextView.text = bound
@@ -221,13 +222,15 @@ class HistoryFragment : Fragment() {
         row.addView(boundTextView)
         row.addView(addressTextView)
 
-        row.setPadding(dpToPixel(10), dpToPixel(10), dpToPixel(10), dpToPixel(10))
+        if (isAdded) {
+            row.setPadding(dpToPixel(10), dpToPixel(10), dpToPixel(10), dpToPixel(10))
+        }
 
         return row
     }
 
     private fun dpToPixel(dp: Int) : Int {
-        val density = requireContext().resources.displayMetrics.density
-        return (dp * density).toInt()
+        val density = lazy { requireContext().resources.displayMetrics.density }
+        return (dp * density.value).toInt()
     }
 }

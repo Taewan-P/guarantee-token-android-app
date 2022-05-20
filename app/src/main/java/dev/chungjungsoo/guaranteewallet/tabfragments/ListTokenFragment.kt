@@ -59,101 +59,104 @@ class ListTokenFragment : Fragment() {
 
         showProgress(requireActivity())
 
-        thread {
-            val tokenCall = getTokenList(prefs.getString("jwt", ""), prefs.getString("account", ""))
+        if (isAdded) {
+            thread {
+                val tokenCall = getTokenList(prefs.getString("jwt", ""), prefs.getString("account", ""))
 
-            var tokenStatus = false
-            var tokenList: List<Int> = listOf()
-            if (tokenCall == null) {
-                Log.d("TOKENLIST", "Token List fetch failed")
-                if (isAdded) {
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
-                        hideProgress()
-                        emptyListTextView.visibility = View.VISIBLE
-                    }
-                }
-            }
-            if (tokenCall?.err == null) {
-                // Successful request
-                if (tokenCall?.tokens!!.isNotEmpty()) {
-                    // Owns token
-                    tokenStatus = true
-                    tokenList = tokenCall.tokens
-                    requireActivity().runOnUiThread {
-                        emptyListTextView.visibility = View.GONE
-                    }
-                    Log.d("TOKENLIST", "Token list fetch successful")
-                }
-                else {
-                    // Does not own token at all.
-                    tokenStatus = false
-                    tokenList = tokenCall.tokens
-                    Log.d("TOKENLIST", "Empty token list.")
+                var tokenStatus = false
+                var tokenList: List<Int> = listOf()
+                if (tokenCall == null) {
+                    Log.d("TOKENLIST", "Token List fetch failed")
                     if (isAdded) {
                         requireActivity().runOnUiThread {
+                            Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
                             hideProgress()
                             emptyListTextView.visibility = View.VISIBLE
                         }
                     }
                 }
-            } else {
-                // Invalid. Error exists
-                if (isAdded) {
-                    requireActivity().runOnUiThread {
-                        Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
-                        hideProgress()
-                        emptyListTextView.visibility = View.VISIBLE
+                if (tokenCall?.err == null) {
+                    // Successful request
+                    if ((tokenCall?.tokens ?: listOf()).isNotEmpty()) {
+                        // Owns token
+                        tokenStatus = true
+                        tokenList = tokenCall?.tokens ?: listOf()
+                        if (isAdded) {
+                            requireActivity().runOnUiThread {
+                                emptyListTextView.visibility = View.GONE
+                            }
+                        }
+                        Log.d("TOKENLIST", "Token list fetch successful")
                     }
-                }
-            }
-
-            if (tokenStatus) {
-                val tokenInfoCall = getTokenInfo(tokenList)
-
-                if (tokenInfoCall == null) {
-                    Log.d("TOKENINFO", "Token information fetch failed")
+                    else {
+                        // Does not own token at all.
+                        tokenStatus = false
+                        tokenList = tokenCall?.tokens ?: listOf()
+                        Log.d("TOKENLIST", "Empty token list.")
+                        if (isAdded) {
+                            requireActivity().runOnUiThread {
+                                hideProgress()
+                                emptyListTextView.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                } else {
+                    // Invalid. Error exists
                     if (isAdded) {
                         requireActivity().runOnUiThread {
-                            Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
                             hideProgress()
+                            emptyListTextView.visibility = View.VISIBLE
                         }
                     }
                 }
-                val tokenInfo = tokenInfoCall?.tokens ?: listOf()
-                if (tokenInfo.isNotEmpty()) {
-                    tokenInfo.forEach {
-                        items.add(
-                            ListViewItem(
-                                it.tid,
-                                it.brand,
-                                it.name,
-                                it.prodDate,
-                                it.expDate,
-                                it.details
+
+                if (tokenStatus) {
+                    val tokenInfoCall = getTokenInfo(tokenList)
+
+                    if (tokenInfoCall == null) {
+                        Log.d("TOKENINFO", "Token information fetch failed")
+                        if (isAdded) {
+                            requireActivity().runOnUiThread {
+                                Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT)
+                                    .show()
+                                hideProgress()
+                            }
+                        }
+                    }
+                    val tokenInfo = tokenInfoCall?.tokens ?: listOf()
+                    if (tokenInfo.isNotEmpty()) {
+                        tokenInfo.forEach {
+                            items.add(
+                                ListViewItem(
+                                    it.tid,
+                                    it.brand,
+                                    it.name,
+                                    it.prodDate,
+                                    it.expDate,
+                                    it.details
+                                )
                             )
-                        )
-                    }
-                    if (activity != null) {
-                        requireActivity().runOnUiThread {
-                            adapter.notifyDataSetChanged()
-                            hideProgress()
                         }
-                        Log.d("TOKENINFO", "Token information fetch successful")
+                        if (activity != null) {
+                            requireActivity().runOnUiThread {
+                                adapter.notifyDataSetChanged()
+                                hideProgress()
+                            }
+                            Log.d("TOKENINFO", "Token information fetch successful")
+                        }
                     }
-                }
-                else {
-                    // Empty list.
-                    if (isAdded) {
-                        requireActivity().runOnUiThread {
-                            hideProgress()
+                    else {
+                        // Empty list.
+                        if (isAdded) {
+                            requireActivity().runOnUiThread {
+                                hideProgress()
+                            }
                         }
                     }
                 }
             }
         }
-
 
         val pullToRefresh = requireView().findViewById<SwipeRefreshLayout>(R.id.swipe_to_refresh)
 

@@ -1,5 +1,6 @@
 package dev.chungjungsoo.guaranteewallet.tabfragments
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
@@ -53,12 +54,21 @@ class HistoryFragment : Fragment() {
                 if (historyCall == null) {
                     Log.e("HISTORY", "History fetch failed")
                     if (isAdded) {
+                        // Error handling
                         requireActivity().runOnUiThread {
-                            // Error handling
-                            requireActivity().runOnUiThread {
-                                Toast.makeText(requireContext(), "History unavailable. Please try again.", Toast.LENGTH_SHORT).show()
-                            }
+                            val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                            val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                            resultText.text = "History unavailable. Please try again."
+                            val alertDialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Error")
+                                .setPositiveButton("OK") { _, _ -> }
+                                .create()
+
+                            alertDialog.setView(dialogView)
+                            alertDialog.show()
                         }
+                        Thread.currentThread().interrupt()
                     }
                 }
 
@@ -89,7 +99,17 @@ class HistoryFragment : Fragment() {
                     // Invalid
                     if (isAdded) {
                         requireActivity().runOnUiThread {
-                            Toast.makeText(requireContext(), "Error occurred.", Toast.LENGTH_SHORT).show()
+                            val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                            val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                            resultText.text = "Invalid request."
+                            val alertDialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Error")
+                                .setPositiveButton("OK") { _, _ -> }
+                                .create()
+
+                            alertDialog.setView(dialogView)
+                            alertDialog.show()
                         }
                     }
                 }
@@ -107,8 +127,19 @@ class HistoryFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         // Error handling
                         pullToRefresh.isRefreshing = false
-                        Toast.makeText(requireContext(), "History unavailable. Please try again.", Toast.LENGTH_SHORT).show()
+                        val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                        val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                        resultText.text = "History unavailable. Please try again."
+                        val alertDialog = AlertDialog.Builder(requireContext())
+                            .setTitle("Error")
+                            .setPositiveButton("OK") { _, _ -> }
+                            .create()
+
+                        alertDialog.setView(dialogView)
+                        alertDialog.show()
                     }
+                    Thread.currentThread().interrupt()
                 }
 
                 if (historyCall?.err == null) {
@@ -145,9 +176,20 @@ class HistoryFragment : Fragment() {
                 else {
                     // Invalid
                     requireActivity().runOnUiThread {
+                        val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                        val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                        resultText.text = "Invalid request. Please try again."
+                        val alertDialog = AlertDialog.Builder(requireContext())
+                            .setTitle("Error")
+                            .setPositiveButton("OK") { _, _ -> }
+                            .create()
+
+                        alertDialog.setView(dialogView)
+                        alertDialog.show()
                         pullToRefresh.isRefreshing = false
-                        Toast.makeText(requireContext(), "Error occurred.", Toast.LENGTH_SHORT).show()
                     }
+                    Thread.currentThread().interrupt()
                 }
             }
         }

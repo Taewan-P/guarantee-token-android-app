@@ -612,13 +612,19 @@ class MainActivity : AppCompatActivity() {
 
                     var pingStatus = false
                     if (pingRes == null) {
-                        Log.d("PING", "Ping Failed")
+                        Log.e("PING", "Ping Failed")
                         runOnUiThread {
-                            Toast.makeText(
-                                applicationContext,
-                                "Server connection unstable. Please check your network status",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                            val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                            resultText.text = "Server connection unstable. Please check your network status."
+                            val alertDialog = AlertDialog.Builder(this)
+                                .setTitle("Error")
+                                .setPositiveButton("OK") { _, _ -> }
+                                .create()
+
+                            alertDialog.setView(dialogView)
+                            alertDialog.show()
                         }
                     }
                     if (pingRes?.status ?: "error" == "Geth node is connected.") {
@@ -648,11 +654,21 @@ class MainActivity : AppCompatActivity() {
                         runOnUiThread {
                             hideProgress()
                             Log.d("PING", "Network Error")
-                            Toast.makeText(
-                                this@MainActivity,
-                                "Network connection unstable. Please check your network status",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            runOnUiThread {
+                                val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                                val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                                resultText.text = "Network connection unstable. Please check your network status."
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK") { _, _ ->
+                                        finish()
+                                    }
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
+                            }
                         }
                     }
 
@@ -662,12 +678,19 @@ class MainActivity : AppCompatActivity() {
                         if (infoRes == null) {
                             Log.d("GETINFO", "User information fetch failed")
                             runOnUiThread {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Server connection unstable. Please check your network status",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                                val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                                resultText.text = "Server connection unstable. Please check your network status."
+                                val alertDialog = AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK") { _, _ -> }
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
                             }
+                            Thread.currentThread().interrupt()
                         }
                         if (infoRes?.err != null) {
                             runOnUiThread {
@@ -677,7 +700,7 @@ class MainActivity : AppCompatActivity() {
                                     .commitAllowingStateLoss()
                             }
                         } else {
-                            when (infoRes!!.user_type) {
+                            when (infoRes?.user_type) {
                                 "manufacturer" -> {
                                     runOnUiThread {
                                         hideProgress()

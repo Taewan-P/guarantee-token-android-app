@@ -1,6 +1,7 @@
 package dev.chungjungsoo.guaranteewallet.tabfragments
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -69,10 +70,24 @@ class ListTokenFragment : Fragment() {
                     Log.d("TOKENLIST", "Token List fetch failed")
                     if (isAdded) {
                         requireActivity().runOnUiThread {
-                            Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT).show()
+                            val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                            val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                            resultText.text = "Server connection unstable. Please check your network status."
+                            val alertDialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Error")
+                                .setPositiveButton("OK") { _, _ -> }
+                                .create()
+
+                            alertDialog.setView(dialogView)
+                            alertDialog.show()
+
                             hideProgress()
+                            items.clear()
+                            adapter.notifyDataSetChanged()
                             emptyListTextView.visibility = View.VISIBLE
                         }
+                        Thread.currentThread().interrupt()
                     }
                 }
                 if (tokenCall?.err == null) {
@@ -97,6 +112,7 @@ class ListTokenFragment : Fragment() {
                             requireActivity().runOnUiThread {
                                 hideProgress()
                                 emptyListTextView.visibility = View.VISIBLE
+                                items.clear()
                             }
                         }
                     }
@@ -104,10 +120,24 @@ class ListTokenFragment : Fragment() {
                     // Invalid. Error exists
                     if (isAdded) {
                         requireActivity().runOnUiThread {
-                            Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
+                            val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                            val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                            resultText.text = "Invalid Requeest. Please try again."
+                            val alertDialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Error")
+                                .setPositiveButton("OK") { _, _ -> }
+                                .create()
+
+                            alertDialog.setView(dialogView)
+                            alertDialog.show()
+
                             hideProgress()
                             emptyListTextView.visibility = View.VISIBLE
+                            items.clear()
+                            adapter.notifyDataSetChanged()
                         }
+                        Thread.currentThread().interrupt()
                     }
                 }
 
@@ -118,10 +148,22 @@ class ListTokenFragment : Fragment() {
                         Log.d("TOKENINFO", "Token information fetch failed")
                         if (isAdded) {
                             requireActivity().runOnUiThread {
-                                Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT)
-                                    .show()
+                                val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                                val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                                resultText.text = "Server connection failed. Please check your network status."
+                                val alertDialog = AlertDialog.Builder(requireContext())
+                                    .setTitle("Error")
+                                    .setPositiveButton("OK") { _, _ -> }
+                                    .create()
+
+                                alertDialog.setView(dialogView)
+                                alertDialog.show()
                                 hideProgress()
+                                items.clear()
+                                adapter.notifyDataSetChanged()
                             }
+                            Thread.currentThread().interrupt()
                         }
                     }
                     val tokenInfo = tokenInfoCall?.tokens ?: listOf()
@@ -150,6 +192,7 @@ class ListTokenFragment : Fragment() {
                         // Empty list.
                         if (isAdded) {
                             requireActivity().runOnUiThread {
+                                emptyListTextView.visibility = View.VISIBLE
                                 hideProgress()
                             }
                         }
@@ -170,36 +213,66 @@ class ListTokenFragment : Fragment() {
                 if (tokenCall == null) {
                     Log.d("TOKENLIST", "Token List refresh failed")
                     requireActivity().runOnUiThread {
-                        Toast.makeText(context, "Cannot connect to server", Toast.LENGTH_SHORT)
-                            .show()
+                        val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                        val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                        resultText.text = "Server connection failed. Please check your network status."
+                        val alertDialog = AlertDialog.Builder(requireContext())
+                            .setTitle("Error")
+                            .setPositiveButton("OK") { _, _ -> }
+                            .create()
+
+                        alertDialog.setView(dialogView)
+                        alertDialog.show()
                         pullToRefresh.isRefreshing = false
                         emptyListTextView.visibility = View.VISIBLE
+                        items.clear()
+                        adapter.notifyDataSetChanged()
                     }
+                    Thread.currentThread().interrupt()
                 }
                 if (tokenCall?.err == null) {
                     // Successful request
-                    if (tokenCall?.tokens!!.isNotEmpty()) {
+                    if (tokenCall?.tokens?.isNotEmpty() == true) {
                         // Owns token
                         tokenStatus = true
                         tokenList = tokenCall.tokens
                         Log.d("TOKENLIST", "Token list refresh successful")
-                        emptyListTextView.visibility = View.GONE
+                        requireActivity().runOnUiThread {
+                            emptyListTextView.visibility = View.GONE
+                        }
                     }
                     else {
                         // Empty token list
                         tokenStatus = false
-                        tokenList = tokenCall.tokens
+                        tokenList = listOf()
                         Log.d("TOKENLIST", "Token list refreshed, but no tokens")
                         pullToRefresh.isRefreshing = false
-                        emptyListTextView.visibility = View.VISIBLE
+                        requireActivity().runOnUiThread {
+                            emptyListTextView.visibility = View.VISIBLE
+                        }
                     }
                 } else {
                     // Invalid. Error exists
                     requireActivity().runOnUiThread {
-                        Toast.makeText(context, "Invalid Request", Toast.LENGTH_SHORT).show()
+                        val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                        val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                        resultText.text = "Invalid Request."
+                        val alertDialog = AlertDialog.Builder(requireContext())
+                            .setTitle("Error")
+                            .setPositiveButton("OK") { _, _ -> }
+                            .create()
+
+                        alertDialog.setView(dialogView)
+                        alertDialog.show()
+
                         pullToRefresh.isRefreshing = false
                         emptyListTextView.visibility = View.VISIBLE
+                        items.clear()
+                        adapter.notifyDataSetChanged()
                     }
+                    Thread.currentThread().interrupt()
                 }
 
                 if (tokenStatus) {
@@ -208,8 +281,18 @@ class ListTokenFragment : Fragment() {
                     if (tokenInfoCall == null) {
                         Log.d("TOKENINFO", "Token information refresh failed")
                         requireActivity().runOnUiThread {
-                            Toast.makeText(context, "Server connection failed", Toast.LENGTH_SHORT)
-                                .show()
+                            val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                            val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                            resultText.text = "Server connection failed. Please check your network status."
+                            val alertDialog = AlertDialog.Builder(requireContext())
+                                .setTitle("Error")
+                                .setPositiveButton("OK") { _, _ -> }
+                                .create()
+
+                            alertDialog.setView(dialogView)
+                            alertDialog.show()
+
                             pullToRefresh.isRefreshing = false
                         }
                     }

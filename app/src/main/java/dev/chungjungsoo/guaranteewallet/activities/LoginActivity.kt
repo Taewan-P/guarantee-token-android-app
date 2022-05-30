@@ -11,7 +11,9 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDialog
 import dev.chungjungsoo.guaranteewallet.R
@@ -127,19 +129,36 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         Log.d("LOGIN", "Login Failed")
                         hideProgress()
-                        Toast.makeText(applicationContext, "ID/PW mismatch", Toast.LENGTH_SHORT)
-                            .show()
+                        val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                        val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                        resultText.text = "ID/PW mismatch."
+                        val alertDialog = AlertDialog.Builder(this@LoginActivity)
+                            .setTitle("Error")
+                            .setPositiveButton("OK") { _, _ -> }
+                            .create()
+
+                        alertDialog.setView(dialogView)
+                        alertDialog.show()
+                        Log.e("LOGIN", "ID/PW mismatch")
                     }
                 }
 
                 override fun onFailure(call: Call<LoginResult>, t: Throwable) {
                     Log.d("LOGIN", "Login Error")
                     hideProgress()
-                    Toast.makeText(
-                        applicationContext,
-                        "Login Failed. Check your network condition.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val dialogView = layoutInflater.inflate(R.layout.layout_transfer_result,null)
+                    val resultText = dialogView.findViewById<TextView>(R.id.transfer_result_text)
+
+                    resultText.text = "Login Failed. Check your network condition."
+                    val alertDialog = AlertDialog.Builder(this@LoginActivity)
+                        .setTitle("Error")
+                        .setPositiveButton("OK") { _, _ -> }
+                        .create()
+
+                    alertDialog.setView(dialogView)
+                    alertDialog.show()
+                    Log.e("LOGIN", "Network error onClick login")
                 }
 
             })
@@ -162,7 +181,7 @@ class LoginActivity : AppCompatActivity() {
 
         if (!progressDialog.isShowing) {
             progressDialog.setCancelable(false)
-            progressDialog.window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+            progressDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             progressDialog.setContentView(R.layout.etc_loading_layout)
             progressDialog.show()
         }

@@ -684,7 +684,9 @@ class MainActivity : AppCompatActivity() {
                                 resultText.text = "Server connection unstable. Please check your network status."
                                 val alertDialog = AlertDialog.Builder(this)
                                     .setTitle("Error")
-                                    .setPositiveButton("OK") { _, _ -> }
+                                    .setPositiveButton("OK") { _, _ ->
+                                        finish()
+                                    }
                                     .create()
 
                                 alertDialog.setView(dialogView)

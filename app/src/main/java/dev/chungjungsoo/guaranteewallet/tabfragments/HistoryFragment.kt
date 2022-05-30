@@ -1,5 +1,6 @@
 package dev.chungjungsoo.guaranteewallet.tabfragments
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
@@ -9,18 +10,17 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
+import dev.chungjungsoo.guaranteewallet.adapter.HistoryListViewAdapter
 import dev.chungjungsoo.guaranteewallet.dataclass.GetHistoryBody
 import dev.chungjungsoo.guaranteewallet.dataclass.GetHistoryResult
+import dev.chungjungsoo.guaranteewallet.dataclass.HistoryItem
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
 import org.w3c.dom.Text
 import java.io.IOException
@@ -31,7 +31,7 @@ class HistoryFragment : Fragment() {
     companion object {
         lateinit var prefs: PreferenceUtil
     }
-
+    lateinit var progressDialog: ProgressBar
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,7 +45,18 @@ class HistoryFragment : Fragment() {
         prefs = PreferenceUtil(requireContext())
         val account = prefs.getString("account", "")
         val token = prefs.getString("jwt", "")
-        val historyTable = requireView().findViewById<TableLayout>(R.id.history_table)
+
+        progressDialog = requireView().findViewById(R.id.list_progress_bar)
+        val items = mutableListOf<HistoryItem>()
+        val adapter = HistoryListViewAdapter(items)
+        val historyListView = requireView().findViewById<ListView>(R.id.history_listview)
+        val historyListHeaderView = layoutInflater.inflate(R.layout.title_history_layout, historyListView, false)
+        val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
+
+        historyListView.addHeaderView(historyListHeaderView, null, false)
+        historyListView.adapter = adapter
+
+        showProgress(requireActivity())
 
         if (isAdded) {
             thread {
@@ -67,6 +78,10 @@ class HistoryFragment : Fragment() {
 
                             alertDialog.setView(dialogView)
                             alertDialog.show()
+                            hideProgress()
+                            items.clear()
+                            adapter.notifyDataSetChanged()
+                            emptyListTextView.visibility = View.GONE
                         }
                         Thread.currentThread().interrupt()
                     }
@@ -74,25 +89,39 @@ class HistoryFragment : Fragment() {
 
                 if (historyCall?.err == null) {
                     // Successful request
-                    Log.d("HISTORY", "History fetch successful")
+                    val historyResult = historyCall?.result ?: listOf()
+
                     if (historyCall?.result!!.isNotEmpty()) {
                         // Owns history
-                        for (h in historyCall.result) {
-                            val tid = h!!.tid
-                            val from = h.from
-                            val to = h.to
-                            val date = h.time
-
-                            if (isAdded) {
-                                val tableRow = createTableRow(tid, from.toString(), to, date)
-                                requireActivity().runOnUiThread {
-                                    historyTable.addView(tableRow)
-                                }
+                        historyResult.forEach {
+                            if (it is HistoryItem) {
+                                items.add(
+                                    HistoryItem(
+                                        it.tid,
+                                        it.from,
+                                        it.to,
+                                        it.time
+                                    )
+                                )
                             }
+                        }
+                        if (activity != null) {
+                            requireActivity().runOnUiThread {
+                                adapter.notifyDataSetChanged()
+                                emptyListTextView.visibility = View.GONE
+                                hideProgress()
+                            }
+                            Log.d("HISTORY", "History fetch successful")
                         }
                     }
                     else {
                         // No history. Do nothing.
+                        if (isAdded) {
+                            requireActivity().runOnUiThread {
+                                emptyListTextView.visibility = View.VISIBLE
+                                hideProgress()
+                            }
+                        }
                     }
                 }
                 else {
@@ -116,7 +145,7 @@ class HistoryFragment : Fragment() {
             }
         }
 
-        val pullToRefresh = requireView().findViewById<SwipeRefreshLayout>(R.id.history_refresh)
+        val pullToRefresh = requireView().findViewById<SwipeRefreshLayout>(R.id.swipe_to_refresh)
 
         pullToRefresh.setOnRefreshListener {
             thread {
@@ -138,6 +167,9 @@ class HistoryFragment : Fragment() {
 
                         alertDialog.setView(dialogView)
                         alertDialog.show()
+                        items.clear()
+                        adapter.notifyDataSetChanged()
+                        emptyListTextView.visibility = View.VISIBLE
                     }
                     Thread.currentThread().interrupt()
                 }
@@ -145,31 +177,34 @@ class HistoryFragment : Fragment() {
                 if (historyCall?.err == null) {
                     // Successful request
                     Log.d("HISTORY", "History refresh successful")
-                    val records = historyTable.childCount
-
-                    if (historyCall?.result!!.isNotEmpty()) {
+                    val historyResult = historyCall?.result ?: listOf()
+                    if (historyCall?.result?.isNotEmpty() == true) {
                         // Owns history
+                        items.clear()
+                        historyResult.forEach {
+                            if (it is HistoryItem) {
+                                items.add(
+                                    HistoryItem(
+                                        it.tid,
+                                        it.from,
+                                        it.to,
+                                        it.time
+                                    )
+                                )
+                            }
+                        }
+
                         requireActivity().runOnUiThread {
                             pullToRefresh.isRefreshing = false
-                            historyTable.removeViews(1, records-1)
-                        }
-                        for (h in historyCall.result) {
-                            val tid = h!!.tid
-                            val from = h.from
-                            val to = h.to
-                            val date = h.time
-
-                            val tableRow = createTableRow(tid, from.toString(), to, date)
-
-                            requireActivity().runOnUiThread {
-                                historyTable.addView(tableRow)
-                            }
+                            emptyListTextView.visibility = View.GONE
+                            adapter.notifyDataSetChanged()
                         }
                     }
                     else {
                         // No history
                         requireActivity().runOnUiThread {
                             pullToRefresh.isRefreshing = false
+                            emptyListTextView.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -188,6 +223,9 @@ class HistoryFragment : Fragment() {
                         alertDialog.setView(dialogView)
                         alertDialog.show()
                         pullToRefresh.isRefreshing = false
+                        items.clear()
+                        adapter.notifyDataSetChanged()
+                        emptyListTextView.visibility = View.VISIBLE
                     }
                     Thread.currentThread().interrupt()
                 }
@@ -274,5 +312,22 @@ class HistoryFragment : Fragment() {
     private fun dpToPixel(dp: Int) : Int {
         val density = lazy { requireContext().resources.displayMetrics.density }
         return (dp * density.value).toInt()
+    }
+
+    private fun showProgress(activity: Activity) {
+        if (activity.isFinishing) {
+            return
+        }
+
+        if (progressDialog.visibility != View.VISIBLE) {
+            progressDialog.visibility = View.VISIBLE
+        }
+
+    }
+
+    private fun hideProgress() {
+        if (progressDialog.visibility == View.VISIBLE) {
+            progressDialog.visibility = View.GONE
+        }
     }
 }

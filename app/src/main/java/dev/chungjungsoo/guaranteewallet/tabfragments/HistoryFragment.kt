@@ -2,29 +2,22 @@ package dev.chungjungsoo.guaranteewallet.tabfragments
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.graphics.Color
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.activities.RetrofitClass
-import dev.chungjungsoo.guaranteewallet.adapter.HistoryListViewAdapter
+import dev.chungjungsoo.guaranteewallet.adapter.HistoryExpandableListViewAdapter
 import dev.chungjungsoo.guaranteewallet.dataclass.GetHistoryBody
 import dev.chungjungsoo.guaranteewallet.dataclass.GetHistoryResult
 import dev.chungjungsoo.guaranteewallet.dataclass.HistoryItem
 import dev.chungjungsoo.guaranteewallet.preference.PreferenceUtil
-import org.w3c.dom.Text
 import java.io.IOException
-import java.lang.NullPointerException
 import kotlin.concurrent.thread
 
 class HistoryFragment : Fragment() {
@@ -40,6 +33,7 @@ class HistoryFragment : Fragment() {
         return inflater.inflate(R.layout.tab_history_fragment, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prefs = PreferenceUtil(requireContext())
@@ -47,14 +41,17 @@ class HistoryFragment : Fragment() {
         val token = prefs.getString("jwt", "")
 
         progressDialog = requireView().findViewById(R.id.list_progress_bar)
-        val items = mutableListOf<HistoryItem>()
-        val adapter = HistoryListViewAdapter(items)
-        val historyListView = requireView().findViewById<ListView>(R.id.history_listview)
+        val itemList = mutableListOf<HistoryItem>()
+        val detailList = hashMapOf<HistoryItem, List<Pair<String, String>>>()
+        val adapter = HistoryExpandableListViewAdapter(requireContext(), itemList, detailList)
+
+        val historyListView = requireView().findViewById<ExpandableListView>(R.id.history_listview)
         val historyListHeaderView = layoutInflater.inflate(R.layout.title_history_layout, historyListView, false)
         val emptyListTextView = requireView().findViewById<TextView>(R.id.no_items_text)
 
         historyListView.addHeaderView(historyListHeaderView, null, false)
-        historyListView.adapter = adapter
+        historyListView.setAdapter(adapter)
+
 
         showProgress(requireActivity())
 
@@ -79,7 +76,8 @@ class HistoryFragment : Fragment() {
                             alertDialog.setView(dialogView)
                             alertDialog.show()
                             hideProgress()
-                            items.clear()
+                            itemList.clear()
+                            detailList.clear()
                             adapter.notifyDataSetChanged()
                             emptyListTextView.visibility = View.GONE
                         }
@@ -95,14 +93,9 @@ class HistoryFragment : Fragment() {
                         // Owns history
                         historyResult.forEach {
                             if (it is HistoryItem) {
-                                items.add(
-                                    HistoryItem(
-                                        it.tid,
-                                        it.from,
-                                        it.to,
-                                        it.time
-                                    )
-                                )
+                                itemList.add(it)
+                                detailList[it] = mutableListOf()
+                                (detailList[it] as MutableList).add(Pair(it.from ?: "", it.to))
                             }
                         }
                         if (activity != null) {
@@ -167,7 +160,8 @@ class HistoryFragment : Fragment() {
 
                         alertDialog.setView(dialogView)
                         alertDialog.show()
-                        items.clear()
+                        itemList.clear()
+                        detailList.clear()
                         adapter.notifyDataSetChanged()
                         emptyListTextView.visibility = View.VISIBLE
                     }
@@ -180,17 +174,13 @@ class HistoryFragment : Fragment() {
                     val historyResult = historyCall?.result ?: listOf()
                     if (historyCall?.result?.isNotEmpty() == true) {
                         // Owns history
-                        items.clear()
+                        itemList.clear()
+                        detailList.clear()
                         historyResult.forEach {
                             if (it is HistoryItem) {
-                                items.add(
-                                    HistoryItem(
-                                        it.tid,
-                                        it.from,
-                                        it.to,
-                                        it.time
-                                    )
-                                )
+                                itemList.add(it)
+                                detailList[it] = mutableListOf()
+                                (detailList[it] as MutableList).add(Pair(it.from ?: "", it.to))
                             }
                         }
 
@@ -223,7 +213,8 @@ class HistoryFragment : Fragment() {
                         alertDialog.setView(dialogView)
                         alertDialog.show()
                         pullToRefresh.isRefreshing = false
-                        items.clear()
+                        itemList.clear()
+                        detailList.clear()
                         adapter.notifyDataSetChanged()
                         emptyListTextView.visibility = View.VISIBLE
                     }

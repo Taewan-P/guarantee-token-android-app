@@ -56,7 +56,7 @@
             android:id="@+id/prod_date_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Date" />
+            android:text="SELECT DATE" />
 
     </LinearLayout>
 
@@ -78,7 +78,7 @@
             android:id="@+id/exp_date_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Date" />
+            android:text="SELECT DATE" />
     </LinearLayout>
 
     <LinearLayout

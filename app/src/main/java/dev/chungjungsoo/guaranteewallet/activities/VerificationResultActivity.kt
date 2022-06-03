@@ -1,6 +1,7 @@
 package dev.chungjungsoo.guaranteewallet.activities
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -42,6 +43,7 @@ class VerificationResultActivity : AppCompatActivity() {
         val textViewProdDate = findViewById<TextView>(R.id.verification_result_prod_date)
         val textViewExpDate = findViewById<TextView>(R.id.verification_result_exp_date)
         val textViewDetails = findViewById<TextView>(R.id.verification_result_details)
+        val txHistory = findViewById<TextView>(R.id.transaction_history)
 
         val animatedInvalidIcon = ContextCompat.getDrawable(this.applicationContext, R.drawable.animation_invalid) as AnimatedVectorDrawable
         val animatedCheckmarkIcon = ContextCompat.getDrawable(this.applicationContext, R.drawable.animation_checkmark) as AnimatedVectorDrawable
@@ -59,6 +61,7 @@ class VerificationResultActivity : AppCompatActivity() {
             textViewProdDate.text = "N/A"
             textViewExpDate.text = "N/A"
             textViewDetails.text = "N/A"
+            txHistory.text = "N/A"
         }
         else if (tid == -1 || exp) {
             // Invalid intent result, or expired token
@@ -72,6 +75,7 @@ class VerificationResultActivity : AppCompatActivity() {
             textViewProdDate.text = "N/A"
             textViewExpDate.text = "N/A"
             textViewDetails.text = "N/A"
+            txHistory.text = "N/A"
         }
         else {
             thread {
@@ -90,6 +94,7 @@ class VerificationResultActivity : AppCompatActivity() {
                         textViewProdDate.text = "N/A"
                         textViewExpDate.text = "N/A"
                         textViewDetails.text = "N/A"
+                        txHistory.text = "N/A"
                     }
                 }
 
@@ -98,6 +103,7 @@ class VerificationResultActivity : AppCompatActivity() {
                     if (validationCall?.result == "valid") {
                         // Valid Token
                         val tokenInfo = validationCall.info
+                        val txHistory: ArrayList<ArrayList<String?>> = ArrayList(validationCall.txHistory?.map { ArrayList(it) } ?: ArrayList())
 
                         if (tokenInfo == null) {
                             // This should not happen
@@ -129,6 +135,19 @@ class VerificationResultActivity : AppCompatActivity() {
                                 textViewProdDate.text = tokenInfo.prodDate
                                 textViewExpDate.text = tokenInfo.expDate
                                 textViewDetails.text = tokenInfo.details
+                                }
+
+                            val transactionLayout : RelativeLayout = findViewById(R.id.transaction_layout)
+
+                            runOnUiThread {
+                                transactionLayout.setOnClickListener {
+
+                                    val txIntent = Intent(this, TransactionDetailActivity::class.java)
+                                    txIntent.putExtra("history", txHistory)
+                                    Log.d("asdfasf", "starting...")
+                                    Log.d("asdfasdf", "$txHistory")
+                                    startActivity(txIntent)
+                                }
                             }
                         }
                     }
@@ -145,6 +164,7 @@ class VerificationResultActivity : AppCompatActivity() {
                             textViewProdDate.text = "N/A"
                             textViewExpDate.text = "N/A"
                             textViewDetails.text = "N/A"
+                            txHistory.text = "N/A"
                         }
                     }
                 }
@@ -163,6 +183,7 @@ class VerificationResultActivity : AppCompatActivity() {
                         textViewProdDate.text = "N/A"
                         textViewExpDate.text = "N/A"
                         textViewDetails.text = "N/A"
+                        txHistory.text = "N/A"
 
                         when (validationCall.error) {
                             "Network Error" -> {

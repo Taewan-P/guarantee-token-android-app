@@ -91,6 +91,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/verification_result_brand_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="22dp" >
@@ -98,10 +99,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Brand"
                 android:layout_alignParentStart="true"
-                android:textSize="22sp"
+                android:text="Brand"
                 android:textColor="@color/white"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <TextView

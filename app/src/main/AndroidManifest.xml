@@ -45,7 +45,12 @@
             android:name=".activities.PasswordInputActivity"
             android:configChanges="uiMode" />
 
-        <activity android:name=".activities.TransactionDetailActivity"
+        <activity
+            android:name=".activities.TransactionDetailActivity"
+            android:launchMode="singleTop" />
+
+        <activity
+            android:name=".activities.ManufacturerValidationActivity"
             android:launchMode="singleTop" />
 
     </application>

@@ -103,7 +103,7 @@ class VerificationResultActivity : AppCompatActivity() {
                     if (validationCall?.result == "valid") {
                         // Valid Token
                         val tokenInfo = validationCall.info
-                        val txHistory: ArrayList<ArrayList<String?>> = ArrayList(validationCall.txHistory?.map { ArrayList(it) } ?: ArrayList())
+                        val txHistory: ArrayList<ArrayList<String?>> = ArrayList(validationCall.txHistory?.map { ArrayList(it) } ?: ArrayList(ArrayList()))
 
                         if (tokenInfo == null) {
                             // This should not happen
@@ -138,15 +138,20 @@ class VerificationResultActivity : AppCompatActivity() {
                                 }
 
                             val transactionLayout : RelativeLayout = findViewById(R.id.transaction_layout)
+                            val brandLayout : RelativeLayout = findViewById(R.id.verification_result_brand_layout)
 
                             runOnUiThread {
                                 transactionLayout.setOnClickListener {
-
                                     val txIntent = Intent(this, TransactionDetailActivity::class.java)
                                     txIntent.putExtra("history", txHistory)
-                                    Log.d("asdfasf", "starting...")
-                                    Log.d("asdfasdf", "$txHistory")
                                     startActivity(txIntent)
+                                }
+
+                                brandLayout.setOnClickListener {
+                                    val valIntent = Intent(this, ManufacturerValidationActivity::class.java)
+                                    valIntent.putExtra("tid", tokenInfo.tid)
+                                    valIntent.putExtra("address", txHistory[0][1])
+                                    startActivity(valIntent)
                                 }
                             }
                         }

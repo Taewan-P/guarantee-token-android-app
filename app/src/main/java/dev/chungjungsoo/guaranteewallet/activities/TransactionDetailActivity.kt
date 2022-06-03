@@ -45,13 +45,30 @@ class TransactionDetailActivity : AppCompatActivity() {
             // Add them
             when (i) {
                 0 -> {
+                    val mintedFrom = TextView(this)
+                    mintedFrom.text = "Minted From"
+                    mintedFrom.setTextColor(this.getColor(R.color.white))
+                    mintedFrom.setTextSize(Dimension.SP, 20F)
+                    mintedFrom.layoutParams = textParams
+
+                    transactionHistoryLayout.addView(mintedFrom)
                     historyText.text = history[i][1]
                     transactionHistoryLayout.addView(historyText)
                     transactionHistoryLayout.addView(arrowDown)
                 }
                 history.size - 1 -> {
+                    val currentOwner = TextView(this)
+                    currentOwner.text = "Current Owner"
+                    currentOwner.setTextColor(this.getColor(R.color.white))
+
+                    currentOwner.setTextSize(Dimension.SP, 20F)
+                    currentOwner.layoutParams = textParams
+
+                    transactionHistoryLayout.addView(currentOwner)
+
                     historyText.text = history[i][1]
                     transactionHistoryLayout.addView(historyText)
+
                 }
                 else -> {
                     historyText.text = history[i][1]

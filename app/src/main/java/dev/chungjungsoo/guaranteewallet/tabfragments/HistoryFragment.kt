@@ -89,7 +89,7 @@ class HistoryFragment : Fragment() {
                     // Successful request
                     val historyResult = historyCall?.result ?: listOf()
 
-                    if (historyCall?.result!!.isNotEmpty()) {
+                    if ((historyCall?.result ?: listOf()).isNotEmpty()) {
                         // Owns history
                         historyResult.forEach {
                             if (it is HistoryItem) {

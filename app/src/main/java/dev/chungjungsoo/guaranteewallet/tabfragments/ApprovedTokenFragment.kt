@@ -97,10 +97,12 @@ class ApprovedTokenFragment : Fragment() {
                         // Owns approved token
                         tokenStatus = true
                         tokenList = approvedCall.approved
-                        requireActivity().runOnUiThread {
-                            emptyListTextView.visibility = View.GONE
+                        if (isAdded) {
+                            requireActivity().runOnUiThread {
+                                emptyListTextView.visibility = View.GONE
+                            }
+                            Log.d("APPROVEDLIST", "Approved token list fetch successful")
                         }
-                        Log.d("APPROVEDLIST", "Approved token list fetch successful")
                     }
                     else {
                         // Empty token list

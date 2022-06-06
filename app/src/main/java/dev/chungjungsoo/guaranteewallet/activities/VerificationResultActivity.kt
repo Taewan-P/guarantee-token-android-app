@@ -103,7 +103,7 @@ class VerificationResultActivity : AppCompatActivity() {
                     if (validationCall?.result == "valid") {
                         // Valid Token
                         val tokenInfo = validationCall.info
-                        val txHistory: ArrayList<ArrayList<String?>> = ArrayList(validationCall.txHistory?.map { ArrayList(it) } ?: ArrayList(ArrayList()))
+                        val txHistories: ArrayList<ArrayList<String?>> = ArrayList(validationCall.txHistory?.map { ArrayList(it) } ?: ArrayList(ArrayList()))
 
                         if (tokenInfo == null) {
                             // This should not happen
@@ -143,14 +143,14 @@ class VerificationResultActivity : AppCompatActivity() {
                             runOnUiThread {
                                 transactionLayout.setOnClickListener {
                                     val txIntent = Intent(this, TransactionDetailActivity::class.java)
-                                    txIntent.putExtra("history", txHistory)
+                                    txIntent.putExtra("history", txHistories)
                                     startActivity(txIntent)
                                 }
 
                                 brandLayout.setOnClickListener {
                                     val valIntent = Intent(this, ManufacturerValidationActivity::class.java)
                                     valIntent.putExtra("tid", tokenInfo.tid)
-                                    valIntent.putExtra("address", txHistory[0][1])
+                                    valIntent.putExtra("address", txHistories[0][1])
                                     startActivity(valIntent)
                                 }
                             }

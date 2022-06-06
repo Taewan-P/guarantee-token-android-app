@@ -26,6 +26,7 @@ class ManufacturerValidationActivity : AppCompatActivity() {
 
         val tid = intent.getIntExtra("tid", -1)
         val address = intent.getStringExtra("address") ?: ""
+        val manufacturerText = findViewById<TextView>(R.id.manufacturer_text)
 
         showProgress(this)
 
@@ -43,6 +44,7 @@ class ManufacturerValidationActivity : AppCompatActivity() {
                         Log.d("MANUVAL", "Token is from valid manufacturer")
                         runOnUiThread {
                             hideProgress()
+                            manufacturerText.visibility = View.VISIBLE
                             findViewById<TextView>(R.id.this_is_a).text = "This is a"
                             findViewById<TextView>(R.id.manufacturer_validity).text = "valid"
                             findViewById<TextView>(R.id.manufacturer_validity).setTextColor(ContextCompat.getColor(this, R.color.cardColor3))
@@ -55,6 +57,7 @@ class ManufacturerValidationActivity : AppCompatActivity() {
                         Log.e("MANUVAL", "Token minter and address does not match")
                         runOnUiThread {
                             hideProgress()
+                            manufacturerText.visibility = View.VISIBLE
                             findViewById<TextView>(R.id.this_is_a).text = "This is an"
                             findViewById<TextView>(R.id.manufacturer_validity).text = "invalid"
                             findViewById<TextView>(R.id.manufacturer_validity).setTextColor(ContextCompat.getColor(this, R.color.red))
@@ -67,6 +70,7 @@ class ManufacturerValidationActivity : AppCompatActivity() {
                     Log.e("MANUVAL", "err: ${manuAddress.detail}")
                     runOnUiThread {
                         hideProgress()
+                        manufacturerText.visibility = View.VISIBLE
                         findViewById<TextView>(R.id.this_is_a).text = "This is an"
                         findViewById<TextView>(R.id.manufacturer_validity).text = "invalid"
                         findViewById<TextView>(R.id.manufacturer_validity).setTextColor(ContextCompat.getColor(this, R.color.red))

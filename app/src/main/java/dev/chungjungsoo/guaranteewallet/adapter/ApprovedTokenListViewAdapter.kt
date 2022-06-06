@@ -27,7 +27,7 @@ class ApprovedTokenListViewAdapter(private val items: MutableList<ListViewItem>)
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var sheetView: View
     private val colorList = listOf(
-        R.drawable.shape_listiview_tokens,
+        R.drawable.shape_listview_tokens,
         R.drawable.shape_listiview_tokens_color2,
         R.drawable.shape_listiview_tokens_color3,
         R.drawable.shape_listiview_tokens_color4,

@@ -54,7 +54,9 @@ class TransactionDetailActivity : AppCompatActivity() {
                     transactionHistoryLayout.addView(mintedFrom)
                     historyText.text = history[i][1]
                     transactionHistoryLayout.addView(historyText)
-                    transactionHistoryLayout.addView(arrowDown)
+                    if (history.size != 1) {
+                        transactionHistoryLayout.addView(arrowDown)
+                    }
                 }
                 history.size - 1 -> {
                     val currentOwner = TextView(this)

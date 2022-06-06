@@ -1,9 +1,7 @@
 package dev.chungjungsoo.guaranteewallet.adapter
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.Color.red
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -32,7 +30,7 @@ class TokenListViewAdapter(private val items: MutableList<ListViewItem>) : BaseA
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var sheetView: View
     private val colorList = listOf(
-        R.drawable.shape_listiview_tokens,
+        R.drawable.shape_listview_tokens,
         R.drawable.shape_listiview_tokens_color2,
         R.drawable.shape_listiview_tokens_color3,
         R.drawable.shape_listiview_tokens_color4,

@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.core.view.WindowCompat
 import dev.chungjungsoo.guaranteewallet.R
 import dev.chungjungsoo.guaranteewallet.dataclass.CreateQRCodeBody
@@ -131,10 +132,11 @@ class VerificationResultActivity : AppCompatActivity() {
                                 resultText.text = "Valid"
                                 textViewID.text = "No. ${tokenInfo!!.tid}"
                                 textViewName.text = tokenInfo.name
-                                textViewBrand.text = tokenInfo.brand
+                                textViewBrand.text = HtmlCompat.fromHtml("<u>${tokenInfo.brand}</u>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                                 textViewProdDate.text = tokenInfo.prodDate
                                 textViewExpDate.text = tokenInfo.expDate
                                 textViewDetails.text = tokenInfo.details
+                                txHistory.text = HtmlCompat.fromHtml("<u>${txHistory.text}</u>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                                 }
 
                             val transactionLayout : RelativeLayout = findViewById(R.id.transaction_layout)

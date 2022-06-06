@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+    <RelativeLayout
+        android:id="@+id/history_circle_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="25dp">
+
+        <ImageView
+            android:id="@+id/circle_dot"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/history_circle_dot" />
+
+        <ImageView
+            android:layout_width="5dp"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:src="@color/tintColor" />
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tx_history_item_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_toEndOf="@+id/history_circle_layout" />
+
+</RelativeLayout>

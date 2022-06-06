@@ -3,32 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <ListView
+        android:id="@+id/tx_history_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:id="@+id/transaction_history_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="50dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginBottom="50dp"
-                android:text="Transaction History"
-                android:textColor="@color/white"
-                android:textSize="34sp"
-                android:textStyle="bold" />
-
-
-        </LinearLayout>
-
-
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:divider="@null"
+        android:padding="22dp"
+        android:scrollbars="none" />
 
 </RelativeLayout>

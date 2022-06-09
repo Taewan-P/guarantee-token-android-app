@@ -29,6 +29,14 @@ When the main server receives API requests, it converts certain commands such as
 The Capstone Fair was held in 8th June, 2022.
 
 
+
+## Screenshots
+
+
+![screenshots](https://user-images.githubusercontent.com/27392567/172796876-e5935f06-5d47-4059-9b61-e7488c02da34.png)
+
+
+
 ## Other Links
 
 [Main Server Repository](https://github.com/Taewan-P/guarantee-token-server) - Python, FastAPI, App Engine, Google Cloud Build
